@@ -36,8 +36,9 @@ Access the live platform without installation:
 sudo docker pull crpi-pjcujkw4652f020i.cn-shenzhen.personal.cr.aliyuncs.com/mzlab/smintegration:v-1.0<img width="692" height="19" alt="image" src="https://github.com/user-attachments/assets/2a9a7ef3-c99f-42eb-9083-d710fe2ec132" />
 
 # Run with ShinyProxy
-docker run -d -p 8080:8080 crpi-pjcujkw4652f020i.cn-shenzhen.personal.cr.aliyuncs.com/mzlab/smintegration:v-1.0
+docker run -d -p 8787:3838  crpi-pjcujkw4652f020i.cn-shenzhen.personal.cr.aliyuncs.com/mzlab/smintegration:v-1.0
 ```
+Please use a web browser to access: http://localhost:8787
 
 ### 📥 Input Data Format
 
