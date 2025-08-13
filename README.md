@@ -42,10 +42,13 @@ docker run -d -p 8787:3838  crpi-pjcujkw4652f020i.cn-shenzhen.personal.cr.aliyun
 Please use a web browser to access: http://localhost:8787
 
 ### 📥 Input Data Format
+SMIntegration requires two **feature matrices** as input files:
+**Key Requirements**:
+1、Pre-aligned datasets
+Spatial metabolomics + transcriptomics must share identical pixel coordinates，we recommend using [SpatialData](https://github.com/mzlab-research/SMIntegration/edit/main/SpatialData.md) for registration.
 
-1、Perform spatial alignment using SpatialData (scripts provided on GitHub) 
-
-2、SMIntegration requires two **feature matrices** in TXT or RDS format:
+2、Supported Formats:
+SMIntegration requires two **feature matrices** in TXT or RDS format:
  - **TXT Format**:
   - Columns 1-4: Feature name (metabolite or gene), pixel coordinates (x, y), feature abundance (Intensity or MIDCount)
   - Each row represents one spatial pixel
