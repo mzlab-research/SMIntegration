@@ -44,6 +44,7 @@ Please use a web browser to access: http://localhost:8787
 ### 📥 Input Data Format
 
 1、Perform spatial alignment using SpatialData (scripts provided on GitHub) 
+
 2、SMIntegration requires two **feature matrices** in TXT or RDS format:
  - **TXT Format**:
   - Columns 1-4: Feature name (metabolite or gene), pixel coordinates (x, y), feature abundance (Intensity or MIDCount)
