@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map00121
+DEFINITION  Secondary bile acid biosynthesis
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Secondary bile acid biosynthesis - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() の実行で
+	 *      色が薄くなるのを打ち消す */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* 以下のwidth,overflowの定義で.rowのブロック内で横スクロールする。 */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* 横に並べる場合(title可変幅) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* 横に並べる場合(title可変幅) end */
+
+
+/* Search欄の検索結果 start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Search欄の検索結果 end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconの位置調整のために必要 */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariでボタンの周りに入る余白を削除 */
+	margin: 0px;
+	padding: 0px;
+	/* ボタンを押した時に表示されるボーダーを非表示にする */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* コントロールパネルに合わせて初期は非表示 */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* 画像の下に入る余白を無くす */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '00121',
+	         org: 'map',
+	       entry: 'map00121',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Secondary bile acid biosynthesis - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=00121&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+00121" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map00121" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	The secondary bile acids are derived from the primary bile acids by the enzymatic action of intestinal bacteria through the process of deconjugation and dehydroxylation. The secondary bile acids in humans include deoxycholic acid and lithocholic acid, formed from the 7alpha-dehydroxylation of cholic acid and chenodeoxycholic acid, respectively.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="00121" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map00121.png" srcset="/kegg/pathway/map/map00121.png 1x" data-srcset="/kegg/pathway/map/map00121.png 1x, /kegg/pathway/map/map00121@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="1973" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="C58A1174" shape="rect" coords="1583,1289,1729,1387" data-coords="1583,1289,1729,1387" class="original" href="/entry/C21449" title="C21449 (Lithocholoyl-CoA)" data-entry="C21449" />
+		<area id="6B1EC838" shape="circle" coords="134,592,4" data-coords="134,592,4" class="original" href="/entry/C05122" title="C05122 (Taurocholate)" data-entry="C05122" />
+		<area id="29BCC2D7" shape="circle" coords="109,1454,4" data-coords="109,1454,4" class="original" href="/entry/C05466" title="C05466 (Glycochenodeoxycholate)" data-entry="C05466" />
+		<area id="25BCC7EB" shape="circle" coords="109,1590,4" data-coords="109,1590,4" class="original" href="/entry/C05465" title="C05465 (Taurochenodeoxycholate)" data-entry="C05465" />
+		<area id="531AA554" shape="rect" coords="1608,1636,1760,1736" data-coords="1608,1636,1760,1736" class="original" href="/entry/C17651" title="C17651 (alpha-Phocaecholic acid)" data-entry="C17651" />
+		<area id="721EC338" shape="circle" coords="134,499,4" data-coords="134,499,4" class="original" href="/entry/C01921" title="C01921 (Glycocholate)" data-entry="C01921" />
+		<area id="9E1C793E" shape="rect" coords="946,316,1124,425" data-coords="946,316,1124,425" class="original" href="/entry/C17687" title="C17687 (Allodeoxycholate)" data-entry="C17687" />
+		<area id="A58C50FD" shape="rect" coords="952,865,1104,965" data-coords="952,865,1104,965" class="original" href="/entry/C04483" title="C04483 (Deoxycholic acid)" data-entry="C04483" />
+		<area id="103F1AC0" shape="rect" coords="1170,728,1322,828" data-coords="1170,728,1322,828" class="original" href="/entry/C17662" title="C17662 (Isoursodeoxycholate)" data-entry="C17662" />
+		<area id="0D4E05C6" shape="rect" coords="1170,586,1322,686" data-coords="1170,586,1322,686" class="original" href="/entry/C17658" title="C17658 (Isolithocholate)" data-entry="C17658" />
+		<area id="AA918F84" shape="rect" coords="262,483,413,582" data-coords="262,483,413,582" class="original" href="/entry/C00695" title="C00695 (Cholic acid)" data-entry="C00695" />
+		<area id="B57E8CC2" shape="rect" coords="1412,1636,1562,1736" data-coords="1412,1636,1562,1736" class="original" href="/entry/C00695" title="C00695 (Cholic acid)" data-entry="C00695" />
+		<area id="A4096174" shape="rect" coords="952,728,1104,828" data-coords="952,728,1104,828" class="original" href="/entry/C00695" title="C00695 (Cholic acid)" data-entry="C00695" />
+		<area id="43891419" shape="rect" coords="260,119,412,216" data-coords="260,119,412,216" class="original" href="/entry/C17644" title="C17644 (Ursocholate)" data-entry="C17644" />
+		<area id="20AB8C9C" shape="rect" coords="1383,865,1534,965" data-coords="1383,865,1534,965" class="original" href="/entry/C17654" title="C17654 (beta-Phocaecholate)" data-entry="C17654" />
+		<area id="D30EBA54" shape="rect" coords="1608,1770,1760,1869" data-coords="1608,1770,1760,1869" class="original" href="/entry/C17654" title="C17654 (beta-Phocaecholate)" data-entry="C17654" />
+		<area id="278CEF43" shape="rect" coords="1600,187,1752,286" data-coords="1600,187,1752,286" class="original" href="/entry/C17644" title="C17644 (Ursocholate)" data-entry="C17644" />
+		<area id="2BFF76C6" shape="rect" coords="1600,456,1752,555" data-coords="1600,456,1752,555" class="original" href="/entry/C17650" title="C17650 (Vulpecholate)" data-entry="C17650" />
+		<area id="19349149" shape="rect" coords="1381,320,1534,425" data-coords="1381,320,1534,425" class="original" href="/entry/C17647" title="C17647 (alpha-Muricholate)" data-entry="C17647" />
+		<area id="164383B4" shape="rect" coords="1381,187,1534,286" data-coords="1381,187,1534,286" class="original" href="/entry/C03990" title="C03990 (Lithocholic acid)" data-entry="C03990" />
+		<area id="4D75C8D4" shape="rect" coords="509,1466,666,1568" data-coords="509,1466,666,1568" class="original" href="/entry/C05337" title="C05337 (Chenodeoxycholoyl-CoA)" data-entry="C05337" />
+		<area id="9F9561E5" shape="rect" coords="953,448,1105,547" data-coords="953,448,1105,547" class="original" href="/entry/C17657" title="C17657 (Bitocholate)" data-entry="C17657" />
+		<area id="42687D4B" shape="rect" coords="1184,1770,1336,1869" data-coords="1184,1770,1336,1869" class="original" href="/entry/C17657" title="C17657 (Bitocholate)" data-entry="C17657" />
+		<area id="43E39151" shape="rect" coords="505,1117,654,1215" data-coords="505,1117,654,1215" class="original" href="/entry/C17689" title="C17689 (Ursodeoxycholoyl-CoA)" data-entry="C17689" />
+		<area id="2D80F0C6" shape="rect" coords="1600,586,1752,688" data-coords="1600,586,1752,688" class="original" href="/entry/C17649" title="C17649 (Hyocholate)" data-entry="C17649" />
+		<area id="61587D47" shape="rect" coords="972,1636,1123,1736" data-coords="972,1636,1123,1736" class="original" href="/entry/C17664" title="C17664 (Allochenodeoxycholate)" data-entry="C17664" />
+		<area id="EFF1CF7A" shape="rect" coords="260,1466,412,1568" data-coords="260,1466,412,1568" class="original" href="/entry/C02528" title="C02528 (Chenodeoxycholate)" data-entry="C02528" />
+		<area id="30FA6855" shape="rect" coords="1184,1906,1336,2006" data-coords="1184,1906,1336,2006" class="original" href="/entry/C02528" title="C02528 (Chenodeoxycholate)" data-entry="C02528" />
+		<area id="2DFB8AD1" shape="rect" coords="1412,1906,1580,2014" data-coords="1412,1906,1580,2014" class="original" href="/entry/C17668" title="C17668 (Haemulcholate)" data-entry="C17668" />
+		<area id="9B2CE8DF" shape="rect" coords="945,180,1126,295" data-coords="945,180,1126,295" class="original" href="/entry/C17737" title="C17737 (Allocholic acid)" data-entry="C17737" />
+		<area id="0758BC60" shape="rect" coords="1148,180,1331,294" data-coords="1148,180,1331,294" class="original" href="/entry/C15517" title="C15517 (Hyodeoxycholate)" data-entry="C15517" />
+		<area id="0A485AE9" shape="rect" coords="1147,312,1333,425" data-coords="1147,312,1333,425" class="original" href="/entry/C17660" title="C17660 (Isochenodeoxycholate)" data-entry="C17660" />
+		<area id="11C25948" shape="rect" coords="1159,863,1337,968" data-coords="1159,863,1337,968" class="original" href="/entry/C17646" title="C17646 (12-Epideoxycholic acid)" data-entry="C17646" />
+		<area id="1AB9A766" shape="rect" coords="1377,453,1545,560" data-coords="1377,453,1545,560" class="original" href="/entry/C17726" title="C17726 (beta-Muricholate)" data-entry="C17726" />
+		<area id="1C3A29EF" shape="rect" coords="1377,580,1546,688" data-coords="1377,580,1546,688" class="original" href="/entry/C17727" title="C17727 (omega-Muricholate)" data-entry="C17727" />
+		<area id="1F2C3A5A" shape="rect" coords="1378,722,1546,833" data-coords="1378,722,1546,833" class="original" href="/entry/C15515" title="C15515 (Murideoxycholate)" data-entry="C15515" />
+		<area id="28229CF5" shape="rect" coords="1595,318,1756,425" data-coords="1595,318,1756,425" class="original" href="/entry/C07880" title="C07880 (Ursodiol)" data-entry="C07880" />
+		<area id="A120D5A3" shape="rect" coords="949,580,1121,691" data-coords="949,580,1121,691" class="original" href="/entry/C02528" title="C02528 (Chenodeoxycholate)" data-entry="C02528" />
+		<area id="74F0FB47" shape="rect" coords="969,1905,1132,2011" data-coords="969,1905,1132,2011" class="original" href="/entry/C17667" title="C17667 (Avicholate)" data-entry="C17667" />
+		<area id="E1AA558C" shape="rect" coords="240,1110,407,1212" data-coords="240,1110,407,1212" class="original" href="/entry/C07880" title="C07880 (Ursodiol)" data-entry="C07880" />
+		<area id="0BCF4696" shape="rect" coords="1164,452,1339,554" data-coords="1164,452,1339,554" class="original" href="/entry/C20865" title="C20865 (3beta,12alpha-Dihydroxy-5beta-cholanoate)" data-entry="C20865" />
+		<area id="6B02713D" shape="rect" coords="960,1768,1126,1880" data-coords="960,1768,1126,1880" class="original" href="/entry/C20866" title="C20866 (Alloavicholate)" data-entry="C20866" />
+		<area id="58EAE83C" shape="rect" coords="1175,1637,1347,1739" data-coords="1175,1637,1347,1739" class="original" href="/entry/C20867" title="C20867 (Avideoxycholate)" data-entry="C20867" />
+		<area id="C68501B8" shape="rect" coords="1403,1769,1567,1874" data-coords="1403,1769,1567,1874" class="original" href="/entry/C20868" title="C20868 (Cygnocholate)" data-entry="C20868" />
+		<area id="402835E6" shape="rect" coords="1800,1289,1946,1387" data-coords="1800,1289,1946,1387" class="original" href="/entry/C03990" title="C03990 (Lithocholic acid)" data-entry="C03990" />
+		<area id="AECB8158" shape="rect" coords="618,903,768,1001" data-coords="618,903,768,1001" class="original" href="/entry/C04483" title="C04483 (Deoxycholic acid)" data-entry="C04483" />
+		<area id="51B9B165" shape="rect" coords="705,694,883,803" data-coords="705,694,883,803" class="original" href="/entry/C17687" title="C17687 (Allodeoxycholate)" data-entry="C17687" />
+		<area id="43919B93" shape="rect" coords="177,535,223,552" data-coords="177,535,223,552" class="original" href="/entry/K01442+3.5.1.24" title="K01442 (cbh), 3.5.1.24" />
+		<area id="A4A792A8" shape="rect" coords="153,1495,199,1512" data-coords="153,1495,199,1512" class="original" href="/entry/K01442+3.5.1.24" title="K01442 (cbh), 3.5.1.24" />
+		<area id="EE38D6A5" shape="rect" coords="439,1500,485,1517" data-coords="439,1500,485,1517" class="original" href="/entry/K15868+6.2.1.7" title="K15868 (baiB), 6.2.1.7" />
+		<area id="C5D6CD86" shape="rect" coords="691,1511,737,1528" data-coords="691,1511,737,1528" class="original" href="/entry/K15869+1.1.1.395" title="K15869 (baiA), 1.1.1.395" />
+		<area id="144202E0" shape="rect" coords="916,1511,962,1528" data-coords="916,1511,962,1528" class="original" href="/entry/K15870+1.3.1.115" title="K15870 (baiCD), 1.3.1.115" />
+		<area id="BF31AA98" shape="rect" coords="1728,1338,1774,1355" data-coords="1728,1338,1774,1355" class="original" href="/entry/K15871+2.8.3.25" title="K15871 (baiF), 2.8.3.25" />
+		<area id="25ADDA7B" shape="rect" coords="1021,1405,1067,1422" data-coords="1021,1405,1067,1422" class="original" href="/entry/K15872+4.2.1.106" title="K15872 (baiE), 4.2.1.106" />
+		<area id="E82E869F" shape="rect" coords="435,1152,481,1169" data-coords="435,1152,481,1169" class="original" href="/entry/K15868+6.2.1.7" title="K15868 (baiB), 6.2.1.7" />
+		<area id="BFEB3780" shape="rect" coords="691,1163,737,1180" data-coords="691,1163,737,1180" class="original" href="/entry/K15869+1.1.1.395" title="K15869 (baiA), 1.1.1.395" />
+		<area id="0E478ADA" shape="rect" coords="914,1163,960,1180" data-coords="914,1163,960,1180" class="original" href="/entry/K15873+1.3.1.116" title="K15873 (baiH), 1.3.1.116" />
+		<area id="E832781C" shape="rect" coords="435,1173,481,1190" data-coords="435,1173,481,1190" class="original" href="/entry/K15871+2.8.3.25" title="K15871 (baiF), 2.8.3.25" />
+		<area id="2AAB5476" shape="rect" coords="1021,1228,1067,1245" data-coords="1021,1228,1067,1245" class="original" href="/entry/K15874" title="K15874 (baiI)" />
+		<area id="A5232BB4" shape="rect" coords="153,1521,199,1538" data-coords="153,1521,199,1538" class="original" href="/entry/K01442+3.5.1.24" title="K01442 (cbh), 3.5.1.24" />
+		<area id="A5262731" shape="rect" coords="153,1542,199,1559" data-coords="153,1542,199,1559" class="original" href="/entry/3.5.1.74" title="3.5.1.74" />
+		<area id="EE3BD222" shape="rect" coords="439,1521,485,1538" data-coords="439,1521,485,1538" class="original" href="/entry/K15871+2.8.3.25" title="K15871 (baiF), 2.8.3.25" />
+		<area id="9C9A8871" shape="rect" coords="284,263,330,280" data-coords="284,263,330,280" class="original" href="/entry/K23231+1.1.1.201" title="K23231 (E1.1.1.201), 1.1.1.201" />
+		<area id="8E899139" shape="rect" coords="259,628,305,645" data-coords="259,628,305,645" class="original" href="/entry/K22604+1.1.1.52" title="K22604 (E1.1.1.52), 1.1.1.52" />
+		<area id="8EA4F604" shape="rect" coords="309,628,355,645" data-coords="309,628,355,645" class="original" href="/entry/K22605+1.1.1.392" title="K22605 (baiA), 1.1.1.392" />
+		<area id="53B6DACA" shape="rect" coords="435,535,481,552" data-coords="435,535,481,552" class="original" href="/entry/1.1.1.176" title="1.1.1.176" />
+		<area id="57C0C940" shape="rect" coords="647,535,693,552" data-coords="647,535,693,552" class="original" href="/entry/1.1.1.238" title="1.1.1.238" />
+		<area id="76871C01" shape="rect" coords="261,796,307,813" data-coords="261,796,307,813" class="original" href="/entry/K22606+1.1.1.391" title="K22606 (E1.1.1.391), 1.1.1.391" />
+		<area id="76A280CC" shape="rect" coords="311,796,357,813" data-coords="311,796,357,813" class="original" href="/entry/K22607+1.1.1.393" title="K22607 (E1.1.1.393), 1.1.1.393" />
+		<area id="E99883FA" shape="rect" coords="284,436,330,453" data-coords="284,436,330,453" class="original" href="/entry/K00076+1.1.1.159" title="K00076 (hdhA), 1.1.1.159" />
+		<area id="FAF1DFE4" shape="rect" coords="287,1265,333,1282" data-coords="287,1265,333,1282" class="original" href="/entry/K23231+1.1.1.201" title="K23231 (E1.1.1.201), 1.1.1.201" />
+		<area id="FDDCFDE4" shape="rect" coords="286,1415,332,1432" data-coords="286,1415,332,1432" class="original" href="/entry/K00076+1.1.1.159" title="K00076 (hdhA), 1.1.1.159" />
+		<area id="ED112A73" shape="rect" coords="263,1620,309,1637" data-coords="263,1620,309,1637" class="original" href="/entry/K22604+1.1.1.52" title="K22604 (E1.1.1.52), 1.1.1.52" />
+		<area id="6ADC2A82" shape="rect" coords="313,1620,359,1637" data-coords="313,1620,359,1637" class="original" href="/entry/K22605+1.1.1.392" title="K22605 (baiA), 1.1.1.392" />
+		<area id="EF80B0E4" shape="rect" coords="261,1795,307,1812" data-coords="261,1795,307,1812" class="original" href="/entry/K22606+1.1.1.391" title="K22606 (E1.1.1.391), 1.1.1.391" />
+		<area id="6D4BB0F3" shape="rect" coords="311,1795,357,1812" data-coords="311,1795,357,1812" class="original" href="/entry/K22607+1.1.1.393" title="K22607 (E1.1.1.393), 1.1.1.393" />
+		<area id="493160BA" shape="rect" coords="1118,1338,1164,1355" data-coords="1118,1338,1164,1355" class="original" href="/entry/K07007+1.3.1.114" title="K07007 (baiN), 1.3.1.114" />
+		<area id="BCBB7960" shape="rect" coords="1327,1338,1373,1355" data-coords="1327,1338,1373,1355" class="original" href="/entry/K07007+1.3.1.114" title="K07007 (baiN), 1.3.1.114" />
+		<area id="37B7B0C9" shape="rect" coords="40,45,331,70" data-coords="40,45,331,70" class="original" href="/entry/map00121" title="map00121: Secondary bile acid biosynthesis" data-entry="map00121" />
+		<area id="C0E29B3B" shape="rect" coords="80,654,190,686" data-coords="80,654,190,686" class="original" href="/pathway/map00120" title="map00120: Primary bile acid biosynthesis" data-entry="map00120" />
+		<area id="55D7CB72" shape="rect" coords="79,406,189,438" data-coords="79,406,189,438" class="original" href="/pathway/map00120" title="map00120: Primary bile acid biosynthesis" data-entry="map00120" />
+		<area id="1D731985" shape="rect" coords="55,1363,165,1395" data-coords="55,1363,165,1395" class="original" href="/pathway/map00120" title="map00120: Primary bile acid biosynthesis" data-entry="map00120" />
+		<area id="21E1288B" shape="rect" coords="54,1651,164,1683" data-coords="54,1651,164,1683" class="original" href="/pathway/map00120" title="map00120: Primary bile acid biosynthesis" data-entry="map00120" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map00121.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00121.png 1x"
+	       data-src="/kegg/pathway/map/map00121.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00121@2x.png 2x"
+	       data-src="/kegg/pathway/map/map00121@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map01501
+DEFINITION  beta-Lactam resistance
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: beta-Lactam resistance - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() ã®å®è¡ã§
+	 *      è²ãèããªãã®ãæã¡æ¶ã */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* ä»¥ä¸ã®width,overflowã®å®ç¾©ã§.rowã®ãã­ãã¯åã§æ¨ªã¹ã¯ã­ã¼ã«ããã */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) end */
+
+
+/* Searchæ¬ã®æ¤ç´¢çµæ start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Searchæ¬ã®æ¤ç´¢çµæ end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconã®ä½ç½®èª¿æ´ã®ããã«å¿è¦ */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariã§ãã¿ã³ã®å¨ãã«å¥ãä½ç½ãåé¤ */
+	margin: 0px;
+	padding: 0px;
+	/* ãã¿ã³ãæ¼ããæã«è¡¨ç¤ºããããã¼ãã¼ãéè¡¨ç¤ºã«ãã */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* ã³ã³ãã­ã¼ã«ããã«ã«åããã¦åæã¯éè¡¨ç¤º */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* ç»åã®ä¸ã«å¥ãä½ç½ãç¡ãã */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '01501',
+	         org: 'map',
+	       entry: 'map01501',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;beta-Lactam resistance - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=01501&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/entry/pathway+map01501" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	The beta-lactam antibiotics are the most widely used group of antibiotics, which exert their effect by interfering with the structural crosslinking of peptidoglycans in bacterial cell walls. Over the past decades, a rapid increase in the number of beta-lactam-resistant clinical isolates is observed. Bacterial resistance to beta-lactam antibiotics can be achieved by any of the following strategies: producing inactivating enzymes called beta-lactamases, altering the beta-lactam targets of penicillin-binding proteins (PBPs), reducing transport of beta-lactams into the periplasmic space via changes in porins, and using the mechanisms for exclusion of beta-lactams by way of efflux pumps. Resistance may result from intrinsic properties of organisms, through gene mutations, and through plasmid- and transposon-specified genes.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="01501" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map01501.png" srcset="/kegg/pathway/map/map01501.png 1x" data-srcset="/kegg/pathway/map/map01501.png 1x, /kegg/pathway/map/map01501@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="1236" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="EF705601" shape="circle" coords="785,127,4" data-coords="785,127,4" class="original" href="/entry/C04702" title="C04702 (UDPMurNAc(oyl-L-Ala-D-gamma-Glu-L-Lys-D-Ala-D-Ala))" data-entry="C04702" />
+		<area id="E4708315" shape="circle" coords="893,516,4" data-coords="893,516,4" class="original" href="/entry/C00039" title="C00039 (DNA)" data-entry="C00039" />
+		<area id="F86FBF9D" shape="circle" coords="137,176,4" data-coords="137,176,4" class="original" href="/entry/D07746+D08401" title="D07746 (Colistin (INN)), D08401 (Polymyxin B (INN))" data-entry="D07746" />
+		<area id="D57000A2" shape="circle" coords="340,436,4" data-coords="340,436,4" class="original" href="/entry/C03438" title="C03438 (beta-Lactam antibiotics)" data-entry="C03438" />
+		<area id="FCD834E4" shape="rect" coords="1077,302,1123,319" data-coords="1077,302,1123,319" class="original" href="/entry/K02545" title="K02545 (mecA)" />
+		<area id="9CAF1900" shape="rect" coords="906,302,952,319" data-coords="906,302,952,319" class="original" href="/entry/K02546" title="K02546 (mecI)" />
+		<area id="049172B0" shape="rect" coords="569,302,615,319" data-coords="569,302,615,319" class="original" href="/entry/K02547" title="K02547 (mecR1)" />
+		<area id="FB642167" shape="rect" coords="1077,261,1123,278" data-coords="1077,261,1123,278" class="original" href="/entry/K18766+K17836" title="K18766 (blaZ), K17836 (penP)" />
+		<area id="82B49DEE" shape="rect" coords="906,261,952,278" data-coords="906,261,952,278" class="original" href="/entry/K02171" title="K02171 (blaI)" />
+		<area id="EA96F799" shape="rect" coords="569,261,615,278" data-coords="569,261,615,278" class="original" href="/entry/K02172" title="K02172 (blaR1)" />
+		<area id="F9E722E4" shape="rect" coords="1077,162,1123,179" data-coords="1077,162,1123,179" class="original" href="/entry/K01467" title="K01467 (ampC)" />
+		<area id="9AB421EE" shape="rect" coords="906,162,952,179" data-coords="906,162,952,179" class="original" href="/entry/K17850" title="K17850 (ampR)" />
+		<area id="02967B9E" shape="rect" coords="569,162,615,179" data-coords="569,162,615,179" class="original" href="/entry/K08218" title="K08218 (ampG)" />
+		<area id="96A7DAE2" shape="rect" coords="694,162,740,179" data-coords="694,162,740,179" class="original" href="/entry/K01207" title="K01207 (nagZ)" />
+		<area id="14A45076" shape="rect" coords="694,217,740,234" data-coords="694,217,740,234" class="original" href="/entry/K01207" title="K01207 (nagZ)" />
+		<area id="5299E59E" shape="rect" coords="569,665,615,682" data-coords="569,665,615,682" class="original" href="/entry/K12553" title="K12553 (pbp3)" />
+		<area id="6A9567AA" shape="rect" coords="569,526,615,543" data-coords="569,526,615,543" class="original" href="/entry/K05366" title="K05366 (mrcA)" />
+		<area id="B5976BA4" shape="rect" coords="569,549,615,566" data-coords="569,549,615,566" class="original" href="/entry/K03693" title="K03693 (pbp1b)" />
+		<area id="B694E72D" shape="rect" coords="569,619,615,636" data-coords="569,619,615,636" class="original" href="/entry/K12556" title="K12556 (pbp2X)" />
+		<area id="5097EB21" shape="rect" coords="569,455,615,472" data-coords="569,455,615,472" class="original" href="/entry/K02545" title="K02545 (mecA)" />
+		<area id="F2B112C4" shape="rect" coords="146,407,192,424" data-coords="146,407,192,424" class="original" href="/entry/K09476" title="K09476 (ompF)" />
+		<area id="C1B705AE" shape="rect" coords="342,844,388,861" data-coords="342,844,388,861" class="original" href="/entry/K17837+K18782+K18781+K18780+K19099+K19216" title="K17837 (bla2), K18782 (blaIMP), K18781 (blaVIM), K18780 (blaNDM), K19099 (blaGIM), K19216 (blaIND)" />
+		<area id="DAB505B4" shape="rect" coords="342,825,388,842" data-coords="342,825,388,842" class="original" href="/entry/K18698+K18699+K18796+K18767+K18797+K19097+K19317+K18768+K18970+K19316+K22346+K18795+K19218+K19217+K17836+K18766" title="K18698 (blaTEM), K18699 (blaSHV), K18796 (blaLEN), K18767 (blaCTX-M), K18797 (blaPER), K19097 (blaVEB), K19317 (blaBEL), K18768 (blaKPC), K18970 (blaGES), K19316 (blaIMI), K22346 (blaSME), K18795 (blaCARB-1), K19218 (blaCARB-5), K19217 (blaCARB-17), K17836 (penP), K18766 (blaZ)" />
+		<area id="DA99A0E9" shape="rect" coords="292,825,338,842" data-coords="292,825,338,842" class="original" href="/entry/K19095+K19096+K19100+K19101+K19214+K19215+K20319+K20320+K01467" title="K19095 (blaCMY-1), K19096 (blaCMY-2), K19100 (blaDHA), K19101 (blaFOX), K19214 (blaACC), K19215 (blaACT_MIR), K20319 (blaADC), K20320 (blaPDC), K01467 (ampC)" />
+		<area id="C19BA0E3" shape="rect" coords="292,844,338,861" data-coords="292,844,338,861" class="original" href="/entry/K17838+K18790+K18791+K19098+K18792+K19213+K21276+K18793+K18971+K22352+K19209+K18976+K18973+K18794+K18972+K21277+K19210+K19211+K19212+K22335+K19319+K22331+K22351+K19320+K19318+K19321+K19322+K21266+K22334+K22333+K22332" title="K17838 (oxa), K18790 (blaOXA-1), K18791 (blaOXA-2), K19098 (blaOXA-9), K18792 (blaOXA-10), K19213 (blaOXA-12), K21276 (blaOXA-22), K18793 (blaOXA-23), K18971 (blaOXA-24), K22352 (blaOXA-29), K19209 (blaOXA-42), K18976 (blaOXA-48), K18973 (blaOXA-50), K18794 (blaOXA-51), K18972 (blaOXA-58), K21277 (blaOXA-60), K19210 (blaOXA-61), K19211 (blaOXA-62), K19212 (blaOXA-63), K22335 (blaOXA-114), K19319 (blaOXA-134), K22331 (blaOXA-184), K22351 (blaOXA-209), K19320 (blaOXA-211), K19318 (blaOXA-213), K19321 (blaOXA-214), K19322 (blaOXA-229), K21266 (blaOXA-286), K22334 (blaOXA-464), K22333 (blaOXA-493), K22332 (blaOXA-548)" />
+		<area id="F2B313BE" shape="rect" coords="146,427,192,444" data-coords="146,427,192,444" class="original" href="/entry/K09475" title="K09475 (ompC)" />
+		<area id="0151B0D7" shape="rect" coords="1077,618,1123,635" data-coords="1077,618,1123,635" class="original" href="/entry/K03585" title="K03585 (acrA)" />
+		<area id="15B92C31" shape="rect" coords="930,586,976,603" data-coords="930,586,976,603" class="original" href="/entry/K18131" title="K18131 (mexR)" />
+		<area id="0154AC54" shape="rect" coords="1077,639,1123,656" data-coords="1077,639,1123,656" class="original" href="/entry/K18138" title="K18138 (acrB)" />
+		<area id="14C12B37" shape="rect" coords="930,566,976,583" data-coords="930,566,976,583" class="original" href="/entry/K18131" title="K18131 (mexR)" />
+		<area id="46BB2A49" shape="rect" coords="930,508,976,525" data-coords="930,508,976,525" class="original" href="/entry/K18150" title="K18150 (armR)" />
+		<area id="ACAEA305" shape="rect" coords="807,508,853,525" data-coords="807,508,853,525" class="original" href="/entry/K18130" title="K18130 (nalC)" />
+		<area id="98BFACB5" shape="rect" coords="930,651,976,668" data-coords="930,651,976,668" class="original" href="/entry/K18136" title="K18136 (acrR)" />
+		<area id="0FB08EB1" shape="rect" coords="146,788,192,805" data-coords="146,788,192,805" class="original" href="/entry/K18104" title="K18104 (abcA)" />
+		<area id="01581FEF" shape="rect" coords="1077,660,1123,677" data-coords="1077,660,1123,677" class="original" href="/entry/K18139" title="K18139 (oprM)" />
+		<area id="F2B514B8" shape="rect" coords="146,447,192,464" data-coords="146,447,192,464" class="original" href="/entry/K08720" title="K08720 (ompU)" />
+		<area id="5EC0B137" shape="rect" coords="930,469,976,486" data-coords="930,469,976,486" class="original" href="/entry/K18129" title="K18129 (mexZ)" />
+		<area id="6AB519EE" shape="rect" coords="906,360,952,377" data-coords="906,360,952,377" class="original" href="/entry/K18073" title="K18073 (parR)" />
+		<area id="FE5DA4D2" shape="rect" coords="1077,458,1123,475" data-coords="1077,458,1123,475" class="original" href="/entry/K18094" title="K18094 (mexX)" />
+		<area id="FE60A04F" shape="rect" coords="1077,479,1123,496" data-coords="1077,479,1123,496" class="original" href="/entry/K18095" title="K18095 (mexY)" />
+		<area id="FCE0A64F" shape="rect" coords="1077,359,1123,376" data-coords="1077,359,1123,376" class="original" href="/entry/K18093" title="K18093 (oprD)" />
+		<area id="D2977399" shape="rect" coords="569,360,615,377" data-coords="569,360,615,377" class="original" href="/entry/K18072" title="K18072 (parS)" />
+		<area id="C4BE2ED5" shape="rect" coords="827,469,873,486" data-coords="827,469,873,486" class="original" href="/entry/K18148" title="K18148 (rtcB)" />
+		<area id="0BB716B7" shape="rect" coords="146,468,192,485" data-coords="146,468,192,485" class="original" href="/entry/K18133" title="K18133 (K18133)" />
+		<area id="F2AE99AC" shape="rect" coords="146,387,192,404" data-coords="146,387,192,404" class="original" href="/entry/K18093" title="K18093 (oprD)" />
+		<area id="60BCA8C6" shape="rect" coords="930,619,976,636" data-coords="930,619,976,636" class="original" href="/entry/K18135" title="K18135 (nalD)" />
+		<area id="B2BD293E" shape="rect" coords="930,722,976,739" data-coords="930,722,976,739" class="original" href="/entry/K18143" title="K18143 (adeS)" />
+		<area id="02CDB06C" shape="rect" coords="1077,711,1123,728" data-coords="1077,711,1123,728" class="original" href="/entry/K18145" title="K18145 (adeA)" />
+		<area id="02D0ABE9" shape="rect" coords="1077,732,1123,749" data-coords="1077,732,1123,749" class="original" href="/entry/K18146" title="K18146 (adeB)" />
+		<area id="02D49D66" shape="rect" coords="1077,753,1123,770" data-coords="1077,753,1123,770" class="original" href="/entry/K18147" title="K18147 (adeC)" />
+		<area id="B2BF2A38" shape="rect" coords="930,742,976,759" data-coords="930,742,976,759" class="original" href="/entry/K18144" title="K18144 (adeR)" />
+		<area id="E4B9A72C" shape="rect" coords="930,684,976,701" data-coords="930,684,976,701" class="original" href="/entry/K18137" title="K18137 (adeN)" />
+		<area id="B499F01B" shape="rect" coords="569,479,615,496" data-coords="569,479,615,496" class="original" href="/entry/K18149" title="K18149 (pbp5)" />
+		<area id="52926A15" shape="rect" coords="569,595,615,612" data-coords="569,595,615,612" class="original" href="/entry/K00687" title="K00687 (pbp2B)" />
+		<area id="0699701B" shape="rect" coords="569,572,615,589" data-coords="569,572,615,589" class="original" href="/entry/K12555" title="K12555 (pbp2A)" />
+		<area id="0796EBA4" shape="rect" coords="569,642,615,659" data-coords="569,642,615,659" class="original" href="/entry/K05515" title="K05515 (mrdA)" />
+		<area id="8994B96C" shape="rect" coords="192,712,238,729" data-coords="192,712,238,729" class="original" href="/entry/K18138+K18095+K18146" title="K18138 (acrB), K18095 (mexY), K18146 (adeB)" />
+		<area id="3E8CA807" shape="rect" coords="170,729,216,746" data-coords="170,729,216,746" class="original" href="/entry/K03585+K18094+K18145" title="K03585 (acrA), K18094 (mexX), K18145 (adeA)" />
+		<area id="78B28F41" shape="rect" coords="146,712,192,729" data-coords="146,712,192,729" class="original" href="/entry/K12340+K18139+K18147" title="K12340 (tolC), K18139 (oprM), K18147 (adeC)" />
+		<area id="1F9363B0" shape="rect" coords="569,503,615,520" data-coords="569,503,615,520" class="original" href="/entry/K12552" title="K12552 (pbpA)" />
+		<area id="9E91E998" shape="rect" coords="569,688,615,705" data-coords="569,688,615,705" class="original" href="/entry/K03587" title="K03587 (ftsI)" />
+		<area id="8092F12D" shape="rect" coords="569,217,615,234" data-coords="569,217,615,234" class="original" href="/entry/K15580+K15581+K15582+K15583+K10823" title="K15580 (oppA), K15581 (oppB), K15582 (oppC), K15583 (oppD), K10823 (oppF)" />
+		<area id="37B2B0E7" shape="rect" coords="40,45,237,70" data-coords="40,45,237,70" class="original" href="/entry/map01501" title="map01501: beta-Lactam resistance" data-entry="map01501" />
+		<area id="78B39EEE" shape="rect" coords="206,262,287,287" data-coords="206,262,287,287" class="original" href="/pathway/map07011" title="map07011: Penicillins" data-entry="map07011" />
+		<area id="97940C77" shape="rect" coords="206,333,324,368" data-coords="206,333,324,368" class="original" href="/pathway/map07012" title="map07012: Cephalosporins - parenteral agents" data-entry="map07012" />
+		<area id="978F9265" shape="rect" coords="206,293,324,328" data-coords="206,293,324,328" class="original" href="/pathway/map07013" title="map07013: Cephalosporins - oral agents" data-entry="map07013" />
+		<area id="D42ED65D" shape="rect" coords="639,79,797,104" data-coords="639,79,797,104" class="original" href="/pathway/map00550" title="map00550: Peptidoglycan biosynthesis" data-entry="map00550" />
+		<area id="05AA8CC5" shape="rect" coords="123,582,281,607" data-coords="123,582,281,607" class="original" href="/pathway/map00550" title="map00550: Peptidoglycan biosynthesis" data-entry="map00550" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<div class="feature">
+			<h5>Related Brite</h5>
+			<div class="related-data">
+				<ul class="simple">
+					
+					<li><a href="/brite/ko01504" target="_blank">01504</a>&nbsp;&nbsp;Antimicrobial resistance genes</li>
+					
+				</ul>
+			</div>
+		</div>
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map01501.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map01501.png 1x"
+	       data-src="/kegg/pathway/map/map01501.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map01501@2x.png 2x"
+	       data-src="/kegg/pathway/map/map01501@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

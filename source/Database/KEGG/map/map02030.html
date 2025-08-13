@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map02030
+DEFINITION  Bacterial chemotaxis
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Bacterial chemotaxis - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() ã®å®è¡ã§
+	 *      è²ãèããªãã®ãæã¡æ¶ã */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* ä»¥ä¸ã®width,overflowã®å®ç¾©ã§.rowã®ãã­ãã¯åã§æ¨ªã¹ã¯ã­ã¼ã«ããã */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) end */
+
+
+/* Searchæ¬ã®æ¤ç´¢çµæ start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Searchæ¬ã®æ¤ç´¢çµæ end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconã®ä½ç½®èª¿æ´ã®ããã«å¿è¦ */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariã§ãã¿ã³ã®å¨ãã«å¥ãä½ç½ãåé¤ */
+	margin: 0px;
+	padding: 0px;
+	/* ãã¿ã³ãæ¼ããæã«è¡¨ç¤ºããããã¼ãã¼ãéè¡¨ç¤ºã«ãã */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* ã³ã³ãã­ã¼ã«ããã«ã«åããã¦åæã¯éè¡¨ç¤º */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* ç»åã®ä¸ã«å¥ãä½ç½ãç¡ãã */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '02030',
+	         org: 'map',
+	       entry: 'map02030',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Bacterial chemotaxis - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=02030&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+02030" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map02030" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	Chemotaxis is the process by which cells sense chemical gradients in their environment and then move towards more favorable conditions. In chemotaxis, events at the receptors control autophosphorylation of the CheA histidine kinase, and the phosphohistidine is the substrate for the response regulator CheY, which catalyzes the transfer of the phosphoryl group to a conserved aspartate. The resulting CheY-P can interact with the switch mechanism in the motor. This interaction causes a change in behavior, such as in direction or speed of rotation of flagella.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="02030" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map02030.png" srcset="/kegg/pathway/map/map02030.png 1x" data-srcset="/kegg/pathway/map/map02030.png 1x, /kegg/pathway/map/map02030@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="944" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="FF706E48" shape="circle" coords="809,153,4" data-coords="809,153,4" class="original" href="/entry/C00716" title="C00716 (Serine)" data-entry="C00716" />
+		<area id="03706E5C" shape="circle" coords="809,187,4" data-coords="809,187,4" class="original" href="/entry/C00049" title="C00049 (L-Aspartate)" data-entry="C00049" />
+		<area id="D2705A7F" shape="circle" coords="730,213,4" data-coords="730,213,4" class="original" href="/entry/C00208" title="C00208 (Maltose)" data-entry="C00208" />
+		<area id="D2705A8E" shape="circle" coords="730,243,4" data-coords="730,243,4" class="original" href="/entry/C00121" title="C00121 (D-Ribose)" data-entry="C00121" />
+		<area id="D0705A9D" shape="circle" coords="730,271,4" data-coords="730,271,4" class="original" href="/entry/C00124" title="C00124 (D-Galactose)" data-entry="C00124" />
+		<area id="D8705AA7" shape="circle" coords="730,299,4" data-coords="730,299,4" class="original" href="/entry/C00107" title="C00107 (Dipeptide)" data-entry="C00107" />
+		<area id="15A30A5F" shape="rect" coords="592,277,638,294" data-coords="592,277,638,294" class="original" href="/entry/K02557" title="K02557 (motB)" />
+		<area id="66A10CDD" shape="rect" coords="592,260,638,277" data-coords="592,260,638,277" class="original" href="/entry/K02556" title="K02556 (motA)" />
+		<area id="5C929A6B" shape="rect" coords="483,285,529,302" data-coords="483,285,529,302" class="original" href="/entry/K02417" title="K02417 (fliN)" />
+		<area id="A69A9C71" shape="rect" coords="483,268,529,285" data-coords="483,268,529,285" class="original" href="/entry/K02416" title="K02416 (fliM)" />
+		<area id="F7989EEF" shape="rect" coords="483,251,529,268" data-coords="483,251,529,268" class="original" href="/entry/K02410" title="K02410 (fliG)" />
+		<area id="87B2E848" shape="rect" coords="424,172,470,189" data-coords="424,172,470,189" class="original" href="/entry/K03414" title="K03414 (cheZ)" />
+		<area id="9B980105" shape="rect" coords="375,268,421,285" data-coords="375,268,421,285" class="original" href="/entry/K03413" title="K03413 (cheY)" />
+		<area id="76902416" shape="rect" coords="268,172,314,189" data-coords="268,172,314,189" class="original" href="/entry/K00575+K13924" title="K00575 (cheR), K13924 (cheBR)" />
+		<area id="46889593" shape="rect" coords="267,285,313,302" data-coords="267,285,313,302" class="original" href="/entry/K03408" title="K03408 (cheW)" />
+		<area id="90909799" shape="rect" coords="267,268,313,285" data-coords="267,268,313,285" class="original" href="/entry/K03407" title="K03407 (cheA)" />
+		<area id="A98A95AB" shape="rect" coords="268,204,314,221" data-coords="268,204,314,221" class="original" href="/entry/K03412+K13924" title="K03412 (cheB), K13924 (cheBR)" />
+		<area id="71BF5790" shape="rect" coords="852,290,898,307" data-coords="852,290,898,307" class="original" href="/entry/K05877" title="K05877 (tap)" />
+		<area id="BBC64E9C" shape="rect" coords="852,253,898,270" data-coords="852,253,898,270" class="original" href="/entry/K05876" title="K05876 (trg)" />
+		<area id="D3C7D396" shape="rect" coords="851,179,897,196" data-coords="851,179,897,196" class="original" href="/entry/K05875" title="K05875 (tar)" />
+		<area id="D3C4D21F" shape="rect" coords="852,144,898,161" data-coords="852,144,898,161" class="original" href="/entry/K05874" title="K05874 (tsr)" />
+		<area id="9094E26D" shape="rect" coords="770,291,816,308" data-coords="770,291,816,308" class="original" href="/entry/K12368" title="K12368 (dppA)" />
+		<area id="C19CD8F6" shape="rect" coords="770,263,816,280" data-coords="770,263,816,280" class="original" href="/entry/K10540" title="K10540 (mglB)" />
+		<area id="F399D97F" shape="rect" coords="770,235,816,252" data-coords="770,235,816,252" class="original" href="/entry/K10439" title="K10439 (rbsB)" />
+		<area id="F396D808" shape="rect" coords="770,205,816,222" data-coords="770,205,816,222" class="original" href="/entry/K10108" title="K10108 (malE)" />
+		<area id="20C3CE2A" shape="rect" coords="852,327,898,344" data-coords="852,327,898,344" class="original" href="/entry/K03776" title="K03776 (aer)" />
+		<area id="C38E1522" shape="rect" coords="268,335,314,352" data-coords="268,335,314,352" class="original" href="/entry/K03415" title="K03415 (cheV)" />
+		<area id="0A92B07D" shape="rect" coords="373,172,419,189" data-coords="373,172,419,189" class="original" href="/entry/K03410" title="K03410 (cheC)" />
+		<area id="8699FE82" shape="rect" coords="476,172,522,189" data-coords="476,172,522,189" class="original" href="/entry/K03409" title="K03409 (cheX)" />
+		<area id="5D8D219F" shape="rect" coords="268,141,314,158" data-coords="268,141,314,158" class="original" href="/entry/K03411" title="K03411 (cheD)" />
+		<area id="EF8827AB" shape="rect" coords="158,257,204,274" data-coords="158,257,204,274" class="original" href="/entry/K03406+K05874+K05875+K05876+K05877" title="K03406 (mcp), K05874 (tsr), K05875 (tar), K05876 (trg), K05877 (tap)" />
+		<area id="408A2C22" shape="rect" coords="158,280,204,297" data-coords="158,280,204,297" class="original" href="/entry/K03776" title="K03776 (aer)" />
+		<area id="37B2B5D8" shape="rect" coords="40,45,244,70" data-coords="40,45,244,70" class="original" href="/entry/map02030" title="map02030: Bacterial chemotaxis" data-entry="map02030" />
+		<area id="FD92E8E9" shape="rect" coords="492,326,610,351" data-coords="492,326,610,351" class="original" href="/pathway/map02040" title="map02040: Flagellar assembly" data-entry="map02040" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<div class="feature">
+			<h5>Related Brite</h5>
+			<div class="related-data">
+				<ul class="simple">
+					
+					<li><a href="/brite/ko02035" target="_blank">02035</a>&nbsp;&nbsp;Bacterial motility proteins</li>
+					
+				</ul>
+			</div>
+		</div>
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map02030.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map02030.png 1x"
+	       data-src="/kegg/pathway/map/map02030.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map02030@2x.png 2x"
+	       data-src="/kegg/pathway/map/map02030@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

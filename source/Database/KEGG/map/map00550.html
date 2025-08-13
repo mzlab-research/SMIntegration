@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map00550
+DEFINITION  Peptidoglycan biosynthesis
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Peptidoglycan biosynthesis - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() ã®å®è¡ã§
+	 *      è²ãèããªãã®ãæã¡æ¶ã */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* ä»¥ä¸ã®width,overflowã®å®ç¾©ã§.rowã®ãã­ãã¯åã§æ¨ªã¹ã¯ã­ã¼ã«ããã */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) end */
+
+
+/* Searchæ¬ã®æ¤ç´¢çµæ start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Searchæ¬ã®æ¤ç´¢çµæ end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconã®ä½ç½®èª¿æ´ã®ããã«å¿è¦ */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariã§ãã¿ã³ã®å¨ãã«å¥ãä½ç½ãåé¤ */
+	margin: 0px;
+	padding: 0px;
+	/* ãã¿ã³ãæ¼ããæã«è¡¨ç¤ºããããã¼ãã¼ãéè¡¨ç¤ºã«ãã */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* ã³ã³ãã­ã¼ã«ããã«ã«åããã¦åæã¯éè¡¨ç¤º */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* ç»åã®ä¸ã«å¥ãä½ç½ãç¡ãã */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '00550',
+	         org: 'map',
+	       entry: 'map00550',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Peptidoglycan biosynthesis - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=00550&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+00550" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map00550" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	Peptidoglycan is a macromolecule made of long aminosugar strands cross-linked by short peptides. It forms the cell wall in bacteria surrounding the cytoplasmic membrane. The glycan strands are typically comprised of repeating N-acetylglucosamine (GlcNAc) and N-acetylmuramic acid (MurNAc) disaccharides. Each MurNAc is linked to a peptide of three to five amino acid residues. Disaccharide subunits are first assembled on the cytoplasmic side of the bacterial membrane on a polyisoprenoid anchor (lipid I and II). Polymerization of disaccharide subunits by transglycosylases and cross-linking of glycan strands by transpeptidases occur on the other side of the membrane. Bacterial cell wall biosynthesis inhibitors form a major class of antibiotics.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="00550" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map00550.png" srcset="/kegg/pathway/map/map00550.png 1x" data-srcset="/kegg/pathway/map/map00550.png 1x, /kegg/pathway/map/map00550@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="949" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="EB700FDE" shape="circle" coords="475,203,4" data-coords="475,203,4" class="original" href="/entry/C01050" title="C01050 (UDP-N-acetylmuramate)" data-entry="C01050" />
+		<area id="F8703D10" shape="circle" coords="597,606,4" data-coords="597,606,4" class="original" href="/entry/C04574" title="C04574 (di-trans,poly-cis-Undecaprenyl diphosphate)" data-entry="C04574" />
+		<area id="F2703815" shape="circle" coords="597,510,4" data-coords="597,510,4" class="original" href="/entry/C17556" title="C17556 (di-trans,poly-cis-Undecaprenyl phosphate)" data-entry="C17556" />
+		<area id="F370331A" shape="circle" coords="597,421,4" data-coords="597,421,4" class="original" href="/entry/C00993" title="C00993 (D-Alanyl-D-alanine)" data-entry="C00993" />
+		<area id="F2702E2E" shape="circle" coords="597,360,4" data-coords="597,360,4" class="original" href="/entry/C00133" title="C00133 (D-Alanine)" data-entry="C00133" />
+		<area id="F3703329" shape="circle" coords="597,451,4" data-coords="597,451,4" class="original" href="/entry/C17558" title="C17558 (di-trans,poly-cis-Undecaprenol)" data-entry="C17558" />
+		<area id="E9700ADE" shape="circle" coords="475,101,4" data-coords="475,101,4" class="original" href="/entry/C00043" title="C00043 (UDP-N-acetyl-alpha-D-glucosamine)" data-entry="C00043" />
+		<area id="EA700AF7" shape="circle" coords="475,152,4" data-coords="475,152,4" class="original" href="/entry/C04631" title="C04631 (UDP-N-acetyl-3-(1-carboxyvinyl)-D-glucosamine)" data-entry="C04631" />
+		<area id="EC700FF7" shape="circle" coords="475,254,4" data-coords="475,254,4" class="original" href="/entry/C01212" title="C01212 (UDP-N-acetylmuramoyl-L-alanine)" data-entry="C01212" />
+		<area id="EA7014F2" shape="circle" coords="475,342,4" data-coords="475,342,4" class="original" href="/entry/C00692" title="C00692 (UDP-N-acetylmuramoyl-L-alanyl-D-glutamate)" data-entry="C00692" />
+		<area id="EA705F8E" shape="circle" coords="724,397,4" data-coords="724,397,4" class="original" href="/entry/C04877" title="C04877 (UDP-N-acetylmuramoyl-L-alanyl-gamma-D-glutamyl-meso-2,6-diaminopimelate)" data-entry="C04877" />
+		<area id="E470648E" shape="circle" coords="724,491,4" data-coords="724,491,4" class="original" href="/entry/C04882" title="C04882 (UDP-N-acetylmuramoyl-L-alanyl-D-glutamyl-6-carboxy-L-lysyl-D-alanyl-D-alanine)" data-entry="C04882" />
+		<area id="E9706989" shape="circle" coords="724,586,4" data-coords="724,586,4" class="original" href="/entry/C05897" title="C05897 (Undecaprenyl-diphospho-N-acetylmuramoyl-L-alanyl-D-glutamyl-meso-2,6-diaminopimeloyl-D-alanyl-D-alanine)" data-entry="C05897" />
+		<area id="E4706E89" shape="circle" coords="724,681,4" data-coords="724,681,4" class="original" href="/entry/C05898" title="C05898 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-D-glutamyl-meso-2,6-diaminopimeloyl-D-alanyl-D-alanine)" data-entry="C05898" />
+		<area id="EF6FE28E" shape="circle" coords="225,397,4" data-coords="225,397,4" class="original" href="/entry/C05892" title="C05892 (UDP-N-acetylmuramoyl-L-alanyl-gamma-D-glutamyl-L-lysine)" data-entry="C05892" />
+		<area id="E96FE78E" shape="circle" coords="225,491,4" data-coords="225,491,4" class="original" href="/entry/C04702" title="C04702 (UDPMurNAc(oyl-L-Ala-D-gamma-Glu-L-Lys-D-Ala-D-Ala))" data-entry="C04702" />
+		<area id="EE6FEC89" shape="circle" coords="225,586,4" data-coords="225,586,4" class="original" href="/entry/C04851" title="C04851 (MurAc(oyl-L-Ala-D-gamma-Glu-L-Lys-D-Ala-D-Ala)-diphospho-undecaprenol)" data-entry="C04851" />
+		<area id="E96FF189" shape="circle" coords="225,681,4" data-coords="225,681,4" class="original" href="/entry/C05893" title="C05893 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-gamma-D-glutamyl-L-lysyl-D-alanyl-D-alanine)" data-entry="C05893" />
+		<area id="EB6FF67F" shape="circle" coords="225,763,4" data-coords="225,763,4" class="original" href="/entry/C05894" title="C05894 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-D-isoglutaminyl-L-lysyl-D-alanyl-D-alanine)" data-entry="C05894" />
+		<area id="EC6FFB75" shape="circle" coords="225,844,4" data-coords="225,844,4" class="original" href="/entry/C17541" title="C17541 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-D-isoglutaminyl-L-lysyl-(glycyl)-D-alanyl-D-alanine)" data-entry="C17541" />
+		<area id="F0700070" shape="circle" coords="225,938,4" data-coords="225,938,4" class="original" href="/entry/C17542" title="C17542 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-D-isoglutaminyl-L-lysyl-(glycyl)3-D-alanyl-D-alanine)" data-entry="C17542" />
+		<area id="79E151C6" shape="circle" coords="225,1023,4" data-coords="225,1023,4" class="original" href="/entry/C05895" title="C05895 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-D-isoglutaminyl-L-lysyl-(glycyl)5-D-alanyl-D-alanine)" data-entry="C05895" />
+		<area id="D3702DF2" shape="circle" coords="470,844,4" data-coords="470,844,4" class="original" href="/entry/C17550" title="C17550 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-gamma-D-glutamyl-L-lysyl-(L-alanyl)-D-alanyl-D-alanine)" data-entry="C17550" />
+		<area id="D77032ED" shape="circle" coords="470,938,4" data-coords="470,938,4" class="original" href="/entry/C17549" title="C17549 (Undecaprenyl-diphospho-N-acetylmuramoyl-(N-acetylglucosamine)-L-alanyl-gamma-D-glutamyl-L-lysyl-(L-alanyl-L-alanyl)-D-alanyl-D-alanine)" data-entry="C17549" />
+		<area id="7BE160CB" shape="circle" coords="225,1335,4" data-coords="225,1335,4" class="original" href="/entry/C05896" title="C05896 (Crosslinked peptidoglycan)" data-entry="C05896" />
+		<area id="7C13DD4E" shape="circle" coords="470,1335,4" data-coords="470,1335,4" class="original" href="/entry/C05896" title="C05896 (Crosslinked peptidoglycan)" data-entry="C05896" />
+		<area id="7C5E60B2" shape="circle" coords="724,1335,4" data-coords="724,1335,4" class="original" href="/entry/C05896" title="C05896 (Crosslinked peptidoglycan)" data-entry="C05896" />
+		<area id="D5703C2F" shape="circle" coords="500,606,4" data-coords="500,606,4" class="original" href="/entry/C00448" title="C00448 (trans,trans-Farnesyl diphosphate)" data-entry="C00448" />
+		<area id="D36FF6AC" shape="circle" coords="340,254,4" data-coords="340,254,4" class="original" href="/entry/C22053" title="C22053 (UDP-N-acetyl-alpha-D-muramoyl-L-alanyl-L-glutamate)" data-entry="C22053" />
+		<area id="6DA9C76D" shape="rect" coords="701,435,747,452" data-coords="701,435,747,452" class="original" href="/entry/K01929+K15792+K01798+6.3.2.10+R04617" title="K01929 (murF), K15792 (murEF), K01798 (alr-murF), 6.3.2.10, R04617" />
+		<area id="129C5D88" shape="rect" coords="575,552,621,569" data-coords="575,552,621,569" class="original" href="/entry/K06153+K19302+3.6.1.27+R05627" title="K06153 (bacA), K19302 (bcrC), 3.6.1.27, R05627" />
+		<area id="B49C9978" shape="rect" coords="203,619,249,636" data-coords="203,619,249,636" class="original" href="/entry/K02563+2.4.1.227+R05662" title="K02563 (murG), 2.4.1.227, R05662" />
+		<area id="B39D1CF5" shape="rect" coords="203,529,249,546" data-coords="203,529,249,546" class="original" href="/entry/K01000+2.7.8.13+R05629" title="K01000 (mraY), 2.7.8.13, R05629" />
+		<area id="679D9D72" shape="rect" coords="203,436,249,453" data-coords="203,436,249,453" class="original" href="/entry/K01929+K01798+6.3.2.10+R04573" title="K01929 (murF), K01798 (alr-murF), 6.3.2.10, R04573" />
+		<area id="A69E6082" shape="rect" coords="575,378,621,395" data-coords="575,378,621,395" class="original" href="/entry/K01921+6.3.2.4+R01150" title="K01921 (ddl), 6.3.2.4, R01150" />
+		<area id="B19F246C" shape="rect" coords="203,359,249,376" data-coords="203,359,249,376" class="original" href="/entry/K05362+6.3.2.7+R02786" title="K05362 (murE), 6.3.2.7, R02786" />
+		<area id="88BE949B" shape="rect" coords="453,277,499,294" data-coords="453,277,499,294" class="original" href="/entry/K01925+6.3.2.9+R02783" title="K01925 (murD), 6.3.2.9, R02783" />
+		<area id="56B88FAD" shape="rect" coords="453,215,499,232" data-coords="453,215,499,232" class="original" href="/entry/K01924+6.3.2.8+R03193" title="K01924 (murC), 6.3.2.8, R03193" />
+		<area id="D0AB4F67" shape="rect" coords="701,359,747,376" data-coords="701,359,747,376" class="original" href="/entry/K01928+K15792+6.3.2.13+R02788" title="K01928 (murE), K15792 (murEF), 6.3.2.13, R02788" />
+		<area id="D2A947F0" shape="rect" coords="701,529,747,546" data-coords="701,529,747,546" class="original" href="/entry/K01000+2.7.8.13+R05630" title="K01000 (mraY), 2.7.8.13, R05630" />
+		<area id="D3A8C473" shape="rect" coords="701,619,747,636" data-coords="701,619,747,636" class="original" href="/entry/K02563+2.4.1.227+R05032" title="K02563 (murG), 2.4.1.227, R05032" />
+		<area id="8E9DDC05" shape="rect" coords="575,467,621,484" data-coords="575,467,621,484" class="original" href="/entry/K00887+2.7.1.66+R05626" title="K00887 (dgkA), 2.7.1.66, R05626" />
+		<area id="D59A1B5B" shape="rect" coords="203,790,249,807" data-coords="203,790,249,807" class="original" href="/entry/K11693+2.3.2.16+R08776" title="K11693 (femX), 2.3.2.16, R08776" />
+		<area id="84A39466" shape="rect" coords="203,877,249,894" data-coords="203,877,249,894" class="original" href="/entry/K11694+2.3.2.17+R08777" title="K11694 (femA), 2.3.2.17, R08777" />
+		<area id="6CA20F6C" shape="rect" coords="203,956,249,973" data-coords="203,956,249,973" class="original" href="/entry/K11695+2.3.2.18+R08778" title="K11695 (femB), 2.3.2.18, R08778" />
+		<area id="18C16839" shape="rect" coords="448,878,494,895" data-coords="448,878,494,895" class="original" href="/entry/K12554+R08780" title="K12554 (murN), R08780" />
+		<area id="3CB811AD" shape="rect" coords="453,114,499,131" data-coords="453,114,499,131" class="original" href="/entry/K00790+2.5.1.7+R00660" title="K00790 (murA), 2.5.1.7, R00660" />
+		<area id="55BD151E" shape="rect" coords="453,165,499,182" data-coords="453,165,499,182" class="original" href="/entry/K00075+1.3.1.98+R03191+R03192" title="K00075 (murB), 1.3.1.98, R03191, R03192" />
+		<area id="69B7EF2E" shape="rect" coords="448,791,494,808" data-coords="448,791,494,808" class="original" href="/entry/K05363+2.3.2.10+R08779" title="K05363 (murM), 2.3.2.10, R08779" />
+		<area id="FE4B595A" shape="rect" coords="227,1090,273,1107" data-coords="227,1090,273,1107" class="original" href="/entry/K12551+K04478+2.4.1.129" title="K12551 (sgtA), K04478 (sgtB), 2.4.1.129" />
+		<area id="3343E918" shape="rect" coords="726,1090,772,1107" data-coords="726,1090,772,1107" class="original" href="/entry/K03814" title="K03814 (mtgA)" />
+		<area id="837A5ACD" shape="rect" coords="177,1291,223,1308" data-coords="177,1291,223,1308" class="original" href="/entry/K07258+3.4.16.4" title="K07258 (dacC), 3.4.16.4" />
+		<area id="D187263B" shape="rect" coords="472,1291,518,1308" data-coords="472,1291,518,1308" class="original" href="/entry/K07260+3.4.17.14" title="K07260 (vanY), 3.4.17.14" />
+		<area id="363DEA95" shape="rect" coords="726,1291,772,1308" data-coords="726,1291,772,1308" class="original" href="/entry/K07260+K18866+3.4.17.14" title="K07260 (vanY), K18866 (vanXY), 3.4.17.14" />
+		<area id="01455ADC" shape="rect" coords="227,1291,273,1308" data-coords="227,1291,273,1308" class="original" href="/entry/K07260+3.4.17.14" title="K07260 (vanY), 3.4.17.14" />
+		<area id="80805950" shape="rect" coords="177,1090,223,1107" data-coords="177,1090,223,1107" class="original" href="/entry/K05366+2.4.1.129" title="K05366 (mrcA), 2.4.1.129" />
+		<area id="EF34CAA5" shape="rect" coords="448,1090,494,1107" data-coords="448,1090,494,1107" class="original" href="/entry/K05366+K03693+K12555+2.4.1.129" title="K05366 (mrcA), K03693 (pbp1b), K12555 (pbp2A), 2.4.1.129" />
+		<area id="B578E909" shape="rect" coords="676,1090,722,1107" data-coords="676,1090,722,1107" class="original" href="/entry/K05366+K05365+K05367+K12555+K18770+K21464+2.4.1.129" title="K05366 (mrcA), K05365 (mrcB), K05367 (pbpC), K12555 (pbp2A), K18770 (pbpD), K21464 (pbpG), 2.4.1.129" />
+		<area id="827DEBB5" shape="rect" coords="177,1249,223,1266" data-coords="177,1249,223,1266" class="original" href="/entry/K05366+3.4.16.4" title="K05366 (mrcA), 3.4.16.4" />
+		<area id="0048EBC4" shape="rect" coords="227,1249,273,1266" data-coords="227,1249,273,1266" class="original" href="/entry/K12552+K12553+K02545+3.4.16.4" title="K12552 (pbpA), K12553 (pbp3), K02545 (mecA), 3.4.16.4" />
+		<area id="DD55B70A" shape="rect" coords="422,1249,468,1266" data-coords="422,1249,468,1266" class="original" href="/entry/K05366+K03693+K12555+3.4.16.4" title="K05366 (mrcA), K03693 (pbp1b), K12555 (pbp2A), 3.4.16.4" />
+		<area id="D08AB723" shape="rect" coords="472,1249,518,1266" data-coords="472,1249,518,1266" class="original" href="/entry/K00687+K12556" title="K00687 (pbp2B), K12556 (pbp2X)" />
+		<area id="B7767B6E" shape="rect" coords="676,1249,722,1266" data-coords="676,1249,722,1266" class="original" href="/entry/K05366+K05365+K12555+K18770+K21464+3.4.16.4" title="K05366 (mrcA), K05365 (mrcB), K12555 (pbp2A), K18770 (pbpD), K21464 (pbpG), 3.4.16.4" />
+		<area id="35417B7D" shape="rect" coords="726,1249,772,1266" data-coords="726,1249,772,1266" class="original" href="/entry/K05515+K03587+K18149+K08724+K08384+K21465+K21466+K05364+3.4.16.4" title="K05515 (mrdA), K03587 (ftsI), K18149 (pbp5), K08724 (pbpB), K08384 (spoVD), K21465 (pbpA), K21466 (pbpH), K05364 (pbpA), 3.4.16.4" />
+		<area id="DE522622" shape="rect" coords="422,1291,468,1308" data-coords="422,1291,468,1308" class="original" href="/entry/K07258+3.4.16.4" title="K07258 (dacC), 3.4.16.4" />
+		<area id="B872EA86" shape="rect" coords="676,1291,722,1308" data-coords="676,1291,722,1308" class="original" href="/entry/K07258+K07259+K21469+3.4.16.4" title="K07258 (dacC), K07259 (dacB), K21469 (pbp4b), 3.4.16.4" />
+		<area id="B59C15FB" shape="rect" coords="203,709,249,726" data-coords="203,709,249,726" class="original" href="/entry/K23393+K07009+6.3.5.13+R05030" title="K23393 (murT), K07009 (gatD), 6.3.5.13, R05030" />
+		<area id="33AB683D" shape="rect" coords="520,598,566,615" data-coords="520,598,566,615" class="original" href="/entry/K00806+2.5.1.31+R06447" title="K00806 (uppS), 2.5.1.31, R06447" />
+		<area id="EC9AFB77" shape="rect" coords="384,246,430,263" data-coords="384,246,430,263" class="original" href="/entry/K23169+6.3.2.53+R12272" title="K23169 (murD2), 6.3.2.53, R12272" />
+		<area id="E2A57971" shape="rect" coords="317,301,363,318" data-coords="317,301,363,318" class="original" href="/entry/K23170+5.1.1.23+R12271" title="K23170 (murL), 5.1.1.23, R12271" />
+		<area id="37B2C9CE" shape="rect" coords="40,45,282,70" data-coords="40,45,282,70" class="original" href="/entry/map00550" title="map00550: Peptidoglycan biosynthesis" data-entry="map00550" />
+		<area id="460EB316" shape="rect" coords="235,84,401,118" data-coords="235,84,401,118" class="original" href="/pathway/map00520" title="map00520: Amino sugar and nucleotide sugar metabolism" data-entry="map00520" />
+		<area id="3BA265CA" shape="rect" coords="324,589,450,623" data-coords="324,589,450,623" class="original" href="/pathway/map00900" title="map00900: Terpenoid backbone biosynthesis" data-entry="map00900" />
+		<area id="4A9DFF07" shape="rect" coords="460,379,545,413" data-coords="460,379,545,413" class="original" href="/pathway/map00470" title="map00470: D-Amino acid metabolism" data-entry="map00470" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<div class="feature">
+			<h5>Related Brite</h5>
+			<div class="related-data">
+				<ul class="simple">
+					
+					<li><a href="/brite/ko01011" target="_blank">01011</a>&nbsp;&nbsp;Peptidoglycan biosynthesis and degradation proteins</li>
+					
+				</ul>
+			</div>
+		</div>
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map00550.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00550.png 1x"
+	       data-src="/kegg/pathway/map/map00550.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00550@2x.png 2x"
+	       data-src="/kegg/pathway/map/map00550@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map07014
+DEFINITION  Quinolones
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Quinolones - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() の実行で
+	 *      色が薄くなるのを打ち消す */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* 以下のwidth,overflowの定義で.rowのブロック内で横スクロールする。 */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* 横に並べる場合(title可変幅) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* 横に並べる場合(title可変幅) end */
+
+
+/* Search欄の検索結果 start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Search欄の検索結果 end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconの位置調整のために必要 */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariでボタンの周りに入る余白を削除 */
+	margin: 0px;
+	padding: 0px;
+	/* ボタンを押した時に表示されるボーダーを非表示にする */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* コントロールパネルに合わせて初期は非表示 */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* 画像の下に入る余白を無くす */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '07014',
+	         org: 'map',
+	       entry: 'map07014',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Quinolones - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=07014&htext=br08901.keg&option=-a&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+	  | <a href="/entry/pathway+map07014" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="07014" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map07014.png" srcset="/kegg/pathway/map/map07014.png 1x" data-srcset="/kegg/pathway/map/map07014.png 1x, /kegg/pathway/map/map07014@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="1431" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="09E16525" shape="rect" coords="1242,157,1399,247" data-coords="1242,157,1399,247" class="original" href="/entry/D02540" title="D02540 (Garenoxacin mesylate (USAN))" data-entry="D02540" />
+		<area id="FB00B9B5" shape="rect" coords="1052,190,1186,269" data-coords="1052,190,1186,269" class="original" href="/entry/D02539" title="D02539 (Clinafloxacin hydrochloride (USAN))" data-entry="D02539" />
+		<area id="962DFFFD" shape="rect" coords="913,190,1043,276" data-coords="913,190,1043,276" class="original" href="/entry/D00589+D08011" title="D00589 (Gatifloxacin (USAN)), D08011 (Gatifloxacin (INN))" data-entry="D00589" />
+		<area id="73A65FF4" shape="rect" coords="405,646,554,732" data-coords="405,646,554,732" class="original" href="/entry/D00590" title="D00590 (Sparfloxacin (JAN/USAN/INN))" data-entry="D00590" />
+		<area id="A28D79D3" shape="rect" coords="935,644,1113,728" data-coords="935,644,1113,728" class="original" href="/entry/D02471+D08012" title="D02471 (Gemifloxacin mesylate (USAN)), D08012 (Gemifloxacin (INN))" data-entry="D02471" />
+		<area id="9F976DFD" shape="rect" coords="953,460,1109,559" data-coords="953,460,1109,559" class="original" href="/entry/D02123+D08654" title="D02123 (Trovafloxacin mesylate (USAN)), D08654 (Trovafloxacin (INN))" data-entry="D02123" />
+		<area id="FCF84D8B" shape="rect" coords="1054,304,1184,385" data-coords="1054,304,1184,385" class="original" href="/entry/D02475" title="D02475 (Sitafloxacin (USAN))" data-entry="D02475" />
+		<area id="982145DF" shape="rect" coords="904,305,1047,379" data-coords="904,305,1047,379" class="original" href="/entry/D00874+D08237" title="D00874 (Moxifloxacin hydrochloride (JAN/USP)), D08237 (Moxifloxacin (INN))" data-entry="D00874" />
+		<area id="56A9CD60" shape="rect" coords="713,644,848,746" data-coords="713,644,848,746" class="original" href="/entry/D02317+D01996" title="D02317 (Tosufloxacin (USAN)), D01996 (Tosufloxacin tosylate hydrate (JP18))" data-entry="D02317" />
+		<area id="67A7D35F" shape="rect" coords="716,460,849,530" data-coords="716,460,849,530" class="original" href="/entry/D00310+D05461" title="D00310 (Enoxacin (USAN/INN)), D05461 (Enoxacin hydrate (JP18))" data-entry="D00310" />
+		<area id="FF98914D" shape="rect" coords="227,672,336,745" data-coords="227,672,336,745" class="original" href="/entry/D02467" title="D02467 (Droxacin sodium (USAN))" data-entry="D02467" />
+		<area id="EE9A8137" shape="rect" coords="232,266,340,335" data-coords="232,266,340,335" class="original" href="/entry/D02301" title="D02301 (Oxolinic acid (USAN/INN))" data-entry="D02301" />
+		<area id="36960B53" shape="rect" coords="225,554,334,627" data-coords="225,554,334,627" class="original" href="/entry/D02303" title="D02303 (Miloxacin (INN))" data-entry="D02303" />
+		<area id="C1A6DC4F" shape="rect" coords="690,193,841,264" data-coords="690,193,841,264" class="original" href="/entry/D00453+D08291" title="D00453 (Ofloxacin (JP18/USP/INN)), D08291 (Ofloxacin hydrochloride)" data-entry="D00453" />
+		<area id="9A9D0C6A" shape="rect" coords="408,193,539,264" data-coords="408,193,539,264" class="original" href="/entry/D00210+D08287" title="D00210 (Norfloxacin (JP18/USP/INN)), D08287 (Norfloxacin nicotinate)" data-entry="D00210" />
+		<area id="07BCD590" shape="rect" coords="560,646,692,732" data-coords="560,646,692,732" class="original" href="/entry/D02178" title="D02178 (Grepafloxacin hydrochloride (JAN/USAN))" data-entry="D02178" />
+		<area id="3ED9AEDB" shape="rect" coords="60,669,186,740" data-coords="60,669,186,740" class="original" href="/entry/D02305" title="D02305 (Rosoxacin (USAN/INN))" data-entry="D02305" />
+		<area id="8B9F7C49" shape="rect" coords="231,407,340,479" data-coords="231,407,340,479" class="original" href="/entry/D00872" title="D00872 (Cinoxacin (JP18/USP/INN))" data-entry="D00872" />
+		<area id="6EDBAC1F" shape="rect" coords="49,407,184,479" data-coords="49,407,184,479" class="original" href="/entry/D01531+D08379" title="D01531 (Pipemidic acid hydrate (JP18)), D08379 (Pipemidic acid (INN))" data-entry="D01531" />
+		<area id="D7D1C279" shape="rect" coords="58,266,177,335" data-coords="58,266,177,335" class="original" href="/entry/D01431" title="D01431 (Piromidic acid (JAN/INN))" data-entry="D01431" />
+		<area id="A5B85A29" shape="rect" coords="546,193,680,264" data-coords="546,193,680,264" class="original" href="/entry/D00186+D02216+D07702" title="D00186 (Ciprofloxacin (JP18/USP/INN)), D02216 (Ciprofloxacin hydrochloride (USP)), D07702 (Ciprofloxacin lactate)" data-entry="D00186" />
+		<area id="A7A4EA6C" shape="rect" coords="413,308,544,383" data-coords="413,308,544,383" class="original" href="/entry/C14492" title="C14492 (Ulifloxacin)" data-entry="C14492" />
+		<area id="6FD72940" shape="rect" coords="81,556,182,627" data-coords="81,556,182,627" class="original" href="/entry/D02302" title="D02302 (Flumequine (USAN/INN))" data-entry="D02302" />
+		<area id="90A4F197" shape="rect" coords="660,301,839,383" data-coords="660,301,839,383" class="original" href="/entry/D01144" title="D01144 (Prulifloxacin (JAN/INN))" data-entry="D01144" />
+		<area id="6C99AED4" shape="rect" coords="139,137,255,209" data-coords="139,137,255,209" class="original" href="/entry/D00183" title="D00183 (Nalidixic acid (JP18/USP/INN))" data-entry="D00183" />
+		<area id="98101AB4" shape="rect" coords="243,67,315,92" data-coords="243,67,315,92" class="original" href="/pathway/map07025" title="map07025: Quinolines" data-entry="map07025" />
+		<area id="37ADBFD8" shape="rect" coords="40,45,164,70" data-coords="40,45,164,70" class="original" href="/entry/map07014" title="map07014: Quinolones" data-entry="map07014" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map07014.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map07014.png 1x"
+	       data-src="/kegg/pathway/map/map07014.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map07014@2x.png 2x"
+	       data-src="/kegg/pathway/map/map07014@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

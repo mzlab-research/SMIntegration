@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map00670
+DEFINITION  One carbon pool by folate
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: One carbon pool by folate - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() ã®å®è¡ã§
+	 *      è²ãèããªãã®ãæã¡æ¶ã */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* ä»¥ä¸ã®width,overflowã®å®ç¾©ã§.rowã®ãã­ãã¯åã§æ¨ªã¹ã¯ã­ã¼ã«ããã */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) end */
+
+
+/* Searchæ¬ã®æ¤ç´¢çµæ start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Searchæ¬ã®æ¤ç´¢çµæ end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconã®ä½ç½®èª¿æ´ã®ããã«å¿è¦ */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariã§ãã¿ã³ã®å¨ãã«å¥ãä½ç½ãåé¤ */
+	margin: 0px;
+	padding: 0px;
+	/* ãã¿ã³ãæ¼ããæã«è¡¨ç¤ºããããã¼ãã¼ãéè¡¨ç¤ºã«ãã */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* ã³ã³ãã­ã¼ã«ããã«ã«åããã¦åæã¯éè¡¨ç¤º */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* ç»åã®ä¸ã«å¥ãä½ç½ãç¡ãã */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '00670',
+	         org: 'map',
+	       entry: 'map00670',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;One carbon pool by folate - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=00670&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+00670" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map00670" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="00670" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map00670.png" srcset="/kegg/pathway/map/map00670.png 1x" data-srcset="/kegg/pathway/map/map00670.png 1x, /kegg/pathway/map/map00670@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="771" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="D56FC461" shape="circle" coords="120,206,4" data-coords="120,206,4" class="original" href="/entry/C00504" title="C00504 (Folate)" data-entry="C00504" />
+		<area id="D76FC48E" shape="circle" coords="120,298,4" data-coords="120,298,4" class="original" href="/entry/C00415" title="C00415 (Dihydrofolate)" data-entry="C00415" />
+		<area id="FD700FFC" shape="circle" coords="488,216,4" data-coords="488,216,4" class="original" href="/entry/C03479" title="C03479 (Folinic acid)" data-entry="C03479" />
+		<area id="FD704648" shape="circle" coords="619,301,4" data-coords="619,301,4" class="original" href="/entry/C00143" title="C00143 (5,10-Methylenetetrahydrofolate)" data-entry="C00143" />
+		<area id="02704B5C" shape="circle" coords="619,436,4" data-coords="619,436,4" class="original" href="/entry/C00440" title="C00440 (5-Methyltetrahydrofolate)" data-entry="C00440" />
+		<area id="F1701A0B" shape="circle" coords="486,444,4" data-coords="486,444,4" class="original" href="/entry/C00664" title="C00664 (5-Formiminotetrahydrofolate)" data-entry="C00664" />
+		<area id="FD6FFBAC" shape="circle" coords="359,301,4" data-coords="359,301,4" class="original" href="/entry/C00234" title="C00234 (10-Formyltetrahydrofolate)" data-entry="C00234" />
+		<area id="FD7014F7" shape="circle" coords="489,301,4" data-coords="489,301,4" class="original" href="/entry/C00445" title="C00445 (5,10-Methenyltetrahydrofolate)" data-entry="C00445" />
+		<area id="E46FE22F" shape="circle" coords="204,301,4" data-coords="204,301,4" class="original" href="/entry/C00101" title="C00101 (Tetrahydrofolate)" data-entry="C00101" />
+		<area id="DCA60156" shape="rect" coords="310,445,356,462" data-coords="310,445,356,462" class="original" href="/entry/K00603+K13990+2.1.2.5+R02287" title="K00603 (fctD), K13990 (FTCD), 2.1.2.5, R02287" />
+		<area id="C3A3FF5C" shape="rect" coords="310,424,356,441" data-coords="310,424,356,441" class="original" href="/entry/2.1.2.4+R02729" title="2.1.2.4, R02729" />
+		<area id="91A10662" shape="rect" coords="310,402,356,419" data-coords="310,402,356,419" class="original" href="/entry/K11787+K00601+K11175+K01492+2.1.2.2+R04326" title="K11787 (GART), K00601 (E2.1.2.2), K11175 (purN), K01492 (purNH), 2.1.2.2, R04326" />
+		<area id="3D95E894" shape="rect" coords="464,369,510,386" data-coords="464,369,510,386" class="original" href="/entry/K01746+K13990+4.3.1.4+R02302" title="K01746 (E4.3.1.4), K13990 (FTCD), 4.3.1.4, R02302" />
+		<area id="49B46F3D" shape="rect" coords="531,344,577,361" data-coords="531,344,577,361" class="original" href="/entry/K00295+K13403+1.5.1.15+R01218" title="K00295 (MTD1), K13403 (MTHFD2), 1.5.1.15, R01218" />
+		<area id="A6A9173B" shape="rect" coords="135,289,181,306" data-coords="135,289,181,306" class="original" href="/entry/K00287+K18589+K19643+K18590+K19644+K19645+K18591+K13998+K13938+1.5.1.3+R00936+R00939" title="K00287 (DHFR), K18589 (dfrA1), K19643 (dfrA10), K18590 (dfrA12), K19644 (dfrA19), K19645 (dfrB), K18591 (dfrD), K13998 (DHFR-TS), K13938 (folM), 1.5.1.3, R00936, R00939" />
+		<area id="EFC6BBC0" shape="rect" coords="98,257,144,274" data-coords="98,257,144,274" class="original" href="/entry/K00287+K18589+K19643+K18590+K19644+K18591+K13998+1.5.1.3+R02235+R02236" title="K00287 (DHFR), K18589 (dfrA1), K19643 (dfrA10), K18590 (dfrA12), K19644 (dfrA19), K18591 (dfrD), K13998 (DHFR-TS), 1.5.1.3, R02235, R02236" />
+		<area id="CEA5E76C" shape="rect" coords="314,205,360,222" data-coords="314,205,360,222" class="original" href="/entry/K00603+K13990+2.1.2.5+R03189" title="K00603 (fctD), K13990 (FTCD), 2.1.2.5, R03189" />
+		<area id="4FABDFC0" shape="rect" coords="621,384,667,401" data-coords="621,384,667,401" class="original" href="/entry/K00297+K25007+K25008+K24042+1.5.1.54+R07168" title="K00297 (metF), K25007 (metV), K25008 (rnfC2), K24042 (yitJ), 1.5.1.54, R07168" />
+		<area id="2B9D7B5B" shape="rect" coords="401,293,447,310" data-coords="401,293,447,310" class="original" href="/entry/K00288+K01491+K01500+K13403+3.5.4.9+R01655" title="K00288 (MTHFD), K01491 (folD), K01500 (fchA), K13403 (MTHFD2), 3.5.4.9, R01655" />
+		<area id="30AEF3AE" shape="rect" coords="531,293,577,310" data-coords="531,293,577,310" class="original" href="/entry/K00288+K01491+K00300+1.5.1.5+R01220" title="K00288 (MTHFD), K01491 (folD), K00300 (mtdA), 1.5.1.5, R01220" />
+		<area id="E4A7F2D9" shape="rect" coords="511,230,557,247" data-coords="511,230,557,247" class="original" href="/entry/K01934+K00603+6.3.3.2+R02301" title="K01934 (MTHFS), K00603 (fctD), 6.3.3.2, R02301" />
+		<area id="EB937C17" shape="rect" coords="467,251,513,268" data-coords="467,251,513,268" class="original" href="/entry/K00605+2.1.2.10+R02300" title="K00605 (gcvT), 2.1.2.10, R02300" />
+		<area id="40842584" shape="rect" coords="261,384,307,401" data-coords="261,384,307,401" class="original" href="/entry/K00604+2.1.2.9+R03940" title="K00604 (MTFMT), 2.1.2.9, R03940" />
+		<area id="3F8C248A" shape="rect" coords="261,364,307,381" data-coords="261,364,307,381" class="original" href="/entry/K00289+1.5.1.6+R00941" title="K00289 (ALDH1L), 1.5.1.6, R00941" />
+		<area id="DB891F0E" shape="rect" coords="260,335,306,352" data-coords="260,335,306,352" class="original" href="/entry/K01433+3.5.1.10+R00944" title="K01433 (purU), 3.5.1.10, R00944" />
+		<area id="A984A2FC" shape="rect" coords="260,293,306,310" data-coords="260,293,306,310" class="original" href="/entry/K13402+K01938+K00288+6.3.4.3+R00943" title="K13402 (MTHFD1L), K01938 (fhs), K00288 (MTHFD), 6.3.4.3, R00943" />
+		<area id="5D89A808" shape="rect" coords="260,250,306,267" data-coords="260,250,306,267" class="original" href="/entry/K11787+K00601+K11175+K01492+2.1.2.2+R04325" title="K11787 (GART), K00601 (E2.1.2.2), K11175 (purN), K01492 (purNH), 2.1.2.2, R04325" />
+		<area id="3E87A596" shape="rect" coords="260,229,306,246" data-coords="260,229,306,246" class="original" href="/entry/K00602+K01492+2.1.2.3+R04560" title="K00602 (purH), K01492 (purNH), 2.1.2.3, R04560" />
+		<area id="B0A40B69" shape="rect" coords="398,474,444,491" data-coords="398,474,444,491" class="original" href="/entry/2.1.1.19+R02573" title="2.1.1.19, R02573" />
+		<area id="C3BD0B91" shape="rect" coords="350,474,396,491" data-coords="350,474,396,491" class="original" href="/entry/K00548+K24042+2.1.1.13+R00946" title="K00548 (metH), K24042 (yitJ), 2.1.1.13, R00946" />
+		<area id="E0AE79D6" shape="rect" coords="326,146,372,163" data-coords="326,146,372,163" class="original" href="/entry/K03465+2.1.1.148+R06613" title="K03465 (thyX), 2.1.1.148, R06613" />
+		<area id="0BBA9719" shape="rect" coords="350,167,396,184" data-coords="350,167,396,184" class="original" href="/entry/K00600+2.1.2.1+R00945" title="K00600 (glyA), 2.1.2.1, R00945" />
+		<area id="F8A196EC" shape="rect" coords="398,167,444,184" data-coords="398,167,444,184" class="original" href="/entry/2.1.2.7+R01225" title="2.1.2.7, R01225" />
+		<area id="EB957C06" shape="rect" coords="374,146,420,163" data-coords="374,146,420,163" class="original" href="/entry/2.1.2.8+R01669" title="2.1.2.8, R01669" />
+		<area id="F1AC08CC" shape="rect" coords="422,146,468,163" data-coords="422,146,468,163" class="original" href="/entry/K00605+2.1.2.10+R04125" title="K00605 (gcvT), 2.1.2.10, R04125" />
+		<area id="1CA92163" shape="rect" coords="129,234,175,251" data-coords="129,234,175,251" class="original" href="/entry/K00287+K18589+K19643+K18590+K19644+K18591+K13998+1.5.1.3+R00937+R00940" title="K00287 (DHFR), K18589 (dfrA1), K19643 (dfrA10), K18590 (dfrA12), K19644 (dfrA19), K18591 (dfrD), K13998 (DHFR-TS), 1.5.1.3, R00937, R00940" />
+		<area id="67987AFB" shape="rect" coords="571,365,617,382" data-coords="571,365,617,382" class="original" href="/entry/1.5.7.1+R01217" title="1.5.7.1, R01217" />
+		<area id="4F907AF5" shape="rect" coords="571,384,617,401" data-coords="571,384,617,401" class="original" href="/entry/K25004+1.5.1.53+R01224" title="K25004 (MTHFR), 1.5.1.53, R01224" />
+		<area id="67B3DFC6" shape="rect" coords="621,365,667,382" data-coords="621,365,667,382" class="original" href="/entry/K25009+1.5.1.20+R01224+R07168" title="K25009 (E1.5.1.20), 1.5.1.20, R01224, R07168" />
+		<area id="DDB50D8B" shape="rect" coords="350,495,396,512" data-coords="350,495,396,512" class="original" href="/entry/K25221+2.1.1.378+R02289" title="K25221 (mtgA), 2.1.1.378, R02289" />
+		<area id="21957111" shape="rect" coords="374,528,420,545" data-coords="374,528,420,545" class="original" href="/entry/K00560+K13998+2.1.1.45+R02101" title="K00560 (thyA), K13998 (DHFR-TS), 2.1.1.45, R02101" />
+		<area id="CA9C0D63" shape="rect" coords="398,495,444,512" data-coords="398,495,444,512" class="original" href="/entry/K25915+2.1.1.385+R02289" title="K25915 (mtvA), 2.1.1.385, R02289" />
+		<area id="37B2C9DD" shape="rect" coords="40,45,285,70" data-coords="40,45,285,70" class="original" href="/entry/map00670" title="map00670: One carbon pool by folate" data-entry="map00670" />
+		<area id="DBB83598" shape="rect" coords="36,146,116,180" data-coords="36,146,116,180" class="original" href="/pathway/map00790" title="map00790: Folate biosynthesis" data-entry="map00790" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+		<area shape="poly" coords="612,307,612,343,612,343,612,345,612,345,611,346,611,346,611,348,611,348,610,349,611,348,609,349,608,350,607,351,608,350,607,350,607,350,605,351,605,351,604,351,604,351,502,351,502,351,500,351,499,352,498,351,499,350,497,350,496,351,495,350,495,350,494,349,494,349,493,348,493,348,493,346,493,346,492,345,492,345,492,343,492,343,492,309,494,309,494,343,494,343,494,345,494,345,495,346,495,346,495,348,495,348,496,349,496,349,497,350,497,350,498,351,497,352,499,352,500,351,501,352,500,353,502,353,502,353,604,353,604,353,605,353,605,353,607,352,607,352,608,352,609,351,610,350,609,351,611,350,612,349,613,348,613,348,613,346,613,346,614,345,614,345,614,343,614,343,614,307" data-coords="612,307,612,343,612,343,612,345,612,345,611,346,611,346,611,348,611,348,610,349,611,348,609,349,608,350,607,351,608,350,607,350,607,350,605,351,605,351,604,351,604,351,502,351,502,351,500,351,499,352,498,351,499,350,497,350,496,351,495,350,495,350,494,349,494,349,493,348,493,348,493,346,493,346,492,345,492,345,492,343,492,343,492,309,494,309,494,343,494,343,494,345,494,345,495,346,495,346,495,348,495,348,496,349,496,349,497,350,497,350,498,351,497,352,499,352,500,351,501,352,500,353,502,353,502,353,604,353,604,353,605,353,605,353,607,352,607,352,608,352,609,351,610,350,609,351,611,350,612,349,613,348,613,348,613,346,613,346,614,345,614,345,614,343,614,343,614,307" href="javascript:void(0)"  data-refid="39260CB9" data-module="M00141" class="module" />
+		<area shape="poly" coords="493,308,496,317,489,317" data-coords="493,308,496,317,489,317" href="javascript:void(0)"  data-refid="61F33413" data-module="M00141" class="module" />
+		<area shape="poly" coords="613,307,616,315,609,315" data-coords="613,307,616,315,609,315" href="javascript:void(0)"  data-refid="6A388F90" data-module="M00141" class="module" />
+		<area shape="poly" coords="496,300,612,300,612,302,496,302" data-coords="496,300,612,300,612,302,496,302" href="javascript:void(0)"  data-refid="52149B6E" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="612,301,603,304,603,297" data-coords="612,301,603,304,603,297" href="javascript:void(0)"  data-refid="688E0890" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="495,301,503,297,503,304" data-coords="495,301,503,297,503,304" href="javascript:void(0)"  data-refid="C732EF13" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="366,300,483,300,483,302,366,302" data-coords="366,300,483,300,483,302,366,302" href="javascript:void(0)"  data-refid="5711F1CA" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="483,301,474,304,474,297" data-coords="483,301,474,304,474,297" href="javascript:void(0)"  data-refid="539BBF13" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="365,301,373,297,373,304" data-coords="365,301,373,297,373,304" href="javascript:void(0)"  data-refid="6D21EED2" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="211,300,353,300,353,302,211,302" data-coords="211,300,353,300,353,302,211,302" href="javascript:void(0)"  data-refid="E60F5B3B" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="353,301,344,304,344,297" data-coords="353,301,344,304,344,297" href="javascript:void(0)"  data-refid="7676BED2" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="124,297,193,297,193,299,124,299" data-coords="124,297,193,297,193,299,124,299" href="javascript:void(0)"  data-refid="130C3DB1" data-module="M00126" class="module" />
+		<area shape="poly" coords="192,298,184,301,184,294" data-coords="192,298,184,301,184,294" href="javascript:void(0)"  data-refid="E0505246" data-module="M00126" class="module" />
+		<area shape="poly" coords="124,298,132,294,132,301" data-coords="124,298,132,294,132,301" href="javascript:void(0)"  data-refid="71430046" data-module="M00126" class="module" />
+		<area shape="rect" coords="531,344,577,361" data-coords="531,344,577,361" href="javascript:void(0)"  data-refid="49B46F3D" data-module="M00141" class="module" />
+		<area shape="rect" coords="135,289,181,306" data-coords="135,289,181,306" href="javascript:void(0)"  data-refid="A6A9173B" data-module="M00126" class="module" />
+		<area shape="rect" coords="401,293,447,310" data-coords="401,293,447,310" href="javascript:void(0)"  data-refid="2B9D7B5B" data-module="M00140+M00141" class="module" />
+		<area shape="rect" coords="531,293,577,310" data-coords="531,293,577,310" href="javascript:void(0)"  data-refid="30AEF3AE" data-module="M00140+M00141" class="module" />
+		<area shape="circle" coords="120,298,4" data-coords="120,298,4" href="javascript:void(0)"  data-refid="D76FC48E" data-module="M00126" class="module" />
+		<area shape="circle" coords="619,301,4" data-coords="619,301,4" href="javascript:void(0)"  data-refid="FD704648" data-module="M00140+M00141" class="module" />
+		<area shape="rect" coords="260,293,306,310" data-coords="260,293,306,310" href="javascript:void(0)"  data-refid="A984A2FC" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="198,295,186,280,186,280,185,279,185,279,185,278,185,278,184,277,184,277,184,276,184,276,183,275,183,275,183,274,183,274,183,273,183,273,183,272,183,272,183,170,183,170,183,169,183,169,183,168,183,168,184,167,184,167,185,166,185,166,186,165,187,164,188,164,188,164,616,164,616,164,617,164,616,165,617,166,617,166,618,167,618,167,619,168,619,168,619,169,619,169,619,170,619,170,619,295,621,295,621,170,621,170,621,169,621,169,621,168,621,168,620,167,620,167,619,166,619,166,618,165,617,166,616,166,616,166,188,166,188,166,187,166,188,165,187,166,187,166,186,167,186,167,185,168,185,168,185,169,185,169,185,170,185,170,185,272,185,272,185,273,185,273,185,274,185,274,185,275,185,275,186,276,186,276,186,277,186,277,187,278,187,278,187,279,187,279,188,280,188,280,200,295" data-coords="198,295,186,280,186,280,185,279,185,279,185,278,185,278,184,277,184,277,184,276,184,276,183,275,183,275,183,274,183,274,183,273,183,273,183,272,183,272,183,170,183,170,183,169,183,169,183,168,183,168,184,167,184,167,185,166,185,166,186,165,187,164,188,164,188,164,616,164,616,164,617,164,616,165,617,166,617,166,618,167,618,167,619,168,619,168,619,169,619,169,619,170,619,170,619,295,621,295,621,170,621,170,621,169,621,169,621,168,621,168,620,167,620,167,619,166,619,166,618,165,617,166,616,166,616,166,188,166,188,166,187,166,188,165,187,166,187,166,186,167,186,167,185,168,185,168,185,169,185,169,185,170,185,170,185,272,185,272,185,273,185,273,185,274,185,274,185,275,185,275,186,276,186,276,186,277,186,277,187,278,187,278,187,279,187,279,188,280,188,280,200,295" href="javascript:void(0)"  data-refid="96FC8AB0" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="620,295,616,286,623,286" data-coords="620,295,616,286,623,286" href="javascript:void(0)"  data-refid="01FD0A86" data-module="M00140+M00141" class="module" />
+		<area shape="poly" coords="199,295,191,290,196,286" data-coords="199,295,191,290,196,286" href="javascript:void(0)"  data-refid="C8FEEE46" data-module="M00140+M00141" class="module" />
+		<area shape="rect" coords="350,167,396,184" data-coords="350,167,396,184" href="javascript:void(0)"  data-refid="0BBA9719" data-module="M00140+M00141" class="module" />
+		<area shape="circle" coords="359,301,4" data-coords="359,301,4" href="javascript:void(0)"  data-refid="FD6FFBAC" data-module="M00140+M00141" class="module" />
+		<area shape="circle" coords="489,301,4" data-coords="489,301,4" href="javascript:void(0)"  data-refid="FD7014F7" data-module="M00140+M00141" class="module" />
+		<area shape="circle" coords="204,301,4" data-coords="204,301,4" href="javascript:void(0)"  data-refid="E46FE22F" data-module="M00126+M00140+M00141" class="module" />
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="feature">
+			<h5>Module</h5>
+			<div>
+			  
+				<div class="row">
+					<ul class="tree module-tree">
+					
+						
+	<li class="classification class-A  ">
+		<span>
+		<input type="checkbox" >
+		Pathway modules
+
+		</span>
+		<ul>
+	<li class="classification class-B  ">
+		<span>
+		<input type="checkbox" >
+		Metabolism of cofactors and vitamins
+
+		</span>
+		<ul>
+	<li class="classification class-C  ">
+		<span>
+		<input type="checkbox" >
+		Cofactor and vitamin metabolism
+
+		</span>
+		<ul>
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00126" data-entry="M00126" target="_blank" >M00126</a>
+		
+		Tetrahydrofolate biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00140" data-entry="M00140" target="_blank" >M00140</a>
+		
+		C1-unit interconversion, prokaryotes
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00141" data-entry="M00141" target="_blank" >M00141</a>
+		
+		C1-unit interconversion, eukaryotes
+
+		</span>
+	</li>
+
+		</ul>
+	</li>
+
+		</ul>
+	</li>
+
+		</ul>
+	</li>
+
+					
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map00670.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00670.png 1x"
+	       data-src="/kegg/pathway/map/map00670.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00670@2x.png 2x"
+	       data-src="/kegg/pathway/map/map00670@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

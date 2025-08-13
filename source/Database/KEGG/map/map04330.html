@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map04330
+DEFINITION  Notch signaling pathway
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Notch signaling pathway - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() ã®å®è¡ã§
+	 *      è²ãèããªãã®ãæã¡æ¶ã */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* ä»¥ä¸ã®width,overflowã®å®ç¾©ã§.rowã®ãã­ãã¯åã§æ¨ªã¹ã¯ã­ã¼ã«ããã */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) end */
+
+
+/* Searchæ¬ã®æ¤ç´¢çµæ start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Searchæ¬ã®æ¤ç´¢çµæ end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconã®ä½ç½®èª¿æ´ã®ããã«å¿è¦ */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariã§ãã¿ã³ã®å¨ãã«å¥ãä½ç½ãåé¤ */
+	margin: 0px;
+	padding: 0px;
+	/* ãã¿ã³ãæ¼ããæã«è¡¨ç¤ºããããã¼ãã¼ãéè¡¨ç¤ºã«ãã */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* ã³ã³ãã­ã¼ã«ããã«ã«åããã¦åæã¯éè¡¨ç¤º */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* ç»åã®ä¸ã«å¥ãä½ç½ãç¡ãã */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '04330',
+	         org: 'map',
+	       entry: 'map04330',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Notch signaling pathway - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=04330&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+04330" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map04330" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	The Notch signaling pathway is an evolutionarily conserved, intercellular signaling mechanism essential for proper embryonic development in all metazoan organisms in the Animal kingdom. The Notch proteins (Notch1-Notch4 in vertebrates) are single-pass receptors that are activated by the Delta (or Delta-like) and Jagged/Serrate families of membrane-bound ligands. They are transported to the plasma membrane as cleaved, but otherwise intact polypeptides. Interaction with ligand leads to two additional proteolytic cleavages that liberate the Notch intracellular domain (NICD) from the plasma membrane. The NICD translocates to the nucleus, where it forms a complex with the DNA binding protein CSL, displacing a histone deacetylase (HDAc)-co-repressor (CoR) complex from CSL. Components of an activation complex, such as MAML1 and histone acetyltransferases (HATs), are recruited to the NICD-CSL complex, leading to the transcriptional activation of Notch target genes.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="04330" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map04330.png" srcset="/kegg/pathway/map/map04330.png 1x" data-srcset="/kegg/pathway/map/map04330.png 1x, /kegg/pathway/map/map04330@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="861" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="DE70289D" shape="circle" coords="543,220,4" data-coords="543,220,4" class="original" href="/entry/C22528" title="C22528 (Notch intracellular domain)" data-entry="C22528" />
+		<area id="88A49BD8" shape="rect" coords="312,152,358,169" data-coords="312,152,358,169" class="original" href="/entry/K06171" title="K06171 (NCSTN)" />
+		<area id="7B8B91AB" shape="rect" coords="358,152,404,169" data-coords="358,152,404,169" class="original" href="/entry/K06172" title="K06172 (APH1)" />
+		<area id="C68A89B1" shape="rect" coords="358,135,404,152" data-coords="358,135,404,152" class="original" href="/entry/K04505+K04522" title="K04505 (PSEN1), K04522 (PSEN2)" />
+		<area id="03B8DE37" shape="rect" coords="640,316,686,333" data-coords="640,316,686,333" class="original" href="/entry/K06067" title="K06067 (HDAC1_2)" />
+		<area id="B19D4DE8" shape="rect" coords="684,293,730,310" data-coords="684,293,730,310" class="original" href="/entry/K06066" title="K06066 (CIR)" />
+		<area id="2FAC6C42" shape="rect" coords="623,293,669,310" data-coords="623,293,669,310" class="original" href="/entry/K04497" title="K04497 (GRO)" />
+		<area id="2F910777" shape="rect" coords="573,293,619,310" data-coords="573,293,619,310" class="original" href="/entry/K04496" title="K04496 (CTBP)" />
+		<area id="6CA95E5C" shape="rect" coords="600,270,646,287" data-coords="600,270,646,287" class="original" href="/entry/K06064" title="K06064 (HAIRLESS)" />
+		<area id="719A6F73" shape="rect" coords="670,270,716,287" data-coords="670,270,716,287" class="original" href="/entry/K06065" title="K06065 (NCOR2)" />
+		<area id="A9A3D004" shape="rect" coords="787,238,833,255" data-coords="787,238,833,255" class="original" href="/entry/K06056" title="K06056 (PTCRA)" />
+		<area id="459E5175" shape="rect" coords="787,184,833,201" data-coords="787,184,833,201" class="original" href="/entry/K06054+K06055" title="K06054 (HES1), K06055 (HES5)" />
+		<area id="85B76632" shape="rect" coords="640,211,686,228" data-coords="640,211,686,228" class="original" href="/entry/K06053" title="K06053 (RBPSUH)" />
+		<area id="9C94FC07" shape="rect" coords="662,172,708,189" data-coords="662,172,708,189" class="original" href="/entry/K06063" title="K06063 (SNW1)" />
+		<area id="DCA26B6B" shape="rect" coords="585,180,631,197" data-coords="585,180,631,197" class="original" href="/entry/K04498+K06062" title="K04498 (EP300), K06062 (PCAF)" />
+		<area id="27A16376" shape="rect" coords="585,163,631,180" data-coords="585,163,631,180" class="original" href="/entry/K06061" title="K06061 (MAML)" />
+		<area id="EEB120C9" shape="rect" coords="239,152,285,169" data-coords="239,152,285,169" class="original" href="/entry/K06059" title="K06059 (ADAM17)" />
+		<area id="D3A393DE" shape="rect" coords="312,135,358,152" data-coords="312,135,358,152" class="original" href="/entry/K06170" title="K06170 (PSENEN)" />
+		<area id="F3A407D9" shape="rect" coords="310,236,356,253" data-coords="310,236,356,253" class="original" href="/entry/K06058" title="K06058 (DTX)" />
+		<area id="CE95927D" shape="rect" coords="275,270,321,287" data-coords="275,270,321,287" class="original" href="/entry/K06057" title="K06057 (NUMBL)" />
+		<area id="07B2BE5E" shape="rect" coords="60,257,106,274" data-coords="60,257,106,274" class="original" href="/entry/K06052+K21635" title="K06052 (JAG1), K21635 (JAG2)" />
+		<area id="5F882223" shape="rect" coords="166,211,212,228" data-coords="166,211,212,228" class="original" href="/entry/K02599+K20994+K20995+K20996" title="K02599 (NOTCH1), K20994 (NOTCH2), K20995 (NOTCH3), K20996 (NOTCH4)" />
+		<area id="D6A1A538" shape="rect" coords="221,290,267,307" data-coords="221,290,267,307" class="original" href="/entry/K02353" title="K02353 (DVL)" />
+		<area id="C3A389E3" shape="rect" coords="114,135,160,152" data-coords="114,135,160,152" class="original" href="/entry/K05948" title="K05948 (FNG)" />
+		<area id="71ADC065" shape="rect" coords="60,211,106,228" data-coords="60,211,106,228" class="original" href="/entry/K06051" title="K06051 (DLL)" />
+		<area id="029FF471" shape="rect" coords="692,316,738,333" data-coords="692,316,738,333" class="original" href="/entry/K23616" title="K23616 (ATXN1_1L)" />
+		<area id="FAA0D205" shape="rect" coords="787,211,833,228" data-coords="787,211,833,228" class="original" href="/entry/K09091" title="K09091 (HEY)" />
+		<area id="469B97C8" shape="rect" coords="339,375,448,415" data-coords="339,375,448,415" class="original" href="/pathway/map04010" title="map04010: MAPK signaling pathway" data-entry="map04010" />
+		<area id="37B2C4F1" shape="rect" coords="40,45,279,70" data-coords="40,45,279,70" class="original" href="/entry/map04330" title="map04330: Notch signaling pathway" data-entry="map04330" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+		<area shape="rect" coords="312,152,358,169" data-coords="312,152,358,169" href="javascript:void(0)"  data-refid="88A49BD8" data-network="N01478" data-network-href="/dbget-bin/www_bget?K06171" data-network-title="K06171 (NCSTN)" class="module" />
+		<area shape="rect" coords="358,152,404,169" data-coords="358,152,404,169" href="javascript:void(0)"  data-refid="7B8B91AB" data-network="N01478" data-network-href="/dbget-bin/www_bget?K06172" data-network-title="K06172 (APH1)" class="module" />
+		<area shape="rect" coords="358,135,404,152" data-coords="358,135,404,152" href="javascript:void(0)"  data-refid="C68A89B1" data-network="N01478" data-network-href="/dbget-bin/www_bget?K04505+K04522" data-network-title="K04505 (PSEN1), K04522 (PSEN2)" class="module" />
+		<area shape="rect" coords="787,184,833,201" data-coords="787,184,833,201" href="javascript:void(0)"  data-refid="459E5175" data-network="N00086" data-network-href="/dbget-bin/www_bget?K06054+K06055" data-network-title="K06054 (HES1), K06055 (HES5)" class="module" />
+		<area shape="rect" coords="640,211,686,228" data-coords="640,211,686,228" href="javascript:void(0)"  data-refid="85B76632" data-network="N00086" data-network-href="/dbget-bin/www_bget?K06053" data-network-title="K06053 (RBPSUH)" class="module" />
+		<area shape="rect" coords="239,152,285,169" data-coords="239,152,285,169" href="javascript:void(0)"  data-refid="EEB120C9" data-network="N01478" data-network-href="/dbget-bin/www_bget?K06059" data-network-title="K06059 (ADAM17)" class="module" />
+		<area shape="rect" coords="312,135,358,152" data-coords="312,135,358,152" href="javascript:void(0)"  data-refid="D3A393DE" data-network="N01478" data-network-href="/dbget-bin/www_bget?K06170" data-network-title="K06170 (PSENEN)" class="module" />
+		<area shape="rect" coords="60,257,106,274" data-coords="60,257,106,274" href="javascript:void(0)"  data-refid="07B2BE5E" data-network="N00086" data-network-href="/dbget-bin/www_bget?K06052+K21635" data-network-title="K06052 (JAG1), K21635 (JAG2)" class="module" />
+		<area shape="rect" coords="166,211,212,228" data-coords="166,211,212,228" href="javascript:void(0)"  data-refid="5F882223" data-network="N00086+N01478" data-network-href="/dbget-bin/www_bget?K02599+K20994+K20995+K20996" data-network-title="K02599 (NOTCH1), K20994 (NOTCH2), K20995 (NOTCH3), K20996 (NOTCH4)" class="module" />
+		<area shape="rect" coords="60,211,106,228" data-coords="60,211,106,228" href="javascript:void(0)"  data-refid="71ADC065" data-network="N00086" data-network-href="/dbget-bin/www_bget?K06051" data-network-title="K06051 (DLL)" class="module" />
+		<area shape="poly" coords="106,219,165,219,165,221,106,221" data-coords="106,219,165,219,165,221,106,221" href="javascript:void(0)"  data-refid="470C34F6" data-network="N00086" class="module" />
+		<area shape="poly" coords="165,220,156,223,156,216" data-coords="165,220,156,223,156,216" href="javascript:void(0)"  data-refid="9050A146" data-network="N00086" class="module" />
+		<area shape="poly" coords="106,265,165,222,165,224,106,267" data-coords="106,265,165,222,165,224,106,267" href="javascript:void(0)"  data-refid="E00C36EA" data-network="N00086" class="module" />
+		<area shape="poly" coords="165,223,160,230,156,225" data-coords="165,223,160,230,156,225" href="javascript:void(0)"  data-refid="90EBBA46" data-network="N00086" class="module" />
+		<area shape="poly" coords="212,219,537,219,537,221,212,221" data-coords="212,219,537,219,537,221,212,221" href="javascript:void(0)"  data-refid="5D0F0C12" data-network="N00086+N01478" class="module" />
+		<area shape="poly" coords="537,220,528,223,528,216" data-coords="537,220,528,223,528,216" href="javascript:void(0)"  data-refid="46451045" data-network="N00086+N01478" class="module" />
+		<area shape="poly" coords="547,219,640,219,640,221,547,221" data-coords="547,219,640,219,640,221,547,221" href="javascript:void(0)"  data-refid="AB167F88" data-network="N00086" class="module" />
+		<area shape="poly" coords="686,219,727,219,727,221,686,221" data-coords="686,219,727,219,727,221,686,221" href="javascript:void(0)"  data-refid="5119131A" data-network="N00086" class="module" />
+		<area shape="poly" coords="727,220,718,223,718,216" data-coords="727,220,718,223,718,216" href="javascript:void(0)"  data-refid="A78E10C2" data-network="N00086" class="module" />
+		<area shape="poly" coords="750,214,785,192,785,194,750,216" data-coords="750,214,785,192,785,194,750,216" href="javascript:void(0)"  data-refid="D91B77F4" data-network="N00086" class="module" />
+		<area shape="poly" coords="785,193,779,200,776,194" data-coords="785,193,779,200,776,194" href="javascript:void(0)"  data-refid="92B41FB8" data-network="N00086" class="module" />
+		<area shape="rect" coords="787,211,833,228" data-coords="787,211,833,228" href="javascript:void(0)"  data-refid="FAA0D205" data-network="N00086" data-network-href="/dbget-bin/www_bget?K09091" data-network-title="K09091 (HEY)" class="module" />
+		<area shape="poly" coords="750,219,785,219,785,221,750,221" data-coords="750,219,785,219,785,221,750,221" href="javascript:void(0)"  data-refid="591B7D4E" data-network="N00086" class="module" />
+		<area shape="poly" coords="785,220,776,223,776,216" data-coords="785,220,776,223,776,216" href="javascript:void(0)"  data-refid="F3BEA2C2" data-network="N00086" class="module" />
+		<area shape="circle" coords="543,220,4" data-coords="543,220,4" href="javascript:void(0)"  data-refid="DE70289D" data-network="N00086+N01478" data-network-href="/dbget-bin/www_bget?C22528" data-network-title="C22528 (Notch intracellular domain)" class="module" />
+		<area shape="poly" coords="261,169,261,217,263,217,263,169" data-coords="261,169,261,217,263,217,263,169" href="javascript:void(0)"  data-refid="2C0E5286" data-network="N01478" class="module" />
+		<area shape="poly" coords="262,217,258,208,262,211,265,208" data-coords="262,217,258,208,262,211,265,208" href="javascript:void(0)"  data-refid="E0EAEEA2" data-network="N01478" class="module" />
+		<area shape="poly" coords="357,169,357,217,359,217,359,169" data-coords="357,169,357,217,359,217,359,169" href="javascript:void(0)"  data-refid="3810DA0B" data-network="N01478" class="module" />
+		<area shape="poly" coords="358,217,354,208,358,211,361,208" data-coords="358,217,354,208,358,211,361,208" href="javascript:void(0)"  data-refid="9A3A08D3" data-network="N01478" class="module" />
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		<div class="feature">
+			<h5>Network</h5>
+			<div>
+				<div class="row">
+					<ul class="tree network-tree">
+					
+						
+	<li class="classification class-C  ">
+		<span>
+		<input type="checkbox" >
+		<a href="/network/nt06511+N00086+N01478" target="_blank">nt06511</a> NOTCH signaling
+
+		</span>
+		<ul>
+	<li class="entry class-D network ">
+		<span>
+		<input type="checkbox" >
+		<a  href="/entry/N00086" data-entry="N00086" target="_blank" >N00086</a>
+		
+		Notch signaling pathway
+
+		</span>
+	</li>
+
+	<li class="entry class-D network ">
+		<span>
+		<input type="checkbox" >
+		<a  href="/entry/N01478" data-entry="N01478" target="_blank" >N01478</a>
+		
+		Notch proteolytic activation
+
+		</span>
+	</li>
+
+		</ul>
+	</li>
+
+					
+						
+	<li class="classification class-C  ">
+		<span>
+		<input type="checkbox" >
+		<a href="/network/nt06216+N00086" target="_blank">nt06216</a> NOTCH signaling
+
+		</span>
+		<ul>
+	<li class="entry class-D network ">
+		<span>
+		<input type="checkbox" >
+		<a  href="/entry/N00086" data-entry="N00086" target="_blank" >N00086</a>
+		
+		Notch signaling pathway
+
+		</span>
+	</li>
+
+		</ul>
+	</li>
+
+					
+					</ul>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map04330.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04330.png 1x"
+	       data-src="/kegg/pathway/map/map04330.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04330@2x.png 2x"
+	       data-src="/kegg/pathway/map/map04330@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

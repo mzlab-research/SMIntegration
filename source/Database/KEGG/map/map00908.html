@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map00908
+DEFINITION  Zeatin biosynthesis
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Zeatin biosynthesis - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() の実行で
+	 *      色が薄くなるのを打ち消す */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* 以下のwidth,overflowの定義で.rowのブロック内で横スクロールする。 */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* 横に並べる場合(title可変幅) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* 横に並べる場合(title可変幅) end */
+
+
+/* Search欄の検索結果 start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Search欄の検索結果 end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconの位置調整のために必要 */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariでボタンの周りに入る余白を削除 */
+	margin: 0px;
+	padding: 0px;
+	/* ボタンを押した時に表示されるボーダーを非表示にする */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* コントロールパネルに合わせて初期は非表示 */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* 画像の下に入る余白を無くす */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '00908',
+	         org: 'map',
+	       entry: 'map00908',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Zeatin biosynthesis - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=00908&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+00908" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map00908" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	Zeatin is a member of the cytokinin family, a class of phytohormones involved in various processes of growth and development in plants. Most abundant cytokinins are adenine-type, where the N6 position of adenine is substituted with an isoprenoid, such as in zeatin, or an aromatic side chain, such as in kinetin. Zeatin can be synthesized in two different pathways: the tRNA pathway and the AMP pathway. In the tRNA pathway zeatin is a recycled product of isopentenylated tRNAs. In the AMP pathway zeatin is synthesized from an isopentenyl donor, dimethylallyl diphosphate (DMAPP), and AMP, ADP, or ATP by isopentenyltransferases. After synthesis cytokinins can be glucosylated.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="00908" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map00908.png" srcset="/kegg/pathway/map/map00908.png 1x" data-srcset="/kegg/pathway/map/map00908.png 1x, /kegg/pathway/map/map00908@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="766" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="DF6FCE75" shape="circle" coords="123,441,4" data-coords="123,441,4" class="original" href="/entry/C00020" title="C00020 (AMP)" data-entry="C00020" />
+		<area id="E16FC975" shape="circle" coords="123,343,4" data-coords="123,343,4" class="original" href="/entry/C00008" title="C00008 (ADP)" data-entry="C00008" />
+		<area id="E66FC475" shape="circle" coords="124,243,4" data-coords="124,243,4" class="original" href="/entry/C00002" title="C00002 (ATP)" data-entry="C00002" />
+		<area id="DB703CA2" shape="circle" coords="541,637,4" data-coords="541,637,4" class="original" href="/entry/C15546" title="C15546 (O-beta-D-Glucopyranosyl-cis-zeatin)" data-entry="C15546" />
+		<area id="F67050B6" shape="circle" coords="647,574,4" data-coords="647,574,4" class="original" href="/entry/C15545" title="C15545 (cis-Zeatin)" data-entry="C15545" />
+		<area id="F7704BC0" shape="circle" coords="647,495,4" data-coords="647,495,4" class="original" href="/entry/C16449" title="C16449 (cis-Zeatin riboside)" data-entry="C16449" />
+		<area id="F9704B98" shape="circle" coords="647,417,4" data-coords="647,417,4" class="original" href="/entry/C16441" title="C16441 (cis-Zeatin riboside monophosphate)" data-entry="C16441" />
+		<area id="FA704698" shape="circle" coords="647,318,4" data-coords="647,318,4" class="original" href="/entry/C16467" title="C16467 (cis-Prenyl-tRNA)" data-entry="C16467" />
+		<area id="EB7028C0" shape="circle" coords="555,243,4" data-coords="555,243,4" class="original" href="/entry/C17324" title="C17324 (tRNA adenine)" data-entry="C17324" />
+		<area id="FB704198" shape="circle" coords="647,219,4" data-coords="647,219,4" class="original" href="/entry/C04432" title="C04432 (tRNA containing 6-isopentenyladenosine)" data-entry="C04432" />
+		<area id="DD702898" shape="circle" coords="541,219,4" data-coords="541,219,4" class="original" href="/entry/C00235" title="C00235 (Dimethylallyl diphosphate)" data-entry="C00235" />
+		<area id="F9703234" shape="circle" coords="507,417,4" data-coords="507,417,4" class="original" href="/entry/C16445" title="C16445 (Dihydrozeatin riboside monophosphate)" data-entry="C16445" />
+		<area id="F770325C" shape="circle" coords="507,495,4" data-coords="507,495,4" class="original" href="/entry/C16447" title="C16447 (Dihydrozeatin riboside)" data-entry="C16447" />
+		<area id="F7703752" shape="circle" coords="507,575,4" data-coords="507,575,4" class="original" href="/entry/C02029" title="C02029 (Dihydrozeatin)" data-entry="C02029" />
+		<area id="DB70233E" shape="circle" coords="401,637,4" data-coords="401,637,4" class="original" href="/entry/C16448" title="C16448 (Dihydrozeatin-O-glucoside)" data-entry="C16448" />
+		<area id="FE703CCA" shape="circle" coords="559,662,4" data-coords="559,662,4" class="original" href="/entry/C00015" title="C00015 (UDP)" data-entry="C00015" />
+		<area id="FE702366" shape="circle" coords="419,662,4" data-coords="419,662,4" class="original" href="/entry/C00015" title="C00015 (UDP)" data-entry="C00015" />
+		<area id="F9705598" shape="circle" coords="638,662,4" data-coords="638,662,4" class="original" href="/entry/C00029" title="C00029 (UDP-glucose)" data-entry="C00029" />
+		<area id="F970242E" shape="circle" coords="498,662,4" data-coords="498,662,4" class="original" href="/entry/C00029" title="C00029 (UDP-glucose)" data-entry="C00029" />
+		<area id="EB7014CA" shape="circle" coords="354,868,4" data-coords="354,868,4" class="original" href="/entry/C00190" title="C00190 (UDP-D-xylose)" data-entry="C00190" />
+		<area id="DF7014AC" shape="circle" coords="353,801,4" data-coords="353,801,4" class="original" href="/entry/C00029" title="C00029 (UDP-glucose)" data-entry="C00029" />
+		<area id="EA700FB6" shape="circle" coords="354,727,4" data-coords="354,727,4" class="original" href="/entry/C00029" title="C00029 (UDP-glucose)" data-entry="C00029" />
+		<area id="F56FFBC0" shape="circle" coords="257,843,4" data-coords="257,843,4" class="original" href="/entry/C03300" title="C03300 (O-beta-D-Xylosylzeatin)" data-entry="C03300" />
+		<area id="F36FF6CF" shape="circle" coords="256,776,4" data-coords="256,776,4" class="original" href="/entry/C16443" title="C16443 (trans-Zeatin-7-beta-D-glucoside)" data-entry="C16443" />
+		<area id="F06FFBFC" shape="circle" coords="275,868,4" data-coords="275,868,4" class="original" href="/entry/C00015" title="C00015 (UDP)" data-entry="C00015" />
+		<area id="E46FFBDE" shape="circle" coords="274,801,4" data-coords="274,801,4" class="original" href="/entry/C00015" title="C00015 (UDP)" data-entry="C00015" />
+		<area id="EF6FF6E8" shape="circle" coords="275,727,4" data-coords="275,727,4" class="original" href="/entry/C00015" title="C00015 (UDP)" data-entry="C00015" />
+		<area id="F46FF6AC" shape="circle" coords="257,702,4" data-coords="257,702,4" class="original" href="/entry/C03423" title="C03423 (O-beta-D-Glucosylzeatin)" data-entry="C03423" />
+		<area id="E0700ACA" shape="circle" coords="353,662,4" data-coords="353,662,4" class="original" href="/entry/C00979" title="C00979 (O-Acetyl-L-serine)" data-entry="C00979" />
+		<area id="E56FF1FC" shape="circle" coords="274,662,4" data-coords="274,662,4" class="original" href="/entry/C00033" title="C00033 (Acetate)" data-entry="C00033" />
+		<area id="F46FF1BB" shape="circle" coords="256,637,4" data-coords="256,637,4" class="original" href="/entry/C01513" title="C01513 (Lupinate)" data-entry="C01513" />
+		<area id="EF6FF14D" shape="circle" coords="206,662,4" data-coords="206,662,4" class="original" href="/entry/C00019" title="C00019 (S-Adenosyl-L-methionine)" data-entry="C00019" />
+		<area id="EF6FD87F" shape="circle" coords="126,662,4" data-coords="126,662,4" class="original" href="/entry/C00170" title="C00170 (5'-Methylthioadenosine)" data-entry="C00170" />
+		<area id="036FD843" shape="circle" coords="109,637,4" data-coords="109,637,4" class="original" href="/entry/C01804" title="C01804 (Discadenine)" data-entry="C01804" />
+		<area id="EE6FD861" shape="circle" coords="126,601,4" data-coords="126,601,4" class="original" href="/entry/C07330" title="C07330 (3-Methyl-2-butenal)" data-entry="C07330" />
+		<area id="D96FD36B" shape="circle" coords="111,575,4" data-coords="111,575,4" class="original" href="/entry/C00147" title="C00147 (Adenine)" data-entry="C00147" />
+		<area id="ED6FEC6B" shape="circle" coords="215,575,4" data-coords="215,575,4" class="original" href="/entry/C04083" title="C04083 (N6-(Delta2-Isopentenyl)-adenine)" data-entry="C04083" />
+		<area id="ED6FE775" shape="circle" coords="215,495,4" data-coords="215,495,4" class="original" href="/entry/C16427" title="C16427 (Isopentenyl adenosine)" data-entry="C16427" />
+		<area id="E37005E8" shape="circle" coords="363,575,4" data-coords="363,575,4" class="original" href="/entry/C00371" title="C00371 (Zeatin)" data-entry="C00371" />
+		<area id="E37000F2" shape="circle" coords="363,495,4" data-coords="363,495,4" class="original" href="/entry/C16431" title="C16431 (trans-Zeatin riboside)" data-entry="C16431" />
+		<area id="E57000CA" shape="circle" coords="363,417,4" data-coords="363,417,4" class="original" href="/entry/C16430" title="C16430 (trans-Zeatin riboside monophosphate)" data-entry="C16430" />
+		<area id="E66FFBCA" shape="circle" coords="363,318,4" data-coords="363,318,4" class="original" href="/entry/C16429" title="C16429 (trans-Zeatin riboside diphosphate)" data-entry="C16429" />
+		<area id="E76FF6CA" shape="circle" coords="363,219,4" data-coords="363,219,4" class="original" href="/entry/C16428" title="C16428 (trans-Zeatin riboside triphosphate)" data-entry="C16428" />
+		<area id="EF6FE74D" shape="circle" coords="215,417,4" data-coords="215,417,4" class="original" href="/entry/C04713" title="C04713 (N6-(delta2-Isopentenyl)-adenosine 5'-monophosphate)" data-entry="C04713" />
+		<area id="F06FE24D" shape="circle" coords="215,318,4" data-coords="215,318,4" class="original" href="/entry/C16426" title="C16426 (Isopentenyladenosine-5'-diphosphate)" data-entry="C16426" />
+		<area id="F16FDD4D" shape="circle" coords="215,219,4" data-coords="215,219,4" class="original" href="/entry/C16424" title="C16424 (Isopentenyladenosine-5'-triphosphate)" data-entry="C16424" />
+		<area id="FE6FCE34" shape="circle" coords="108,417,4" data-coords="108,417,4" class="original" href="/entry/C00235" title="C00235 (Dimethylallyl diphosphate)" data-entry="C00235" />
+		<area id="046FC939" shape="circle" coords="109,318,4" data-coords="109,318,4" class="original" href="/entry/C00235" title="C00235 (Dimethylallyl diphosphate)" data-entry="C00235" />
+		<area id="006FC439" shape="circle" coords="108,219,4" data-coords="108,219,4" class="original" href="/entry/C00235" title="C00235 (Dimethylallyl diphosphate)" data-entry="C00235" />
+		<area id="BC9AE016" shape="rect" coords="577,629,623,646" data-coords="577,629,623,646" class="original" href="/entry/K13495+2.4.1.215+R07260" title="K13495 (CISZOG), 2.4.1.215, R07260" />
+		<area id="1C18F588" shape="poly" coords="646,223,646,313,648,313,648,223" data-coords="646,223,646,313,648,313,648,223" class="original" href="/entry/R08077" title="R08077" />
+		<area id="02197788" shape="poly" coords="646,322,646,412,648,412,648,322" data-coords="646,322,646,412,648,412,648,322" class="original" href="/entry/R08078" title="R08078" />
+		<area id="E719F4AB" shape="poly" coords="646,421,646,490,648,490,648,421" data-coords="646,421,646,490,648,490,648,421" class="original" href="/entry/R08079" title="R08079" />
+		<area id="B819FD0C" shape="poly" coords="646,499,646,569,648,569,648,499" data-coords="646,499,646,569,648,569,648,499" class="original" href="/entry/R08080" title="R08080" />
+		<area id="37129099" shape="poly" coords="367,494,502,494,502,496,367,496" data-coords="367,494,502,494,502,496,367,496" class="original" href="/entry/R08067" title="R08067" />
+		<area id="CE17E17F" shape="poly" coords="506,500,506,570,508,570,508,500" data-coords="506,500,506,570,508,570,508,500" class="original" href="/entry/R08074" title="R08074" />
+		<area id="00176088" shape="poly" coords="506,422,506,490,508,490,508,422" data-coords="506,422,506,490,508,490,508,422" class="original" href="/entry/R08071" title="R08071" />
+		<area id="6B128C89" shape="poly" coords="367,416,502,416,502,418,367,418" data-coords="367,416,502,416,502,418,367,418" class="original" href="/entry/R08065" title="R08065" />
+		<area id="310EC5E5" shape="poly" coords="214,224,214,313,216,313,216,224" data-coords="214,224,214,313,216,313,216,224" class="original" href="/entry/R08061" title="R08061" />
+		<area id="2D115C92" shape="poly" coords="362,224,362,313,364,313,364,224" data-coords="362,224,362,313,364,313,364,224" class="original" href="/entry/R08063" title="R08063" />
+		<area id="170F47E5" shape="poly" coords="214,323,214,412,216,412,216,323" data-coords="214,323,214,412,216,412,216,323" class="original" href="/entry/R08062" title="R08062" />
+		<area id="1311DE92" shape="poly" coords="362,323,362,412,364,412,364,323" data-coords="362,323,362,412,364,412,364,323" class="original" href="/entry/R08064" title="R08064" />
+		<area id="FC0FC508" shape="poly" coords="214,422,214,490,216,490,216,422" data-coords="214,422,214,490,216,490,216,422" class="original" href="/entry/R08069" title="R08069" />
+		<area id="F8125BB5" shape="poly" coords="362,422,362,490,364,490,364,422" data-coords="362,422,362,490,364,490,364,422" class="original" href="/entry/R08070" title="R08070" />
+		<area id="4F0FE1E6" shape="poly" coords="219,494,358,494,358,496,219,496" data-coords="219,494,358,494,358,496,219,496" class="original" href="/entry/R08066" title="R08066" />
+		<area id="CA104604" shape="poly" coords="214,500,214,570,216,570,216,500" data-coords="214,500,214,570,216,570,216,500" class="original" href="/entry/R08072" title="R08072" />
+		<area id="C612DCB1" shape="poly" coords="362,500,362,570,364,570,364,500" data-coords="362,500,362,570,364,570,364,500" class="original" href="/entry/R08073" title="R08073" />
+		<area id="4A1062E2" shape="poly" coords="219,574,357,574,357,576,219,576" data-coords="219,574,357,574,357,576,219,576" class="original" href="/entry/R08068" title="R08068" />
+		<area id="3BB6564D" shape="rect" coords="434,629,480,646" data-coords="434,629,480,646" class="original" href="/entry/K13496+K23452+R08076" title="K13496 (UGT73C), K23452 (UGT85A), R08076" />
+		<area id="08B9D941" shape="rect" coords="434,567,480,584" data-coords="434,567,480,584" class="original" href="/entry/1.3.1.69+R05702" title="1.3.1.69, R05702" />
+		<area id="3A8BAB12" shape="rect" coords="272,409,318,426" data-coords="272,409,318,426" class="original" href="/entry/K10717+R08055" title="K10717 (CYP735A), R08055" />
+		<area id="588B2F8A" shape="rect" coords="272,310,318,327" data-coords="272,310,318,327" class="original" href="/entry/K10717+R08054" title="K10717 (CYP735A), R08054" />
+		<area id="ADAC37BF" shape="rect" coords="143,409,189,426" data-coords="143,409,189,426" class="original" href="/entry/K10760+2.5.1.27+R04038" title="K10760 (IPT), 2.5.1.27, R04038" />
+		<area id="CBABBC37" shape="rect" coords="143,310,189,327" data-coords="143,310,189,327" class="original" href="/entry/K10760+2.5.1.112+R08052" title="K10760 (IPT), 2.5.1.112, R08052" />
+		<area id="E3AB4037" shape="rect" coords="143,211,189,228" data-coords="143,211,189,228" class="original" href="/entry/K10760+2.5.1.112+R08051" title="K10760 (IPT), 2.5.1.112, R08051" />
+		<area id="708AB38A" shape="rect" coords="272,211,318,228" data-coords="272,211,318,228" class="original" href="/entry/K10717+R08053" title="K10717 (CYP735A), R08053" />
+		<area id="F096ED94" shape="rect" coords="577,211,623,228" data-coords="577,211,623,228" class="original" href="/entry/K00791+2.5.1.75+R01122" title="K00791 (miaA), 2.5.1.75, R01122" />
+		<area id="AFAF32B9" shape="rect" coords="143,629,189,646" data-coords="143,629,189,646" class="original" href="/entry/2.5.1.24+R03726" title="2.5.1.24, R03726" />
+		<area id="7CB2B5AD" shape="rect" coords="143,567,189,584" data-coords="143,567,189,584" class="original" href="/entry/K00279+1.5.99.12+R05708" title="K00279 (CKX), 1.5.99.12, R05708" />
+		<area id="579AA66B" shape="rect" coords="293,835,339,852" data-coords="293,835,339,852" class="original" href="/entry/K13494+2.4.2.40+R02119" title="K13494 (ZOX1), 2.4.2.40, R02119" />
+		<area id="3D95AE59" shape="rect" coords="293,694,339,711" data-coords="293,694,339,711" class="original" href="/entry/K13492+2.4.1.203+R02118" title="K13492 (ZOG1), 2.4.1.203, R02118" />
+		<area id="B998AFEE" shape="rect" coords="293,629,339,646" data-coords="293,629,339,646" class="original" href="/entry/2.5.1.50+R03133" title="2.5.1.50, R03133" />
+		<area id="249D28E2" shape="rect" coords="292,768,338,785" data-coords="292,768,338,785" class="original" href="/entry/K13493+R08075" title="K13493 (UGT76C1_2), R08075" />
+		<area id="37B2ABC9" shape="rect" coords="40,45,221,70" data-coords="40,45,221,70" class="original" href="/entry/map00908" title="map00908: Zeatin biosynthesis" data-entry="map00908" />
+		<area id="5DBB2991" shape="rect" coords="47,136,223,161" data-coords="47,136,223,161" class="original" href="/pathway/map00900" title="map00900: Terpenoid backbone biosynthesis" data-entry="map00900" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map00908.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00908.png 1x"
+	       data-src="/kegg/pathway/map/map00908.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00908@2x.png 2x"
+	       data-src="/kegg/pathway/map/map00908@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

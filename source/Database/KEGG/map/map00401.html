@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map00401
+DEFINITION  Novobiocin biosynthesis
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Novobiocin biosynthesis - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() の実行で
+	 *      色が薄くなるのを打ち消す */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* 以下のwidth,overflowの定義で.rowのブロック内で横スクロールする。 */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* 横に並べる場合(title可変幅) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* 横に並べる場合(title可変幅) end */
+
+
+/* Search欄の検索結果 start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Search欄の検索結果 end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconの位置調整のために必要 */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariでボタンの周りに入る余白を削除 */
+	margin: 0px;
+	padding: 0px;
+	/* ボタンを押した時に表示されるボーダーを非表示にする */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* コントロールパネルに合わせて初期は非表示 */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* 画像の下に入る余白を無くす */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '00401',
+	         org: 'map',
+	       entry: 'map00401',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Novobiocin biosynthesis - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=00401&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+00401" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map00401" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="00401" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map00401.png" srcset="/kegg/pathway/map/map00401.png 1x" data-srcset="/kegg/pathway/map/map00401.png 1x, /kegg/pathway/map/map00401@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="1179" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="DB70738E" shape="circle" coords="822,292,4" data-coords="822,292,4" class="original" href="/entry/C12477" title="C12477 (3-Methylpyrrole-2,4-dicarboxylic acid)" data-entry="C12477" />
+		<area id="D270735C" shape="circle" coords="710,743,4" data-coords="710,743,4" class="original" href="/entry/C12483" title="C12483 (Pyrrole-2-carbonyl-[pcp])" data-entry="C12483" />
+		<area id="DA70827A" shape="circle" coords="822,551,4" data-coords="822,551,4" class="original" href="/entry/C12479" title="C12479 (Coumermic acid)" data-entry="C12479" />
+		<area id="B5AF4744" shape="circle" coords="1007,818,4" data-coords="1007,818,4" class="original" href="/entry/C05080" title="C05080 (Novobiocin)" data-entry="C05080" />
+		<area id="F16FD8A2" shape="circle" coords="245,139,4" data-coords="245,139,4" class="original" href="/entry/C00082" title="C00082 (L-Tyrosine)" data-entry="C00082" />
+		<area id="F6700A89" shape="circle" coords="436,139,4" data-coords="436,139,4" class="original" href="/entry/C12462" title="C12462 (beta-Hydroxy-L-tyrosyl-[pcp])" data-entry="C12462" />
+		<area id="F67055ED" shape="circle" coords="776,139,4" data-coords="776,139,4" class="original" href="/entry/C12467" title="C12467 (2-Hydroxy-beta-keto-L-tyrosyl-[pcp])" data-entry="C12467" />
+		<area id="EF6FDD9D" shape="circle" coords="245,227,4" data-coords="245,227,4" class="original" href="/entry/C01179" title="C01179 (3-(4-Hydroxyphenyl)pyruvate)" data-entry="C01179" />
+		<area id="E56FC452" shape="circle" coords="113,227,4" data-coords="113,227,4" class="original" href="/entry/C00254" title="C00254 (Prephenate)" data-entry="C00254" />
+		<area id="F16FE298" shape="circle" coords="245,319,4" data-coords="245,319,4" class="original" href="/entry/C12456" title="C12456 (3-Dimethylallyl-4-hydroxyphenylpyruvate)" data-entry="C12456" />
+		<area id="E97046FC" shape="circle" coords="584,816,4" data-coords="584,816,4" class="original" href="/entry/C12032" title="C12032 (Clorobiocin)" data-entry="C12032" />
+		<area id="E5709B6B" shape="circle" coords="914,572,4" data-coords="914,572,4" class="original" href="/entry/C12481" title="C12481 (dTDP-5-dimethyl-L-lyxose)" data-entry="C12481" />
+		<area id="F0700F89" shape="circle" coords="436,233,4" data-coords="436,233,4" class="original" href="/entry/C12460" title="C12460 (3-Dimethylallyl-beta-hydroxy-L-tyrosyl-[pcp])" data-entry="C12460" />
+		<area id="D970916B" shape="circle" coords="822,820,4" data-coords="822,820,4" class="original" href="/entry/C05073" title="C05073 (Coumermycin A1)" data-entry="C05073" />
+		<area id="B5AF4244" shape="circle" coords="1007,718,4" data-coords="1007,718,4" class="original" href="/entry/C12476" title="C12476 (Decarbamoylnovobiocin)" data-entry="C12476" />
+		<area id="B2AF3D53" shape="circle" coords="1007,645,4" data-coords="1007,645,4" class="original" href="/entry/C12475" title="C12475 (Demethyldecarbamoylnovobiocin)" data-entry="C12475" />
+		<area id="A7AF244E" shape="circle" coords="1004,139,4" data-coords="1004,139,4" class="original" href="/entry/C12468" title="C12468 (3-Amino-4,7-dihydroxycoumarin)" data-entry="C12468" />
+		<area id="F16FE2C0" shape="circle" coords="245,399,4" data-coords="245,399,4" class="original" href="/entry/C12457" title="C12457 (3-Dimethylallyl-4-hydroxymandelic acid)" data-entry="C12457" />
+		<area id="D170696B" shape="circle" coords="710,572,4" data-coords="710,572,4" class="original" href="/entry/C12470" title="C12470 (L-Prolyl-[pcp])" data-entry="C12470" />
+		<area id="EA702E0B" shape="circle" coords="584,347,4" data-coords="584,347,4" class="original" href="/entry/C12469" title="C12469 (3-Amino-4,7-dihydroxy-8-chlorocoumarin)" data-entry="C12469" />
+		<area id="F67014A7" shape="circle" coords="436,399,4" data-coords="436,399,4" class="original" href="/entry/C12458" title="C12458 (3-Dimethylallyl-4-hydroxybenzoate)" data-entry="C12458" />
+		<area id="EC702406" shape="circle" coords="584,139,4" data-coords="584,139,4" class="original" href="/entry/C12463" title="C12463 (beta-Keto-L-tyrosyl-[pcp])" data-entry="C12463" />
+		<area id="F670147F" shape="circle" coords="436,319,4" data-coords="436,319,4" class="original" href="/entry/C12459" title="C12459 (3-Dimethylallyl-4-hydroxybenzaldehyde)" data-entry="C12459" />
+		<area id="D2706470" shape="circle" coords="710,483,4" data-coords="710,483,4" class="original" href="/entry/C00148" title="C00148 (L-Proline)" data-entry="C00148" />
+		<area id="E4703810" shape="circle" coords="584,551,4" data-coords="584,551,4" class="original" href="/entry/C12471" title="C12471 (Chlorobiocic acid)" data-entry="C12471" />
+		<area id="D170376B" shape="circle" coords="510,572,4" data-coords="510,572,4" class="original" href="/entry/C12481" title="C12481 (dTDP-5-dimethyl-L-lyxose)" data-entry="C12481" />
+		<area id="E8703D0B" shape="circle" coords="584,645,4" data-coords="584,645,4" class="original" href="/entry/C12472" title="C12472 (Novclobiocin 105)" data-entry="C12472" />
+		<area id="AEAF3858" shape="circle" coords="1007,551,4" data-coords="1007,551,4" class="original" href="/entry/C12474" title="C12474 (Novobiocic acid)" data-entry="C12474" />
+		<area id="DA708C6B" shape="circle" coords="822,721,4" data-coords="822,721,4" class="original" href="/entry/C12480" title="C12480 (Coumermycin D)" data-entry="C12480" />
+		<area id="E3704201" shape="circle" coords="584,720,4" data-coords="584,720,4" class="original" href="/entry/C12473" title="C12473 (Novclobiocin 104)" data-entry="C12473" />
+		<area id="056FF18E" shape="circle" coords="339,139,4" data-coords="339,139,4" class="original" href="/entry/C12461" title="C12461 (L-Tyrosyl-[pcp])" data-entry="C12461" />
+		<area id="D7706E61" shape="circle" coords="710,658,4" data-coords="710,658,4" class="original" href="/entry/C12483" title="C12483 (Pyrrole-2-carbonyl-[pcp])" data-entry="C12483" />
+		<area id="DD707889" shape="circle" coords="822,384,4" data-coords="822,384,4" class="original" href="/entry/C20637" title="C20637 (5-[[(4,7-Dihydroxy-2-oxo-2H-1-benzopyran-3-yl)amino]carbonyl]-4-methyl-1H-pyrrole-3-carboxylate)" data-entry="C20637" />
+		<area id="B0AF3367" shape="circle" coords="1007,483,4" data-coords="1007,483,4" class="original" href="/entry/C20629" title="C20629 (8-Demethylnovobiocic acid)" data-entry="C20629" />
+		<area id="9A145C21" shape="poly" coords="435,323,435,393,437,393,437,323" data-coords="435,323,435,393,437,393,437,323" class="original" href="/entry/R06763" title="R06763" />
+		<area id="A7B9C1C6" shape="rect" coords="822,762,868,779" data-coords="822,762,868,779" class="original" href="/entry/K12724+R06768" title="K12724 (cloN7), R06768" />
+		<area id="A7ADD1F1" shape="rect" coords="799,668,845,685" data-coords="799,668,845,685" class="original" href="/entry/K12712+R06767" title="K12712 (novP), R06767" />
+		<area id="5CA65368" shape="rect" coords="799,595,845,612" data-coords="799,595,845,612" class="original" href="/entry/K12711+R06767" title="K12711 (novM), R06767" />
+		<area id="E39EBF11" shape="rect" coords="776,425,822,442" data-coords="776,425,822,442" class="original" href="/entry/K12709+R06778" title="K12709 (novL), R06778" />
+		<area id="40A9557A" shape="rect" coords="799,334,845,351" data-coords="799,334,845,351" class="original" href="/entry/K12709+R06777" title="K12709 (novL), R06777" />
+		<area id="86BC5D46" shape="rect" coords="538,762,584,779" data-coords="538,762,584,779" class="original" href="/entry/K12722+R06775" title="K12722 (cloN6), R06775" />
+		<area id="0B9FD892" shape="rect" coords="688,507,734,524" data-coords="688,507,734,524" class="original" href="/entry/K12719+K12720+6.2.1.53+R06746" title="K12719 (cloN4), K12720 (cloN5), 6.2.1.53, R06746" />
+		<area id="C1A0528D" shape="rect" coords="688,604,734,621" data-coords="688,604,734,621" class="original" href="/entry/K12721+1.3.8.14+R06747" title="K12721 (cloN3), 1.3.8.14, R06747" />
+		<area id="97A35571" shape="rect" coords="584,762,630,779" data-coords="584,762,630,779" class="original" href="/entry/K12724+R06775" title="K12724 (cloN7), R06775" />
+		<area id="3294F78F" shape="rect" coords="562,668,608,685" data-coords="562,668,608,685" class="original" href="/entry/K12712+R06774" title="K12712 (novP), R06774" />
+		<area id="E78D7901" shape="rect" coords="562,595,608,612" data-coords="562,595,608,612" class="original" href="/entry/K12711+R06773" title="K12711 (novM), R06773" />
+		<area id="688FF396" shape="rect" coords="561,425,607,442" data-coords="561,425,607,442" class="original" href="/entry/K12709+R06776" title="K12709 (novL), R06776" />
+		<area id="2E93038F" shape="rect" coords="562,268,608,285" data-coords="562,268,608,285" class="original" href="/entry/K12714+R06766" title="K12714 (clohal), R06766" />
+		<area id="9E269ED9" shape="rect" coords="985,762,1031,779" data-coords="985,762,1031,779" class="original" href="/entry/K12713+2.1.3.12+R06772" title="K12713 (novN), 2.1.3.12, R06772" />
+		<area id="9CAA9656" shape="rect" coords="984,668,1030,685" data-coords="984,668,1030,685" class="original" href="/entry/K12712+2.1.1.285+R06771" title="K12712 (novP), 2.1.1.285, R06771" />
+		<area id="9C2808DF" shape="rect" coords="984,595,1030,612" data-coords="984,595,1030,612" class="original" href="/entry/K12711+2.4.1.302+R06770" title="K12711 (novM), 2.4.1.302, R06770" />
+		<area id="99AAA550" shape="rect" coords="985,425,1031,442" data-coords="985,425,1031,442" class="original" href="/entry/K12709+6.3.1.15+R10453" title="K12709 (novL), 6.3.1.15, R10453" />
+		<area id="EFB541D2" shape="rect" coords="822,425,868,442" data-coords="822,425,868,442" class="original" href="/entry/K12705+R06778" title="K12705 (novO), R06778" />
+		<area id="479C1266" shape="rect" coords="490,139,536,156" data-coords="490,139,536,156" class="original" href="/entry/K12704+R06753" title="K12704 (novK), R06753" />
+		<area id="989A14E4" shape="rect" coords="490,122,536,139" data-coords="490,122,536,139" class="original" href="/entry/K12703+R06753" title="K12703 (novJ), R06753" />
+		<area id="C68993B1" shape="rect" coords="359,130,405,147" data-coords="359,130,405,147" class="original" href="/entry/K12702+R06752" title="K12702 (novI), R06752" />
+		<area id="D3873913" shape="rect" coords="263,130,309,147" data-coords="263,130,309,147" class="original" href="/entry/K12701+R06751" title="K12701 (novH), R06751" />
+		<area id="ABA47B5E" shape="rect" coords="317,389,363,406" data-coords="317,389,363,406" class="original" href="/entry/K12708+1.13.12.23+R06759" title="K12708 (novR), 1.13.12.23, R06759" />
+		<area id="E9A820CC" shape="rect" coords="222,346,268,363" data-coords="222,346,268,363" class="original" href="/entry/K12708+1.13.11.83+R06758" title="K12708 (novR), 1.13.11.83, R06758" />
+		<area id="27B012B1" shape="rect" coords="247,184,293,201" data-coords="247,184,293,201" class="original" href="/entry/K00832+K00838+2.6.1.57+R00734" title="K00832 (tyrB), K00838 (ARO8), 2.6.1.57, R00734" />
+		<area id="3FB812B7" shape="rect" coords="247,165,293,182" data-coords="247,165,293,182" class="original" href="/entry/K00815+K00838+2.6.1.5+R00734" title="K00815 (TAT), K00838 (ARO8), 2.6.1.5, R00734" />
+		<area id="2794ADE6" shape="rect" coords="197,184,243,201" data-coords="197,184,243,201" class="original" href="/entry/K00817+2.6.1.9+R00734" title="K00817 (hisC), 2.6.1.9, R00734" />
+		<area id="AA85192F" shape="rect" coords="155,229,201,246" data-coords="155,229,201,246" class="original" href="/entry/K00220+K24018+1.3.1.43+R01728" title="K00220 (tyrC), K24018 (K24018), 1.3.1.43, R01728" />
+		<area id="91831735" shape="rect" coords="155,208,201,225" data-coords="155,208,201,225" class="original" href="/entry/K04517+K14187+K00220+K24018+1.3.1.12+R01728" title="K04517 (tyrA2), K14187 (tyrA), K00220 (tyrC), K24018 (K24018), 1.3.1.12, R01728" />
+		<area id="3F9CADEC" shape="rect" coords="197,165,243,182" data-coords="197,165,243,182" class="original" href="/entry/K00812+K00813+K11358+2.6.1.1+R00734" title="K00812 (aspB), K00813 (aspC), K11358 (yhdR), 2.6.1.1, R00734" />
+		<area id="33A8A74E" shape="rect" coords="222,259,268,276" data-coords="222,259,268,276" class="original" href="/entry/K12707+2.5.1.111+R06757" title="K12707 (novQ), 2.5.1.111, R06757" />
+		<area id="5714298B" shape="poly" coords="430,318,249,318,249,320,430,320" data-coords="430,318,249,318,249,320,430,320" class="original" href="/entry/R06762" title="R06762" />
+		<area id="9E135DF8" shape="poly" coords="435,143,435,227,437,227,437,143" data-coords="435,143,435,227,437,227,437,143" class="original" href="/entry/R06760" title="R06760" />
+		<area id="FE13DF76" shape="poly" coords="435,237,435,313,437,313,437,237" data-coords="435,237,435,313,437,313,437,237" class="original" href="/entry/R06761" title="R06761" />
+		<area id="12162123" shape="poly" coords="588,138,770,138,770,140,588,140" data-coords="588,138,770,138,770,140,588,140" class="original" href="/entry/R06764" title="R06764" />
+		<area id="521B3541" shape="poly" coords="780,138,998,138,998,140,780,140" data-coords="780,138,998,138,998,140,780,140" class="original" href="/entry/R06765" title="R06765" />
+		<area id="9B24A6D9" shape="rect" coords="984,507,1030,524" data-coords="984,507,1030,524" class="original" href="/entry/K12705+2.1.1.284+R10454" title="K12705 (novO), 2.1.1.284, R10454" />
+		<area id="1994408E" shape="rect" coords="664,687,710,704" data-coords="664,687,710,704" class="original" href="/entry/K12723+R06748" title="K12723 (cloN2), R06748" />
+		<area id="25AAC34F" shape="rect" coords="710,687,756,704" data-coords="710,687,756,704" class="original" href="/entry/K17626+R06748" title="K17626 (cloN1), R06748" />
+		<area id="9BA33F05" shape="rect" coords="776,762,822,779" data-coords="776,762,822,779" class="original" href="/entry/K12722+R06768" title="K12722 (cloN6), R06768" />
+		<area id="84A76D28" shape="rect" coords="457,467,563,501" data-coords="457,467,563,501" class="original" href="/pathway/map00523" title="map00523: Polyketide sugar unit biosynthesis" data-entry="map00523" />
+		<area id="27B1478F" shape="rect" coords="862,467,967,501" data-coords="862,467,967,501" class="original" href="/pathway/map00523" title="map00523: Polyketide sugar unit biosynthesis" data-entry="map00523" />
+		<area id="B8B1CF13" shape="rect" coords="652,383,771,417" data-coords="652,383,771,417" class="original" href="/pathway/map00330" title="map00330: Arginine and proline metabolism" data-entry="map00330" />
+		<area id="37B2BAF1" shape="rect" coords="40,45,259,70" data-coords="40,45,259,70" class="original" href="/entry/map00401" title="map00401: Novobiocin biosynthesis" data-entry="map00401" />
+		<area id="0DD845A3" shape="rect" coords="37,123,188,157" data-coords="37,123,188,157" class="original" href="/pathway/map00400" title="map00400: Phenylalanine, tyrosine and tryptophan biosynthesis" data-entry="map00400" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map00401.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00401.png 1x"
+	       data-src="/kegg/pathway/map/map00401.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00401@2x.png 2x"
+	       data-src="/kegg/pathway/map/map00401@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map04974
+DEFINITION  Protein digestion and absorption
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Protein digestion and absorption - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() の実行で
+	 *      色が薄くなるのを打ち消す */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* 以下のwidth,overflowの定義で.rowのブロック内で横スクロールする。 */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* 横に並べる場合(title可変幅) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* 横に並べる場合(title可変幅) end */
+
+
+/* Search欄の検索結果 start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Search欄の検索結果 end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconの位置調整のために必要 */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariでボタンの周りに入る余白を削除 */
+	margin: 0px;
+	padding: 0px;
+	/* ボタンを押した時に表示されるボーダーを非表示にする */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* コントロールパネルに合わせて初期は非表示 */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* 画像の下に入る余白を無くす */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '04974',
+	         org: 'map',
+	       entry: 'map04974',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Protein digestion and absorption - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=04974&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+04974" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map04974" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	Protein is a dietary component essential for nutritional homeostasis in humans. Normally, ingested protein undergoes a complex series of degradative processes following the action of gastric, pancreatic and small intestinal enzymes. The result of this proteolytic activity is a mixture of amino acids and small peptides. Amino acids (AAs) are transported into the enterocyte (intestinal epithelial cell) by a variety of AA transporters that are specific for cationic (basic) AA, neutral AA, and anionic (acidic) AA. Small peptides are absorbed into enterocytes by the PEPT1 transporter. Inside enterocytes peptides are hydrolyzed, and the resulting amino acids are released together with those absorbed by AA transporters into blood via multiple, basolateral, AA transporters. Hydrolysis-resistant peptides, however, are transported out of the cells by a basolateral peptide transporter that has not been identified molecularly.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="04974" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map04974.png" srcset="/kegg/pathway/map/map04974.png 1x" data-srcset="/kegg/pathway/map/map04974.png 1x, /kegg/pathway/map/map04974@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="1161" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="8CAF2F0C" shape="circle" coords="1080,312,4" data-coords="1080,312,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="FB701EDE" shape="circle" coords="478,504,4" data-coords="478,504,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="E7701EAC" shape="circle" coords="453,509,4" data-coords="453,509,4" class="original" href="/entry/C00025+C00049" title="C00025 (L-Glutamate), C00049 (L-Aspartate)" data-entry="C00025" />
+		<area id="A4AF3E02" shape="circle" coords="1075,641,4" data-coords="1075,641,4" class="original" href="/entry/C00037+C00041+C00183+C00123+C00073+C00407+C00079+C00078+C00065+C00188+C00152+C00064" title="C00037 (Glycine), C00041 (L-Alanine), C00183 (L-Valine), C00123 (L-Leucine), C00073 (L-Methionine), C00407 (L-Isoleucine), C00079 (L-Phenylalanine), C00078 (L-Tryptophan), C00065 (L-Serine), C00188 (L-Threonine), C00152 (L-Asparagine), C00064 (L-Glutamine)" data-entry="C00037" />
+		<area id="01702901" shape="circle" coords="479,765,4" data-coords="479,765,4" class="original" href="/entry/C00062+C00047+C16138+C00491" title="C00062 (L-Arginine), C00047 (L-Lysine), C16138 (L-Pyrrolysine), C00491 (L-Cystine)" data-entry="C00062" />
+		<area id="9FAF5B62" shape="circle" coords="1104,771,4" data-coords="1104,771,4" class="original" href="/entry/C00047+C00062+C00135" title="C00047 (L-Lysine), C00062 (L-Arginine), C00135 (L-Histidine)" data-entry="C00047" />
+		<area id="8AAF3407" shape="circle" coords="1070,450,4" data-coords="1070,450,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="8FAF340C" shape="circle" coords="1071,460,4" data-coords="1071,460,4" class="original" href="/entry/C00037+C00148+C00041+C00065+C00097+C00064+C00152+C00135+C00073" title="C00037 (Glycine), C00148 (L-Proline), C00041 (L-Alanine), C00065 (L-Serine), C00097 (L-Cysteine), C00064 (L-Glutamine), C00152 (L-Asparagine), C00135 (L-Histidine), C00073 (L-Methionine)" data-entry="C00037" />
+		<area id="FE706EF2" shape="circle" coords="779,642,4" data-coords="779,642,4" class="original" href="/entry/C00037+C00041+C00183+C00123+C00073+C00407+C00148+C00079+C00078+C00065+C00188+C00152+C00064" title="C00037 (Glycine), C00041 (L-Alanine), C00183 (L-Valine), C00123 (L-Leucine), C00073 (L-Methionine), C00407 (L-Isoleucine), C00148 (L-Proline), C00079 (L-Phenylalanine), C00078 (L-Tryptophan), C00065 (L-Serine), C00188 (L-Threonine), C00152 (L-Asparagine), C00064 (L-Glutamine)" data-entry="C00037" />
+		<area id="05706EF7" shape="circle" coords="769,699,4" data-coords="769,699,4" class="original" href="/entry/C00097" title="C00097 (L-Cysteine)" data-entry="C00097" />
+		<area id="F67023BB" shape="circle" coords="456,639,4" data-coords="456,639,4" class="original" href="/entry/C00037+C00041+C00183+C00123+C00073+C00407+C00148+C00079+C00078+C00065+C00188+C00152+C00064" title="C00037 (Glycine), C00041 (L-Alanine), C00183 (L-Valine), C00123 (L-Leucine), C00073 (L-Methionine), C00407 (L-Isoleucine), C00148 (L-Proline), C00079 (L-Phenylalanine), C00078 (L-Tryptophan), C00065 (L-Serine), C00188 (L-Threonine), C00152 (L-Asparagine), C00064 (L-Glutamine)" data-entry="C00037" />
+		<area id="F87023ED" shape="circle" coords="478,631,4" data-coords="478,631,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="D870151A" shape="circle" coords="480,379,4" data-coords="480,379,4" class="original" href="/entry/C00080" title="C00080 (H+)" data-entry="C00080" />
+		<area id="F7703815" shape="circle" coords="597,515,4" data-coords="597,515,4" class="original" href="/entry/C00238" title="C00238 (Potassium cation)" data-entry="C00238" />
+		<area id="DA702DCA" shape="circle" coords="562,311,4" data-coords="562,311,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="FC704701" shape="circle" coords="689,320,4" data-coords="689,320,4" class="original" href="/entry/C00080" title="C00080 (H+)" data-entry="C00080" />
+		<area id="A1AF2EEE" shape="circle" coords="1074,303,4" data-coords="1074,303,4" class="original" href="/entry/C00238" title="C00238 (Potassium cation)" data-entry="C00238" />
+		<area id="EA708CCA" shape="circle" coords="954,267,4" data-coords="954,267,4" class="original" href="/entry/C00238" title="C00238 (Potassium cation)" data-entry="C00238" />
+		<area id="FD7082C5" shape="circle" coords="868,506,4" data-coords="868,506,4" class="original" href="/entry/C00049+C00025+C00082+C00097" title="C00049 (L-Aspartate), C00025 (L-Glutamate), C00082 (L-Tyrosine), C00097 (L-Cysteine)" data-entry="C00049" />
+		<area id="F570A57F" shape="circle" coords="927,763,4" data-coords="927,763,4" class="original" href="/entry/C00064+C00073+C00123" title="C00064 (L-Glutamine), C00073 (L-Methionine), C00123 (L-Leucine)" data-entry="C00064" />
+		<area id="F5707D43" shape="circle" coords="806,448,4" data-coords="806,448,4" class="original" href="/entry/C00037+C00041+C00183+C00123+C00073+C00407+C00148+C00079+C00078+C00065+C00188+C00152+C00064+C00062+C00135+C00047+C00049+C00025+C00082+C00097" title="C00037 (Glycine), C00041 (L-Alanine), C00183 (L-Valine), C00123 (L-Leucine), C00073 (L-Methionine), C00407 (L-Isoleucine), C00148 (L-Proline), C00079 (L-Phenylalanine), C00078 (L-Tryptophan), C00065 (L-Serine), C00188 (L-Threonine), C00152 (L-Asparagine), C00064 (L-Glutamine), C00062 (L-Arginine), C00135 (L-Histidine), C00047 (L-Lysine), C00049 (L-Aspartate), C00025 (L-Glutamate), C00082 (L-Tyrosine), C00097 (L-Cysteine)" data-entry="C00037" />
+		<area id="E8703D0B" shape="circle" coords="574,695,4" data-coords="574,695,4" class="original" href="/entry/C00148+C00037+C00099" title="C00148 (L-Proline), C00037 (Glycine), C00099 (beta-Alanine)" data-entry="C00148" />
+		<area id="F4704193" shape="circle" coords="547,702,4" data-coords="547,702,4" class="original" href="/entry/C00080" title="C00080 (H+)" data-entry="C00080" />
+		<area id="E9708C52" shape="circle" coords="805,771,4" data-coords="805,771,4" class="original" href="/entry/C00062+C00047+C00135" title="C00062 (L-Arginine), C00047 (L-Lysine), C00135 (L-Histidine)" data-entry="C00062" />
+		<area id="A7AF3911" shape="circle" coords="1075,574,4" data-coords="1075,574,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="D7709BD4" shape="circle" coords="951,583,4" data-coords="951,583,4" class="original" href="/entry/C00076" title="C00076 (Calcium cation)" data-entry="C00076" />
+		<area id="D86FDDA7" shape="circle" coords="140,749,4" data-coords="140,749,4" class="original" href="/entry/C00246" title="C00246 (Butanoic acid)" data-entry="C00246" />
+		<area id="DD6FF65C" shape="circle" coords="211,749,4" data-coords="211,749,4" class="original" href="/entry/C00163" title="C00163 (Propanoate)" data-entry="C00163" />
+		<area id="F16FF6F2" shape="circle" coords="275,749,4" data-coords="275,749,4" class="original" href="/entry/C00033" title="C00033 (Acetate)" data-entry="C00033" />
+		<area id="DA6FE298" shape="circle" coords="142,811,4" data-coords="142,811,4" class="original" href="/entry/C02632" title="C02632 (2-Methylpropanoate)" data-entry="C02632" />
+		<area id="F76FDE24" shape="circle" coords="188,790,4" data-coords="188,790,4" class="original" href="/entry/C08262" title="C08262 (3-Methylbutanoic acid)" data-entry="C08262" />
+		<area id="F66FFB7A" shape="circle" coords="236,809,4" data-coords="236,809,4" class="original" href="/entry/C18319" title="C18319 (2-Methylbutyrate)" data-entry="C18319" />
+		<area id="D96FF70B" shape="circle" coords="272,790,4" data-coords="272,790,4" class="original" href="/entry/C05996" title="C05996 (Branched chain fatty acid)" data-entry="C05996" />
+		<area id="ED700F93" shape="circle" coords="336,750,4" data-coords="336,750,4" class="original" href="/entry/C00011" title="C00011 (CO2)" data-entry="C00011" />
+		<area id="EE700F9D" shape="circle" coords="336,771,4" data-coords="336,771,4" class="original" href="/entry/C00282" title="C00282 (Hydrogen)" data-entry="C00282" />
+		<area id="EF700FA7" shape="circle" coords="336,792,4" data-coords="336,792,4" class="original" href="/entry/C01438" title="C01438 (Methane)" data-entry="C01438" />
+		<area id="F070147F" shape="circle" coords="336,813,4" data-coords="336,813,4" class="original" href="/entry/C00014" title="C00014 (Ammonia)" data-entry="C00014" />
+		<area id="F1701489" shape="circle" coords="336,834,4" data-coords="336,834,4" class="original" href="/entry/C00483+C00388+C01746+C01672+C00134" title="C00483 (Tyramine), C00388 (Histamine), C01746 (Piperidine), C01672 (Cadaverine), C00134 (Putrescine)" data-entry="C00483" />
+		<area id="F2701493" shape="circle" coords="336,855,4" data-coords="336,855,4" class="original" href="/entry/C00146+C01468" title="C00146 (Phenol), C01468 (4-Cresol)" data-entry="C00146" />
+		<area id="F27014A7" shape="circle" coords="336,895,4" data-coords="336,895,4" class="original" href="/entry/C00463" title="C00463 (Indole)" data-entry="C00463" />
+		<area id="A7AF3E1B" shape="circle" coords="1074,699,4" data-coords="1074,699,4" class="original" href="/entry/C00079+C00082+C00078" title="C00079 (L-Phenylalanine), C00082 (L-Tyrosine), C00078 (L-Tryptophan)" data-entry="C00079" />
+		<area id="DF6FDD5C" shape="circle" coords="213,241,4" data-coords="213,241,4" class="original" href="/entry/C01327" title="C01327 (Hydrochloric acid)" data-entry="C01327" />
+		<area id="E7705101" shape="circle" coords="674,574,4" data-coords="674,574,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="EA70512E" shape="circle" coords="694,567,4" data-coords="694,567,4" class="original" href="/entry/C00041+C00065+C00097+C00188+C00064" title="C00041 (L-Alanine), C00065 (L-Serine), C00097 (L-Cysteine), C00188 (L-Threonine), C00064 (L-Glutamine)" data-entry="C00041" />
+		<area id="E170A0A7" shape="circle" coords="942,648,4" data-coords="942,648,4" class="original" href="/entry/C00037+C00041+C00183+C00123+C00073+C00407+C00079+C00078+C00065+C00188+C00152+C00064" title="C00037 (Glycine), C00041 (L-Alanine), C00183 (L-Valine), C00123 (L-Leucine), C00073 (L-Methionine), C00407 (L-Isoleucine), C00079 (L-Phenylalanine), C00078 (L-Tryptophan), C00065 (L-Serine), C00188 (L-Threonine), C00152 (L-Asparagine), C00064 (L-Glutamine)" data-entry="C00037" />
+		<area id="B3AF42DF" shape="circle" coords="1057,776,4" data-coords="1057,776,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="19A66A67" shape="rect" coords="511,502,557,519" data-coords="511,502,557,519" class="original" href="/entry/K05612" title="K05612 (SLC1A1)" />
+		<area id="15AD66DD" shape="rect" coords="512,757,558,774" data-coords="512,757,558,774" class="original" href="/entry/K13868" title="K13868 (SLC7A9_15)" />
+		<area id="9CA61ADF" shape="rect" coords="984,635,1030,652" data-coords="984,635,1030,652" class="original" href="/entry/K13781" title="K13781 (SLC7A8)" />
+		<area id="99AD9AD9" shape="rect" coords="984,447,1030,464" data-coords="984,447,1030,464" class="original" href="/entry/K14207" title="K14207 (SLC38A2)" />
+		<area id="9E2695EB" shape="rect" coords="984,761,1030,778" data-coords="984,761,1030,778" class="original" href="/entry/K13867" title="K13867 (SLC7A7)" />
+		<area id="CCAD66CD" shape="rect" coords="510,374,556,391" data-coords="510,374,556,391" class="original" href="/entry/K14206" title="K14206 (SLC15A1)" />
+		<area id="33A9DF61" shape="rect" coords="510,628,556,645" data-coords="510,628,556,645" class="original" href="/entry/K05334" title="K05334 (SLC6A19)" />
+		<area id="70A770EC" shape="rect" coords="598,561,644,578" data-coords="598,561,644,578" class="original" href="/entry/K05616" title="K05616 (SLC1A5)" />
+		<area id="74AF9AC4" shape="rect" coords="136,352,182,369" data-coords="136,352,182,369" class="original" href="/entry/K01312" title="K01312 (PRSS1_2_3)" />
+		<area id="DD9EE677" shape="rect" coords="485,740,531,757" data-coords="485,740,531,757" class="original" href="/entry/K14210" title="K14210 (SLC3A1)" />
+		<area id="97B113D3" shape="rect" coords="984,299,1031,316" data-coords="984,299,1031,316" class="original" href="/entry/K01539+K01540+K01538" title="K01539 (ATP1A), K01540 (ATP1B), K01538 (FXYD2)" />
+		<area id="9E249662" shape="rect" coords="984,744,1030,761" data-coords="984,744,1030,761" class="original" href="/entry/K06519" title="K06519 (SLC3A2)" />
+		<area id="9CA32556" shape="rect" coords="984,618,1030,635" data-coords="984,618,1030,635" class="original" href="/entry/K06519" title="K06519 (SLC3A2)" />
+		<area id="0896C260" shape="rect" coords="191,352,237,369" data-coords="191,352,237,369" class="original" href="/entry/K01310" title="K01310 (CTRB)" />
+		<area id="79B70E35" shape="rect" coords="246,352,292,369" data-coords="246,352,292,369" class="original" href="/entry/K09632" title="K09632 (CTRL)" />
+		<area id="23B298C3" shape="rect" coords="136,379,182,396" data-coords="136,379,182,396" class="original" href="/entry/K01346+K01345" title="K01346 (CELA2), K01345 (CELA3)" />
+		<area id="C0AC0E53" shape="rect" coords="136,405,182,422" data-coords="136,405,182,422" class="original" href="/entry/K08779+K01298+K08780" title="K08779 (CPA1), K01298 (CPA2), K08780 (CPA3)" />
+		<area id="549335EF" shape="rect" coords="191,405,237,422" data-coords="191,405,237,422" class="original" href="/entry/K01291+K01300" title="K01291 (CPB1), K01300 (CPB2)" />
+		<area id="53983380" shape="rect" coords="189,266,235,283" data-coords="189,266,235,283" class="original" href="/entry/K06002" title="K06002 (PGA)" />
+		<area id="0AA165FE" shape="rect" coords="596,307,642,324" data-coords="596,307,642,324" class="original" href="/entry/K12040" title="K12040 (SLC9A3)" />
+		<area id="96B51AD3" shape="rect" coords="984,259,1030,276" data-coords="984,259,1030,276" class="original" href="/entry/K04945+K04916+K04897+K04926+K05006" title="K04945 (KCNN4), K04916 (KCNK5), K04897 (KCNE3), K04926 (KCNQ1), K05006 (KCNJ13)" />
+		<area id="D6A0F363" shape="rect" coords="599,690,645,707" data-coords="599,690,645,707" class="original" href="/entry/K14209" title="K14209 (SLC36A)" />
+		<area id="9B2E116E" shape="rect" coords="984,570,1030,587" data-coords="984,570,1030,587" class="original" href="/entry/K05849" title="K05849 (SLC8A)" />
+		<area id="88A4E975" shape="rect" coords="597,437,643,454" data-coords="597,437,643,454" class="original" href="/entry/K01389+K01395+K08606+K09708+K01285+K01278+K14208" title="K01389 (MME), K01395 (MEP1A), K08606 (MEP1B), K09708 (ACE2), K01285 (PRCP), K01278 (DPP4), K14208 (XPNPEP2)" />
+		<area id="05A4AA4F" shape="rect" coords="111,582,157,599" data-coords="111,582,157,599" class="original" href="/entry/K14211" title="K14211 (ELN)" />
+		<area id="6A9E1D67" shape="rect" coords="111,606,157,623" data-coords="111,606,157,623" class="original" href="/entry/K06236+K19719+K19720+K06237+K19721+K06238+K16628+K23455+K08131+K19479+K08132+K16617+K08133+K08135+K24339+K07603+K06823+K24340+K24357+K16629+K16630+K24355+K24356+K24358+K23619" title="K06236 (COL1A), K19719 (COL2A), K19720 (COL3A), K06237 (COL4A), K19721 (COL5AS), K06238 (COL6A), K16628 (COL7A), K23455 (COL8A), K08131 (COL9A), K19479 (COL10A), K08132 (COL12A), K16617 (COL13A), K08133 (COL14A), K08135 (COL15A), K24339 (COL16A), K07603 (COL17A), K06823 (COL18A), K24340 (COL19A), K24357 (COL20A), K16629 (COL21A), K16630 (COL22A), K24355 (COL23A), K24356 (COL25A), K24358 (COL26A), K23619 (COL28A)" />
+		<area id="9DA40B6E" shape="rect" coords="984,690,1030,707" data-coords="984,690,1030,707" class="original" href="/entry/K08187" title="K08187 (SLC16A10)" />
+		<area id="37B7BAC4" shape="rect" coords="40,45,350,70" data-coords="40,45,350,70" class="original" href="/entry/map04974" title="map04974: Protein digestion and absorption" data-entry="map04974" />
+		<area id="649DEFDD" shape="rect" coords="624,100,739,125" data-coords="624,100,739,125" class="original" href="/pathway/map04530" title="map04530: Tight junction" data-entry="map04530" />
+		<area id="CAA6BC30" shape="rect" coords="155,300,279,325" data-coords="155,300,279,325" class="original" href="/pathway/map04972" title="map04972: Pancreatic secretion" data-entry="map04972" />
+		<area id="78A99B9A" shape="rect" coords="156,192,280,217" data-coords="156,192,280,217" class="original" href="/pathway/map04971" title="map04971: Gastric acid secretion" data-entry="map04971" />
+		<area id="FEB98D17" shape="rect" coords="267,652,393,677" data-coords="267,652,393,677" class="original" href="/pathway/ko00350" title="ko00350: Tyrosine metabolism" data-entry="ko00350" />
+		<area id="88D4B9F9" shape="rect" coords="42,662,168,696" data-coords="42,662,168,696" class="original" href="/pathway/ko00280" title="ko00280: Valine, leucine and isoleucine degradation" data-entry="ko00280" />
+		<area id="FFB28E8E" shape="rect" coords="267,682,393,707" data-coords="267,682,393,707" class="original" href="/pathway/ko00380" title="ko00380: Tryptophan metabolism" data-entry="ko00380" />
+		<area id="40BBD02A" shape="rect" coords="853,523,979,557" data-coords="853,523,979,557" class="original" href="/pathway/map00250" title="map00250: Alanine, aspartate and glutamate metabolism" data-entry="map00250" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map04974.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04974.png 1x"
+	       data-src="/kegg/pathway/map/map04974.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04974@2x.png 2x"
+	       data-src="/kegg/pathway/map/map04974@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

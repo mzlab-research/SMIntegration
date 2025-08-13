@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map04120
+DEFINITION  Ubiquitin mediated proteolysis
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Ubiquitin mediated proteolysis - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() ã®å®è¡ã§
+	 *      è²ãèããªãã®ãæã¡æ¶ã */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* ä»¥ä¸ã®width,overflowã®å®ç¾©ã§.rowã®ãã­ãã¯åã§æ¨ªã¹ã¯ã­ã¼ã«ããã */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) end */
+
+
+/* Searchæ¬ã®æ¤ç´¢çµæ start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Searchæ¬ã®æ¤ç´¢çµæ end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconã®ä½ç½®èª¿æ´ã®ããã«å¿è¦ */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariã§ãã¿ã³ã®å¨ãã«å¥ãä½ç½ãåé¤ */
+	margin: 0px;
+	padding: 0px;
+	/* ãã¿ã³ãæ¼ããæã«è¡¨ç¤ºããããã¼ãã¼ãéè¡¨ç¤ºã«ãã */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* ã³ã³ãã­ã¼ã«ããã«ã«åããã¦åæã¯éè¡¨ç¤º */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* ç»åã®ä¸ã«å¥ãä½ç½ãç¡ãã */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '04120',
+	         org: 'map',
+	       entry: 'map04120',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Ubiquitin mediated proteolysis - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=04120&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+04120" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map04120" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	Protein ubiquitination plays an important role in eukaryotic cellular processes. It mainly functions as a signal for 26S proteasome dependent protein degradation. The addition of ubiquitin to proteins being degraded is performed by a reaction cascade consisting of three enzymes, named E1 (ubiquitin activating enzyme), E2 (ubiquitin conjugating enzyme), and E3 (ubiquitin ligase). Each E3 has specificity to its substrate, or proteins to be targeted by ubiquitination. Many E3s are discovered in eukaryotes and they are classified into four types: HECT type, U-box type, single RING-finger type, and multi-subunit RING-finger type. Multi-subunit RING-finger E3s are exemplified by cullin-Rbx E3s and APC/C. They consist of a RING-finger-containing subunit (RBX1 or RBX2) that functions to bind E2s, a scaffold-like cullin molecule, adaptor proteins, and a target recognizing subunit that binds substrates.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="04120" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map04120.png" srcset="/kegg/pathway/map/map04120.png 1x" data-srcset="/kegg/pathway/map/map04120.png 1x, /kegg/pathway/map/map04120@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="986" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="5AA60470" shape="rect" coords="217,326,263,343" data-coords="217,326,263,343" class="original" href="/entry/K10685" title="K10685 (UBLE1B)" />
+		<area id="DD8A9AA0" shape="rect" coords="166,326,212,343" data-coords="166,326,212,343" class="original" href="/entry/K10684" title="K10684 (UBLE1A)" />
+		<area id="76B4CE4E" shape="rect" coords="424,951,470,968" data-coords="424,951,470,968" class="original" href="/entry/K03872" title="K03872 (ELOC)" />
+		<area id="C1B3C654" shape="rect" coords="424,934,470,951" data-coords="424,934,470,951" class="original" href="/entry/K03873" title="K03873 (ELOB)" />
+		<area id="0DB584B9" shape="rect" coords="332,977,378,994" data-coords="332,977,378,994" class="original" href="/entry/K03868" title="K03868 (RBX1)" />
+		<area id="F4AD07AE" shape="rect" coords="332,896,378,913" data-coords="332,896,378,913" class="original" href="/entry/K03868" title="K03868 (RBX1)" />
+		<area id="3EB308BF" shape="rect" coords="332,859,378,876" data-coords="332,859,378,876" class="original" href="/entry/K03868" title="K03868 (RBX1)" />
+		<area id="5DAF0843" shape="rect" coords="332,820,378,837" data-coords="332,820,378,837" class="original" href="/entry/K03868" title="K03868 (RBX1)" />
+		<area id="8598FFF0" shape="rect" coords="470,781,516,798" data-coords="470,781,516,798" class="original" href="/entry/K03360+K03361+K03362+K03875+K10099+K10259+K10260+K10291" title="K03360 (GRR1), K03361 (CDC4), K03362 (FBXW1_11), K03875 (SKP2), K10099 (FBXO2), K10259 (MET30), K10260 (FBXW7), K10291 (FBXO4)" />
+		<area id="AEBF6D3F" shape="rect" coords="449,859,495,876" data-coords="449,859,495,876" class="original" href="/entry/K03876+K07868+K10447+K10456" title="K03876 (MEL26), K07868 (RHOBTB1_2), K10447 (KLHL9_13), K10456 (KLHL19)" />
+		<area id="04917872" shape="rect" coords="470,896,516,913" data-coords="470,896,516,913" class="original" href="/entry/K10140+K10143+K10570+K10571" title="K10140 (DDB2), K10143 (RFWD2), K10570 (ERCC8), K10571 (DET1)" />
+		<area id="D295F07F" shape="rect" coords="470,934,516,951" data-coords="470,934,516,951" class="original" href="/entry/K04694+K04696" title="K04694 (SOCS1), K04696 (SOCS3)" />
+		<area id="6D937902" shape="rect" coords="470,820,516,837" data-coords="470,820,516,837" class="original" href="/entry/K03871" title="K03871 (VHL)" />
+		<area id="EB91848F" shape="rect" coords="265,661,311,678" data-coords="265,661,311,678" class="original" href="/entry/K10615" title="K10615 (HERC4)" />
+		<area id="E6AA785A" shape="rect" coords="215,661,261,678" data-coords="215,661,261,678" class="original" href="/entry/K10614" title="K10614 (HERC3)" />
+		<area id="79A4D176" shape="rect" coords="685,366,731,383" data-coords="685,366,731,383" class="original" href="/entry/K10688" title="K10688 (UBE2W)" />
+		<area id="73BC3E52" shape="rect" coords="737,326,783,343" data-coords="737,326,783,343" class="original" href="/entry/K10687" title="K10687 (UBE2F)" />
+		<area id="DC8D15A5" shape="rect" coords="268,326,314,343" data-coords="268,326,314,343" class="original" href="/entry/K10686" title="K10686 (UBA3)" />
+		<area id="DFB6A45B" shape="rect" coords="911,849,957,866" data-coords="911,849,957,866" class="original" href="/entry/K03359" title="K03359 (APC12)" />
+		<area id="D3A0219A" shape="rect" coords="865,849,911,866" data-coords="865,849,911,866" class="original" href="/entry/K03357" title="K03357 (APC10)" />
+		<area id="30B4A6DE" shape="rect" coords="911,832,957,849" data-coords="911,832,957,849" class="original" href="/entry/K03356" title="K03356 (APC9)" />
+		<area id="249E241D" shape="rect" coords="865,832,911,849" data-coords="865,832,911,849" class="original" href="/entry/K03355" title="K03355 (APC8)" />
+		<area id="6F9D1C23" shape="rect" coords="865,815,911,832" data-coords="865,815,911,832" class="original" href="/entry/K03353" title="K03353 (APC6)" />
+		<area id="7BB39EE4" shape="rect" coords="911,815,957,832" data-coords="911,815,957,832" class="original" href="/entry/K03354" title="K03354 (APC7)" />
+		<area id="C6B128CC" shape="rect" coords="911,798,957,815" data-coords="911,798,957,815" class="original" href="/entry/K03352" title="K03352 (APC5)" />
+		<area id="BA9AA60B" shape="rect" coords="865,798,911,815" data-coords="865,798,911,815" class="original" href="/entry/K03351" title="K03351 (APC4)" />
+		<area id="16B92B4F" shape="rect" coords="911,781,957,798" data-coords="911,781,957,798" class="original" href="/entry/K03350" title="K03350 (APC3)" />
+		<area id="0AA2A88E" shape="rect" coords="865,781,911,798" data-coords="865,781,911,798" class="original" href="/entry/K03348" title="K03348 (APC1)" />
+		<area id="A9B3ADE0" shape="rect" coords="819,798,865,815" data-coords="819,798,865,815" class="original" href="/entry/K03364" title="K03364 (CDH1)" />
+		<area id="F9BBB05E" shape="rect" coords="819,781,865,798" data-coords="819,781,865,798" class="original" href="/entry/K03363" title="K03363 (CDC20)" />
+		<area id="FABE37CA" shape="rect" coords="727,781,773,798" data-coords="727,781,773,798" class="original" href="/entry/K03349" title="K03349 (APC2)" />
+		<area id="0CA2E966" shape="rect" coords="681,781,727,798" data-coords="681,781,727,798" class="original" href="/entry/K03358" title="K03358 (APC11)" />
+		<area id="1D99F578" shape="rect" coords="470,977,516,994" data-coords="470,977,516,994" class="original" href="/entry/K10264" title="K10264 (FBXW8)" />
+		<area id="5CB14ED7" shape="rect" coords="424,820,470,837" data-coords="424,820,470,837" class="original" href="/entry/K03873" title="K03873 (ELOB)" />
+		<area id="0BB34C59" shape="rect" coords="424,837,470,854" data-coords="424,837,470,854" class="original" href="/entry/K03872" title="K03872 (ELOC)" />
+		<area id="B499F98D" shape="rect" coords="377,859,423,876" data-coords="377,859,423,876" class="original" href="/entry/K03869" title="K03869 (CUL3)" />
+		<area id="5095FE16" shape="rect" coords="378,820,424,837" data-coords="378,820,424,837" class="original" href="/entry/K03870" title="K03870 (CUL2)" />
+		<area id="0CB7CB4D" shape="rect" coords="424,977,470,994" data-coords="424,977,470,994" class="original" href="/entry/K03094" title="K03094 (SKP1)" />
+		<area id="74B6D5C5" shape="rect" coords="424,781,470,798" data-coords="424,781,470,798" class="original" href="/entry/K03094" title="K03094 (SKP1)" />
+		<area id="689B8504" shape="rect" coords="378,781,424,798" data-coords="378,781,424,798" class="original" href="/entry/K03347" title="K03347 (CUL1)" />
+		<area id="75B48F31" shape="rect" coords="332,781,378,798" data-coords="332,781,378,798" class="original" href="/entry/K03868" title="K03868 (RBX1)" />
+		<area id="009C7A8C" shape="rect" coords="378,977,424,994" data-coords="378,977,424,994" class="original" href="/entry/K10613" title="K10613 (CUL7)" />
+		<area id="B5987593" shape="rect" coords="378,934,424,951" data-coords="378,934,424,951" class="original" href="/entry/K10612" title="K10612 (CUL5)" />
+		<area id="C2B17FC0" shape="rect" coords="332,934,378,951" data-coords="332,934,378,951" class="original" href="/entry/K10611" title="K10611 (RBX2)" />
+		<area id="F3AF4E42" shape="rect" coords="424,896,470,913" data-coords="424,896,470,913" class="original" href="/entry/K10610" title="K10610 (DDB1)" />
+		<area id="E793FD81" shape="rect" coords="378,896,424,913" data-coords="378,896,424,913" class="original" href="/entry/K10609" title="K10609 (CUL4)" />
+		<area id="929B4D8A" shape="rect" coords="862,661,908,678" data-coords="862,661,908,678" class="original" href="/entry/K10608" title="K10608 (TRIM37)" />
+		<area id="8DB44155" shape="rect" coords="812,661,858,678" data-coords="812,661,858,678" class="original" href="/entry/K10607" title="K10607 (TRIM32)" />
+		<area id="8D98DC8A" shape="rect" coords="762,661,808,678" data-coords="762,661,808,678" class="original" href="/entry/K08285" title="K08285 (TRIM18)" />
+		<area id="88B1D055" shape="rect" coords="712,661,758,678" data-coords="712,661,758,678" class="original" href="/entry/K10606" title="K10606 (FANCL)" />
+		<area id="88966B8A" shape="rect" coords="662,661,708,678" data-coords="662,661,708,678" class="original" href="/entry/K10605" title="K10605 (BRCA1)" />
+		<area id="06AF5A55" shape="rect" coords="611,661,657,678" data-coords="611,661,657,678" class="original" href="/entry/K10604" title="K10604 (MGRN1)" />
+		<area id="79B4B05B" shape="rect" coords="912,640,958,657" data-coords="912,640,958,657" class="original" href="/entry/K10603" title="K10603 (AIRE)" />
+		<area id="79994B90" shape="rect" coords="862,640,908,657" data-coords="862,640,908,657" class="original" href="/entry/K10602" title="K10602 (NHLRC1)" />
+		<area id="74B23F5B" shape="rect" coords="812,640,858,657" data-coords="812,640,858,657" class="original" href="/entry/K10601" title="K10601 (SYVN1)" />
+		<area id="7496DA90" shape="rect" coords="762,640,808,657" data-coords="762,640,808,657" class="original" href="/entry/K04706+K16063+K16064+K16065" title="K04706 (PIAS1), K16063 (PIAS2), K16064 (PIAS3), K16065 (PIAS4)" />
+		<area id="6FAFCE5B" shape="rect" coords="712,640,758,657" data-coords="712,640,758,657" class="original" href="/entry/K16060+K04725+K16061" title="K16060 (BIRC2_3), K04725 (XIAP), K16061 (BIRC7_8)" />
+		<area id="6F946990" shape="rect" coords="662,640,708,657" data-coords="662,640,708,657" class="original" href="/entry/K10144" title="K10144 (RCHY1)" />
+		<area id="EDAD5856" shape="rect" coords="611,640,657,657" data-coords="611,640,657,657" class="original" href="/entry/K10143" title="K10143 (RFWD2)" />
+		<area id="41B2ACE9" shape="rect" coords="912,618,958,635" data-coords="912,618,958,635" class="original" href="/entry/K04416" title="K04416 (MAP3K1)" />
+		<area id="4197481E" shape="rect" coords="862,618,908,635" data-coords="862,618,908,635" class="original" href="/entry/K03175" title="K03175 (TRAF6)" />
+		<area id="3CB03BE9" shape="rect" coords="812,618,858,635" data-coords="812,618,858,635" class="original" href="/entry/K10054" title="K10054 (PML)" />
+		<area id="3C94D71E" shape="rect" coords="762,618,808,635" data-coords="762,618,808,635" class="original" href="/entry/K04506" title="K04506 (SIAH1)" />
+		<area id="37ADCAE9" shape="rect" coords="712,618,758,635" data-coords="712,618,758,635" class="original" href="/entry/K04556" title="K04556 (PARK2)" />
+		<area id="3792661E" shape="rect" coords="662,618,708,635" data-coords="662,618,708,635" class="original" href="/entry/K04707+K22517+K22518" title="K04707 (CBL), K22517 (CBLB), K22518 (CBLC)" />
+		<area id="B5AB54E4" shape="rect" coords="611,618,657,635" data-coords="611,618,657,635" class="original" href="/entry/K06643" title="K06643 (MDM2)" />
+		<area id="59996C0B" shape="rect" coords="476,640,522,657" data-coords="476,640,522,657" class="original" href="/entry/K10600" title="K10600 (UBOX5)" />
+		<area id="54B25FD6" shape="rect" coords="426,640,472,657" data-coords="426,640,472,657" class="original" href="/entry/K10599" title="K10599 (PRPF19)" />
+		<area id="18B59374" shape="rect" coords="64,618,110,635" data-coords="64,618,110,635" class="original" href="/entry/K10587" title="K10587 (UBE3A)" />
+		<area id="7AB8ED3C" shape="rect" coords="633,366,679,383" data-coords="633,366,679,383" class="original" href="/entry/K10584" title="K10584 (UBE2U)" />
+		<area id="7AB4EB48" shape="rect" coords="633,326,679,343" data-coords="633,326,679,343" class="original" href="/entry/K06689" title="K06689 (UBE2D)" />
+		<area id="8AC0C6AE" shape="rect" coords="841,346,887,363" data-coords="841,346,887,363" class="original" href="/entry/K10580" title="K10580 (UBE2N)" />
+		<area id="50B796E6" shape="rect" coords="64,640,110,657" data-coords="64,640,110,657" class="original" href="/entry/K05633" title="K05633 (WWP1)" />
+		<area id="95A672EE" shape="rect" coords="215,618,261,635" data-coords="215,618,261,635" class="original" href="/entry/K04678" title="K04678 (SMURF)" />
+		<area id="958B0E23" shape="rect" coords="165,618,211,635" data-coords="165,618,211,635" class="original" href="/entry/K10589" title="K10589 (UBE3C)" />
+		<area id="63B464E0" shape="rect" coords="529,346,575,363" data-coords="529,346,575,363" class="original" href="/entry/K10578" title="K10578 (UBE2J1)" />
+		<area id="90A401EE" shape="rect" coords="115,618,161,635" data-coords="115,618,161,635" class="original" href="/entry/K10588" title="K10588 (UBE3B)" />
+		<area id="809D7E6C" shape="rect" coords="581,366,627,383" data-coords="581,366,627,383" class="original" href="/entry/K10583" title="K10583 (UBE2S)" />
+		<area id="80997C78" shape="rect" coords="581,326,627,343" data-coords="581,326,627,343" class="original" href="/entry/K06688" title="K06688 (UBE2C)" />
+		<area id="6996F516" shape="rect" coords="477,326,523,343" data-coords="477,326,523,343" class="original" href="/entry/K10573" title="K10573 (UBE2A)" />
+		<area id="9A8D7F23" shape="rect" coords="265,618,311,635" data-coords="265,618,311,635" class="original" href="/entry/K05632" title="K05632 (ITCH)" />
+		<area id="7AB6EC42" shape="rect" coords="633,346,679,363" data-coords="633,346,679,363" class="original" href="/entry/K04649" title="K04649 (UBE2K)" />
+		<area id="809B7D72" shape="rect" coords="581,346,627,363" data-coords="581,346,627,363" class="original" href="/entry/K04554" title="K04554 (UBE2J2)" />
+		<area id="73BE3F4C" shape="rect" coords="737,346,783,363" data-coords="737,346,783,363" class="original" href="/entry/K04553" title="K04553 (UBE2L6)" />
+		<area id="79A2D07C" shape="rect" coords="685,346,731,363" data-coords="685,346,731,363" class="original" href="/entry/K04552" title="K04552 (UBE2L3)" />
+		<area id="8ABEC5B4" shape="rect" coords="841,326,887,343" data-coords="841,326,887,343" class="original" href="/entry/K04555" title="K04555 (UBE2G2)" />
+		<area id="72A3548C" shape="rect" coords="789,326,835,343" data-coords="789,326,835,343" class="original" href="/entry/K10575" title="K10575 (UBE2G1)" />
+		<area id="5BA3896B" shape="rect" coords="115,326,161,343" data-coords="115,326,161,343" class="original" href="/entry/K03178+K10698+K10699" title="K03178 (UBE1), K10698 (UBE1L), K10699 (UBE1L2)" />
+		<area id="5496FB0B" shape="rect" coords="376,640,422,657" data-coords="376,640,422,657" class="original" href="/entry/K10598" title="K10598 (PPIL2)" />
+		<area id="E68F138F" shape="rect" coords="165,661,211,678" data-coords="165,661,211,678" class="original" href="/entry/K10595" title="K10595 (HERC2)" />
+		<area id="63B665DA" shape="rect" coords="529,366,575,383" data-coords="529,366,575,383" class="original" href="/entry/K02207" title="K02207 (UBE2R)" />
+		<area id="21976899" shape="rect" coords="476,618,522,635" data-coords="476,618,522,635" class="original" href="/entry/K09561" title="K09561 (STUB1)" />
+		<area id="E1A8075A" shape="rect" coords="115,661,161,678" data-coords="115,661,161,678" class="original" href="/entry/K10594" title="K10594 (HERC1)" />
+		<area id="C8A60560" shape="rect" coords="115,640,161,657" data-coords="115,640,161,657" class="original" href="/entry/K05630" title="K05630 (WWP2)" />
+		<area id="1CB05C64" shape="rect" coords="426,618,472,635" data-coords="426,618,472,635" class="original" href="/entry/K10597" title="K10597 (UBE4B)" />
+		<area id="69B998E0" shape="rect" coords="64,661,110,678" data-coords="64,661,110,678" class="original" href="/entry/K10593" title="K10593 (EDD1)" />
+		<area id="CD8D1195" shape="rect" coords="165,640,211,657" data-coords="165,640,211,657" class="original" href="/entry/K10590" title="K10590 (TRIP12)" />
+		<area id="1C94F799" shape="rect" coords="376,618,422,635" data-coords="376,618,422,635" class="original" href="/entry/K10596" title="K10596 (UBE4A)" />
+		<area id="D28F8295" shape="rect" coords="265,640,311,657" data-coords="265,640,311,657" class="original" href="/entry/K10592" title="K10592 (HUWE1)" />
+		<area id="73C04046" shape="rect" coords="737,366,783,383" data-coords="737,366,783,383" class="original" href="/entry/K10585" title="K10585 (UBE2Z)" />
+		<area id="72A75680" shape="rect" coords="789,366,835,383" data-coords="789,366,835,383" class="original" href="/entry/K10586" title="K10586 (BIRC6)" />
+		<area id="CDA87660" shape="rect" coords="215,640,261,657" data-coords="215,640,261,657" class="original" href="/entry/K10591+K13305" title="K10591 (NEDD4), K13305 (NEDD4L)" />
+		<area id="699AF70A" shape="rect" coords="477,366,523,383" data-coords="477,366,523,383" class="original" href="/entry/K10582" title="K10582 (UBE2Q)" />
+		<area id="89A7DCE8" shape="rect" coords="893,346,939,363" data-coords="893,346,939,363" class="original" href="/entry/K10581" title="K10581 (UBE2O)" />
+		<area id="72A55586" shape="rect" coords="789,346,835,363" data-coords="789,346,835,363" class="original" href="/entry/K10579" title="K10579 (UBE2M)" />
+		<area id="6998F610" shape="rect" coords="477,346,523,363" data-coords="477,346,523,363" class="original" href="/entry/K10577" title="K10577 (UBE2I)" />
+		<area id="89A5DBEE" shape="rect" coords="893,326,939,343" data-coords="893,326,939,343" class="original" href="/entry/K10576" title="K10576 (UBE2H)" />
+		<area id="63B263E6" shape="rect" coords="529,326,575,343" data-coords="529,326,575,343" class="original" href="/entry/K10574" title="K10574 (UBE2B)" />
+		<area id="88A21F94" shape="rect" coords="865,866,911,883" data-coords="865,866,911,883" class="original" href="/entry/K12456+K12416" title="K12456 (APC13), K12416 (SWM1)" />
+		<area id="79A0CF82" shape="rect" coords="685,326,731,343" data-coords="685,326,731,343" class="original" href="/entry/K20217" title="K20217 (UBE2E)" />
+		<area id="1A98A7F0" shape="rect" coords="100,128,146,145" data-coords="100,128,146,145" class="original" href="/entry/K04551+K08770+K02927+K02977" title="K04551 (UBB), K08770 (UBC), K02927 (RP-L40e), K02977 (RP-S27Ae)" />
+		<area id="94B8A255" shape="rect" coords="911,866,957,883" data-coords="911,866,957,883" class="original" href="/entry/K25228" title="K25228 (APC15)" />
+		<area id="4AB0A04F" shape="rect" coords="911,883,957,900" data-coords="911,883,957,900" class="original" href="/entry/K25229" title="K25229 (APC16)" />
+		<area id="19C040F5" shape="rect" coords="703,122,793,147" data-coords="703,122,793,147" class="original" href="/pathway/map03050" title="map03050: Proteasome" data-entry="map03050" />
+		<area id="37B7ABC4" shape="rect" coords="40,45,320,70" data-coords="40,45,320,70" class="original" href="/entry/map04120" title="map04120: Ubiquitin mediated proteolysis" data-entry="map04120" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<div class="feature">
+			<h5>Related Brite</h5>
+			<div class="related-data">
+				<ul class="simple">
+					
+					<li><a href="/brite/ko04121" target="_blank">04121</a>&nbsp;&nbsp;Ubiquitin system</li>
+					
+				</ul>
+			</div>
+		</div>
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map04120.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04120.png 1x"
+	       data-src="/kegg/pathway/map/map04120.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04120@2x.png 2x"
+	       data-src="/kegg/pathway/map/map04120@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

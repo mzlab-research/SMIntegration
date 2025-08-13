@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map04911
+DEFINITION  Insulin secretion
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Insulin secretion - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() の実行で
+	 *      色が薄くなるのを打ち消す */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* 以下のwidth,overflowの定義で.rowのブロック内で横スクロールする。 */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* 横に並べる場合(title可変幅) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* 横に並べる場合(title可変幅) end */
+
+
+/* Search欄の検索結果 start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Search欄の検索結果 end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconの位置調整のために必要 */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariでボタンの周りに入る余白を削除 */
+	margin: 0px;
+	padding: 0px;
+	/* ボタンを押した時に表示されるボーダーを非表示にする */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* コントロールパネルに合わせて初期は非表示 */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* 画像の下に入る余白を無くす */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '04911',
+	         org: 'map',
+	       entry: 'map04911',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Insulin secretion - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=04911&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+04911" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map04911" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="descLink" href="#description">Show description</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	<div id="description" class="hidden">
+	Pancreatic beta cells are specialised endocrine cells that continuously sense the levels of blood sugar and other fuels and, in response, secrete insulin to maintain normal fuel homeostasis. Glucose-induced insulin secretion and its potentiation constitute the principal mechanism of insulin release. Glucose is transported by the glucose transporter (GLUT) into the pancreatic beta-cell. Metabolism of glucose generates ATP, which inhibits ATP-sensitive K+ channels and causes voltage-dependent Ca2+ influx. Elevation of [Ca2+]i triggers exocytotic release of insulin granules. Insulin secretion is further regulated by several hormones and neurotransmitters. Peptide hormones, such as glucagon-like peptide 1 (GLP-1), increase cAMP levels and thereby potentiate insulin secretion via the combined action of PKA and Epac2. Achetylcholine (ACh), a major parasympathetic neurotransmitter, binds to Gq-coupled receptors and activates phospholipase C- (PLC-), and the stimulatory effects involve activation of protein kinase C (PKC), which stimulates exocytosis. In addition, ACh mobilizes intracellular Ca2+ by activation of IP3 receptors.
+	</div>
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="04911" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map04911.png" srcset="/kegg/pathway/map/map04911.png 1x" data-srcset="/kegg/pathway/map/map04911.png 1x, /kegg/pathway/map/map04911@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="1181" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="FF6FC470" shape="circle" coords="119,283,4" data-coords="119,283,4" class="original" href="/entry/C00031" title="C00031 (D-Glucose)" data-entry="C00031" />
+		<area id="DB70148E" shape="circle" coords="421,397,4" data-coords="421,397,4" class="original" href="/entry/C00575" title="C00575 (3',5'-Cyclic AMP)" data-entry="C00575" />
+		<area id="F5706EA2" shape="circle" coords="837,183,4" data-coords="837,183,4" class="original" href="/entry/C00076" title="C00076 (Calcium cation)" data-entry="C00076" />
+		<area id="F0702906" shape="circle" coords="586,233,4" data-coords="586,233,4" class="original" href="/entry/C00002" title="C00002 (ATP)" data-entry="C00002" />
+		<area id="F06FDE38" shape="circle" coords="296,283,4" data-coords="296,283,4" class="original" href="/entry/C00092" title="C00092 (D-Glucose 6-phosphate)" data-entry="C00092" />
+		<area id="DC6FF6ED" shape="circle" coords="362,283,4" data-coords="362,283,4" class="original" href="/entry/C00022" title="C00022 (Pyruvate)" data-entry="C00022" />
+		<area id="EB6FDD89" shape="circle" coords="225,283,4" data-coords="225,283,4" class="original" href="/entry/C00031" title="C00031 (D-Glucose)" data-entry="C00031" />
+		<area id="03703757" shape="circle" coords="519,527,4" data-coords="519,527,4" class="original" href="/entry/C01245" title="C01245 (D-myo-Inositol 1,4,5-trisphosphate)" data-entry="C01245" />
+		<area id="F2703C6B" shape="circle" coords="516,675,4" data-coords="516,675,4" class="original" href="/entry/C00165" title="C00165 (Diacylglycerol)" data-entry="C00165" />
+		<area id="1FB494BE" shape="circle" coords="96,582,4" data-coords="96,582,4" class="original" href="/entry/C01996" title="C01996 (Acetylcholine)" data-entry="C01996" />
+		<area id="F67050CF" shape="circle" coords="667,524,4" data-coords="667,524,4" class="original" href="/entry/C00076" title="C00076 (Calcium cation)" data-entry="C00076" />
+		<area id="26B499A0" shape="circle" coords="96,629,4" data-coords="96,629,4" class="original" href="/entry/C00162" title="C00162 (Fatty acid)" data-entry="C00162" />
+		<area id="2CC8676E" shape="circle" coords="690,70,4" data-coords="690,70,4" class="original" href="/entry/C00238" title="C00238 (Potassium cation)" data-entry="C00238" />
+		<area id="02700AD9" shape="circle" coords="459,186,4" data-coords="459,186,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="D670241F" shape="circle" coords="580,187,4" data-coords="580,187,4" class="original" href="/entry/C00238" title="C00238 (Potassium cation)" data-entry="C00238" />
+		<area id="1EEB6755" shape="circle" coords="567,71,4" data-coords="567,71,4" class="original" href="/entry/C01330" title="C01330 (Sodium cation)" data-entry="C01330" />
+		<area id="22F567B9" shape="circle" coords="979,70,4" data-coords="979,70,4" class="original" href="/entry/C00238" title="C00238 (Potassium cation)" data-entry="C00238" />
+		<area id="D17037CF" shape="circle" coords="560,522,4" data-coords="560,522,4" class="original" href="/entry/C00076" title="C00076 (Calcium cation)" data-entry="C00076" />
+		<area id="34B73496" shape="rect" coords="151,274,197,291" data-coords="151,274,197,291" class="original" href="/entry/K07299+K07593" title="K07299 (SLC2A1), K07593 (SLC2A2)" />
+		<area id="FA94D59B" shape="rect" coords="665,121,711,138" data-coords="665,121,711,138" class="original" href="/entry/K05004" title="K05004 (KCNJ11)" />
+		<area id="05ADD366" shape="rect" coords="813,121,859,138" data-coords="813,121,859,138" class="original" href="/entry/K04850+K04851+K04853+K04857" title="K04850 (CACNA1C), K04851 (CACNA1D), K04853 (CACNA1F), K04857 (CACNA1S)" />
+		<area id="37B8AB96" shape="rect" coords="151,574,197,591" data-coords="151,574,197,591" class="original" href="/entry/K04131" title="K04131 (CHRM3)" />
+		<area id="99B4B41F" shape="rect" coords="151,348,197,365" data-coords="151,348,197,365" class="original" href="/entry/K04581" title="K04581 (GLP1R)" />
+		<area id="41B388B4" shape="rect" coords="331,574,377,591" data-coords="331,574,377,591" class="original" href="/entry/K05858" title="K05858 (PLCB)" />
+		<area id="A5A987D4" shape="rect" coords="329,389,375,406" data-coords="329,389,375,406" class="original" href="/entry/K08041+K08042+K08043+K08044+K08045+K08046+K08047+K08048+K08049" title="K08041 (ADCY1), K08042 (ADCY2), K08043 (ADCY3), K08044 (ADCY4), K08045 (ADCY5), K08046 (ADCY6), K08047 (ADCY7), K08048 (ADCY8), K08049 (ADCY9)" />
+		<area id="A7AF7AD1" shape="rect" coords="523,348,569,365" data-coords="523,348,569,365" class="original" href="/entry/K04345" title="K04345 (PKA)" />
+		<area id="2FB102AC" shape="rect" coords="244,389,290,406" data-coords="244,389,290,406" class="original" href="/entry/K04632" title="K04632 (GNAS)" />
+		<area id="B3BAF72A" shape="rect" coords="244,574,290,591" data-coords="244,574,290,591" class="original" href="/entry/K04634+K04635" title="K04634 (GNAQ), K04635 (GNA11)" />
+		<area id="21B73E52" shape="rect" coords="70,348,116,365" data-coords="70,348,116,365" class="original" href="/entry/K05259" title="K05259 (GCG)" />
+		<area id="33ADA9BF" shape="rect" coords="232,259,278,276" data-coords="232,259,278,276" class="original" href="/entry/K12407" title="K12407 (GCK)" />
+		<area id="07BBC942" shape="rect" coords="832,346,878,363" data-coords="832,346,878,363" class="original" href="/entry/K04526" title="K04526 (INS)" />
+		<area id="77C43EB2" shape="rect" coords="645,666,691,683" data-coords="645,666,691,683" class="original" href="/entry/K02677+K19662+K19663" title="K02677 (PRKCA), K19662 (PRKCB), K19663 (PRKCG)" />
+		<area id="F9C1C630" shape="rect" coords="645,551,691,568" data-coords="645,551,691,568" class="original" href="/entry/K04962" title="K04962 (RYR2)" />
+		<area id="4D90F01E" shape="rect" coords="663,314,709,331" data-coords="663,314,709,331" class="original" href="/entry/K05870+K04450+K04374+K09048+K09047+K09049" title="K05870 (CREB1), K04450 (ATF2), K04374 (ATF4), K09048 (CREB3), K09047 (CREB5), K09049 (ATF6B)" />
+		<area id="8EA9C26A" shape="rect" coords="708,492,754,509" data-coords="708,492,754,509" class="original" href="/entry/K04515" title="K04515 (CAMK2)" />
+		<area id="D4B32C20" shape="rect" coords="151,620,197,637" data-coords="151,620,197,637" class="original" href="/entry/K04325" title="K04325 (FFAR1)" />
+		<area id="EBB2EC48" shape="rect" coords="435,121,481,138" data-coords="435,121,481,138" class="original" href="/entry/K04979" title="K04979 (TRPM4)" />
+		<area id="FCBA8020" shape="rect" coords="551,121,597,138" data-coords="551,121,597,138" class="original" href="/entry/K01539+K01540+K01538" title="K01539 (ATP1A), K01540 (ATP1B), K01538 (FXYD2)" />
+		<area id="89B4D953" shape="rect" coords="526,452,572,469" data-coords="526,452,572,469" class="original" href="/entry/K04351" title="K04351 (RAPGEF4)" />
+		<area id="84ADE4CD" shape="rect" coords="620,121,666,138" data-coords="620,121,666,138" class="original" href="/entry/K05032" title="K05032 (ABCC8)" />
+		<area id="D9B742D6" shape="rect" coords="626,445,672,462" data-coords="626,445,672,462" class="original" href="/entry/K15297" title="K15297 (RIMS2)" />
+		<area id="F8F83E61" shape="rect" coords="1046,398,1092,415" data-coords="1046,398,1092,415" class="original" href="/entry/K04560" title="K04560 (STX1A)" />
+		<area id="F97351EA" shape="rect" coords="1046,415,1092,432" data-coords="1046,415,1092,432" class="original" href="/entry/K18211" title="K18211 (SNAP25)" />
+		<area id="99A7C1A3" shape="rect" coords="988,405,1034,422" data-coords="988,405,1034,422" class="original" href="/entry/K13504" title="K13504 (VAMP2)" />
+		<area id="05B2B125" shape="rect" coords="151,522,197,539" data-coords="151,522,197,539" class="original" href="/entry/K04194" title="K04194 (CCKAR)" />
+		<area id="3BB14146" shape="rect" coords="70,389,116,406" data-coords="70,389,116,406" class="original" href="/entry/K05258" title="K05258 (GIP)" />
+		<area id="B3AEB713" shape="rect" coords="151,389,197,406" data-coords="151,389,197,406" class="original" href="/entry/K08424" title="K08424 (GPR119)" />
+		<area id="5AB5BCD0" shape="rect" coords="70,430,116,447" data-coords="70,430,116,447" class="original" href="/entry/K05262" title="K05262 (ADCYAP)" />
+		<area id="D2B3329D" shape="rect" coords="151,430,197,447" data-coords="151,430,197,447" class="original" href="/entry/K04587" title="K04587 (ADCYAP1R1)" />
+		<area id="6BBA61C9" shape="rect" coords="538,551,584,568" data-coords="538,551,584,568" class="original" href="/entry/K04960" title="K04960 (ITPR3)" />
+		<area id="B196F70C" shape="rect" coords="663,378,709,395" data-coords="663,378,709,395" class="original" href="/entry/K07594" title="K07594 (IPF1)" />
+		<area id="8EB84AD0" shape="rect" coords="626,462,672,479" data-coords="626,462,672,479" class="original" href="/entry/K16882" title="K16882 (PCLO)" />
+		<area id="A5AFCCD3" shape="rect" coords="710,452,756,469" data-coords="710,452,756,469" class="original" href="/entry/K07882" title="K07882 (RAB3A)" />
+		<area id="FF489967" shape="rect" coords="1107,311,1153,328" data-coords="1107,311,1153,328" class="original" href="/entry/K04526" title="K04526 (INS)" />
+		<area id="9CB52560" shape="rect" coords="814,242,860,259" data-coords="814,242,860,259" class="original" href="/entry/K04515" title="K04515 (CAMK2)" />
+		<area id="951C5DCD" shape="rect" coords="956,121,1002,138" data-coords="956,121,1002,138" class="original" href="/entry/K04936+K05274+K04937+K04938+K04939+K04941+K04942+K04943+K04944+K04945" title="K04936 (KCNMA1), K05274 (KCNMA3), K04937 (KCNMB1), K04938 (KCNMB2), K04939 (KCNMB3), K04941 (KCNMB4), K04942 (KCNN1), K04943 (KCNN2), K04944 (KCNN3), K04945 (KCNN4)" />
+		<area id="74B53A53" shape="rect" coords="70,521,116,538" data-coords="70,521,116,538" class="original" href="/entry/K05226" title="K05226 (CCK)" />
+		<area id="37B2A6F1" shape="rect" coords="40,45,219,70" data-coords="40,45,219,70" class="original" href="/entry/map04911" title="map04911: Insulin secretion" data-entry="map04911" />
+		<area id="6F9C8141" shape="rect" coords="435,266,547,300" data-coords="435,266,547,300" class="original" href="/pathway/map00020" title="map00020: Citrate cycle (TCA cycle)" data-entry="map00020" />
+		<area id="D8AD9525" shape="rect" coords="252,625,375,659" data-coords="252,625,375,659" class="original" href="/pathway/map04020" title="map04020: Calcium signaling pathway" data-entry="map04020" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map04911.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04911.png 1x"
+	       data-src="/kegg/pathway/map/map04911.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map04911@2x.png 2x"
+	       data-src="/kegg/pathway/map/map04911@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

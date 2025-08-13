@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html>
+<!--
+ENTRY       map00998
+DEFINITION  Biosynthesis of various antibiotics
+--->
+<head>
+<meta charset="UTF-8">
+<title>
+KEGG PATHWAY: Biosynthesis of various antibiotics - Reference pathway
+</title>
+<link rel="stylesheet" href="/css/kegg.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery-ui.css" />
+<style type="text/css">
+<!--
+
+html {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 8px;
+	height: calc(100% - 16px);
+}
+
+h1.page-title {
+	font-size: 14px;
+	margin: 0px;
+	white-space: nowrap;
+}
+h1.page-title * {
+	vertical-align: middle;
+}
+
+input, select {
+	margin: 0px;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/** navigation start **/
+.nav {
+	padding: 3px 0px 5px 0px;
+	position: relative;
+	min-width: 600px;
+	max-width: 800px;
+	background: #fff;
+}
+
+.nav form {
+	margin: 5px 0px 0px 0px;
+}
+
+.nav .help {
+	display: inline-block;
+	position: relative;
+	left: 20px;
+/*
+	position: absolute;
+	bottom: 5px;
+	right: 0px;
+*/
+}
+/** navigation end **/
+
+#biosynthesis {
+	margin-left: 75px;
+	margin-top: -12px;
+	margin-bottom: 10px;
+	max-width: 800px;
+}
+
+#description {
+	padding: 10px;
+	max-width: 800px;
+}
+
+#waiting-circle {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	display: none;
+}
+
+#controlPanel {
+	top: 0px;
+	left: 0px;
+	width: 220px;
+	background: #ffffff;
+	padding: 0px 0px 0px 0px;
+	white-space: nowrap;
+	overflow: auto;
+	position: fixed;
+	border: solid 1px #999999;
+	display: none;
+}
+
+#controlPanel.closed {
+	border: none;
+	padding: 0px 0px 0px 0px;
+	background: transparent;
+
+	/* jQuery-UI resizale.disabled() ã®å®è¡ã§
+	 *      è²ãèããªãã®ãæã¡æ¶ã */
+	opacity: 1.0;
+}
+
+/** div.row start **/
+
+div.row {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	/* ä»¥ä¸ã®width,overflowã®å®ç¾©ã§.rowã®ãã­ãã¯åã§æ¨ªã¹ã¯ã­ã¼ã«ããã */
+	/*
+	width: 98%;
+	overflow: auto;
+	*/
+}
+
+div.row * {
+	vertical-align: middle;
+}
+
+div.row.disabled * {
+	color: gray;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) start */
+
+.row.scale input {
+	width: 110px;
+}
+
+.row.scale .label {
+	font-size: 0.9em;
+}
+
+/* æ¨ªã«ä¸¦ã¹ãå ´å(titleå¯å¤å¹) end */
+
+
+/* Searchæ¬ã®æ¤ç´¢çµæ start */
+
+div.row.result > div {
+	margin: 5px 1px 2px 1px;
+}
+
+/* Searchæ¬ã®æ¤ç´¢çµæ end */
+
+/**  div.row end **/
+
+#controlPanel h5 {
+  margin: 0px;
+	padding: 5px 0px 5px 10px;
+	vertical-align: middle;
+	border-top: solid 1px #cccccc;
+	border-bottom: solid 1px #cccccc;
+	background: #eeeeee;
+	/* ui-iconã®ä½ç½®èª¿æ´ã®ããã«å¿è¦ */
+	position: relative;
+}
+
+#controlPanel h5::before {
+	content: url(/Fig/get_htext/open.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5.closed::before {
+	content: url(/Fig/get_htext/close.png);
+	margin: 0px 5px 0px 0px;
+}
+
+#controlPanel h5:first-child {
+	border-top: none;
+}
+
+#controlPanel h5:hover {
+	cursor: pointer;
+}
+
+#controlPanel h5  + div {
+	padding: 5px 0px 5px 10px;
+}
+
+#controlPanel h5 .ui-icon {
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 50%;
+	margin-top: -8px;
+	cursor: pointer;
+}
+
+button {
+	/* Safariã§ãã¿ã³ã®å¨ãã«å¥ãä½ç½ãåé¤ */
+	margin: 0px;
+	padding: 0px;
+	/* ãã¿ã³ãæ¼ããæã«è¡¨ç¤ºããããã¼ãã¼ãéè¡¨ç¤ºã«ãã */
+	outline: none;
+}
+
+button.close, button.open {
+	border: none;
+	padding: 0px;
+	position: absolute;
+	right: 5px;
+	top: 7px;
+}
+
+button.close {
+	/* ã³ã³ãã­ã¼ã«ããã«ã«åããã¦åæã¯éè¡¨ç¤º */
+	display: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button img {
+	/* ç»åã®ä¸ã«å¥ãä½ç½ãç¡ãã */
+	display: block;
+}
+
+/** tree style start **/
+ul.tree, ul.tree ul {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.tree ul {
+	padding-left: 12px;
+}
+
+ul.tree .class-A > span {
+	font-weight: bold;
+}
+
+ul.tree li {
+	margin: 3px 0px 3px 0px;
+}
+
+.module-tree .module.disabled {
+	display: none;
+}
+
+.module-tree .classification.disabled {
+	display: none;
+}
+
+/** tree style > User data start **/
+ul.mappers {
+	padding: 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+ul.mappers li {
+	position: relative;
+	margin: 5px 0px 2px 0px;
+}
+
+ul.mappers li .ui-icon {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+}
+ul.mappers li .ui-icon:hover {
+	cursor: pointer;
+}
+ul.mappers li .ui-icon-trash {
+	right: 5px;
+}
+ul.mappers li .ui-icon-document {
+	right: 26px;
+}
+/** tree style > User data end **/
+
+/** tree style end **/
+
+.ui-icon.button {
+	display: inline-block;
+	cursor: pointer;
+}
+
+ul.simple {
+	margin: 0px;
+	padding: 0px;
+}
+ul.simple li {
+	list-style-type: none;
+}
+ul.simple li:not(:first-child) {
+	margin-top: 5px;
+}
+
+#download-menu {
+	padding: 10px !important;
+}
+#download-menu div:not(:first-child) {
+	margin-top: 5px;
+}
+
+//-->
+</style>
+
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.balloon.min.js"></script>
+<script src="/js/lz-string.min.js"></script>
+<script src="/kegg-bin/get_data.cgi?data=0021&id=show_pathway.merged.js&v2.11"></script>
+<script type="text/javascript">
+<!--
+
+// common variable
+const env = {
+	       mapno: '00998',
+	         org: 'map',
+	       entry: 'map00998',
+	       scale: 1,
+	 colorModule: '',
+	personalConf: '',
+}
+
+// HELP button
+function btn(bobj,img) { bobj.src = "/Fig/bget/button_" + img + ".gif"; }
+
+//-->
+</script>
+</head>
+<body>
+<!-- header logo start -->
+<h1 class="page-title">
+	<a href="/kegg/pathway.html"><img alt="KEGG" border="0" src="/Fig/bget/kegg3.gif" /></a>
+	&nbsp;Biosynthesis of various antibiotics - Reference pathway
+</h1>
+<!-- header logo end -->
+
+
+<div id="biosynthesis">
+ Including: Kanosamine biosynthesis, Aurachin biosynthesis, Bacilysin biosynthesis, Puromycin biosynthesis, Dapdiamides biosynthesis, Fosfomycin biosynthesis, Cremeomycin biosynthesis, Pentalenolactone biosynthesis, Terpentecin biosynthesis, Roseoflavin biosynthesis, Cycloserine biosynthesis
+</div>
+
+
+<!-- page navigation start -->
+<div class="nav">
+	[
+	    <a href="/brite/query=00998&htext=br08901.keg&option=-a&node_proc=br08901_org&proc_enabled=map&panel=collapse" id="navPathwayMenu">Pathway menu</a>
+		
+	  | <a href="/brite/htext=br08611&zoomout=E&brel=off&hier=10&pruning=join_brite&func=org2pathway-s-lp2~_3+00998" id="navOrganismMenu">Organism menu</a>
+		
+	  | <a href="/entry/pathway+map00998" id="navPathwayEntry">Pathway entry</a>
+	  | <a id="downloadMenu" href="#">Download</a>
+	  | <a href="javascript:void(window.open('/kegg/document/help_pathway.html','KEGG_Help','width=720,height=640'))">Help</a>
+	]
+
+	
+	
+	<!-- organism list start -->
+	<form name="selmenu" method="get">
+		
+		<input type="button" id="changePathwayTypeButton" value="Change pathway type">
+		
+		
+		
+		<input type="text" class="hidden" name="mapno" value="00998" />
+		<input type="text" class="hidden" id="scale" name="scale" value="1" />
+		<input type="text" class="hidden" id="displayNoColoringImage" name="nocolor" value="0" />
+		<input type="text" class="hidden" id="displayDescription" name="show_description" value="hide" />
+		<input type="text" class="hidden" id="displayControlPanel" name="show_module_list" value="show" />
+		<input type="text" class="hidden" id="clickableMode" name="clickable_mode" value="" />
+		<input type="text" class="hidden" name="module" value="" />
+	</form>
+	<!-- organism list end -->
+
+</div>
+<!-- page navigation end -->
+
+<!-- pathway image start -->
+<div class="image-block" style="position:static;">
+	
+	<img src="/kegg/pathway/map/map00998.png" srcset="/kegg/pathway/map/map00998.png 1x" data-srcset="/kegg/pathway/map/map00998.png 1x, /kegg/pathway/map/map00998@2x.png 2x" id="pathwayimage" usemap="#mapdata" border="0" width="1200" />
+	<map id="mapdata" name="mapdata" data-scale="1">
+		<area id="E76FBF3E" shape="circle" coords="104,134,4" data-coords="104,134,4" class="original" href="/entry/C00092" title="C00092 (D-Glucose 6-phosphate)" data-entry="C00092" />
+		<area id="E76FD889" shape="circle" coords="234,134,4" data-coords="234,134,4" class="original" href="/entry/C20668" title="C20668 (3-Dehydro-D-glucose 6-phosphate)" data-entry="C20668" />
+		<area id="E76FF1D4" shape="circle" coords="364,134,4" data-coords="364,134,4" class="original" href="/entry/C12213" title="C12213 (Kanosamine 6-phosphate)" data-entry="C12213" />
+		<area id="E7700B1F" shape="circle" coords="494,134,4" data-coords="494,134,4" class="original" href="/entry/C12212" title="C12212 (Kanosamine)" data-entry="C12212" />
+		<area id="006FC4E3" shape="circle" coords="179,204,4" data-coords="179,204,4" class="original" href="/entry/C00279" title="C00279 (D-Erythrose 4-phosphate)" data-entry="C00279" />
+		<area id="E76FDDAC" shape="circle" coords="254,204,4" data-coords="254,204,4" class="original" href="/entry/C00251" title="C00251 (Chorismate)" data-entry="C00251" />
+		<area id="E76FDDD4" shape="circle" coords="254,284,4" data-coords="254,284,4" class="original" href="/entry/C00254" title="C00254 (Prephenate)" data-entry="C00254" />
+		<area id="E7700FD4" shape="circle" coords="454,284,4" data-coords="454,284,4" class="original" href="/entry/C20953" title="C20953 (3-[(4R)-4-Hydroxycyclohexa-1,5-dien-1-yl]-2-oxopropanoate)" data-entry="C20953" />
+		<area id="007028D9" shape="circle" coords="559,284,4" data-coords="559,284,4" class="original" href="/entry/C21085" title="C21085 (3-[(1E,4R)-4-Hydroxycyclohex-2-en-1-ylidene]-2-oxopropanoate)" data-entry="C21085" />
+		<area id="007041A7" shape="circle" coords="639,284,4" data-coords="639,284,4" class="original" href="/entry/C21086" title="C21086 ((3E)-3-[(1R,5R,6S)-5-Hydroxy-7-oxabicyclo[4.1.0]heptan-2-ylidene]-2-oxopropanoate)" data-entry="C21086" />
+		<area id="E7705ABB" shape="circle" coords="744,284,4" data-coords="744,284,4" class="original" href="/entry/C21087" title="C21087 (3-[(1R,2S,5R,6S)-5-Hydroxy-7-oxabicyclo[4.1.0]heptan-2-yl]-2-oxopropanoate)" data-entry="C21087" />
+		<area id="007073C0" shape="circle" coords="849,284,4" data-coords="849,284,4" class="original" href="/entry/C20940" title="C20940 (L-Dihydroanticapsin)" data-entry="C20940" />
+		<area id="E7708CD4" shape="circle" coords="954,284,4" data-coords="954,284,4" class="original" href="/entry/C20941" title="C20941 (L-Anticapsin)" data-entry="C20941" />
+		<area id="BBAF29E4" shape="circle" coords="1059,284,4" data-coords="1059,284,4" class="original" href="/entry/C20942" title="C20942 (Bacilysin)" data-entry="C20942" />
+		<area id="E7700F93" shape="circle" coords="444,204,4" data-coords="444,204,4" class="original" href="/entry/C02247" title="C02247 (Anthraniloyl-CoA)" data-entry="C02247" />
+		<area id="E770287A" shape="circle" coords="534,204,4" data-coords="534,204,4" class="original" href="/entry/C21873" title="C21873 (2-Methylquinolin-4-ol)" data-entry="C21873" />
+		<area id="E7704161" shape="circle" coords="624,204,4" data-coords="624,204,4" class="original" href="/entry/C10641" title="C10641 (Aurachin D)" data-entry="C10641" />
+		<area id="E7705A48" shape="circle" coords="714,204,4" data-coords="714,204,4" class="original" href="/entry/C21330" title="C21330 (Aurachin C)" data-entry="C21330" />
+		<area id="E770732F" shape="circle" coords="804,204,4" data-coords="804,204,4" class="original" href="/entry/C21141" title="C21141 (4-Hydroxy-2-methyl-3-oxo-4-[(2E,6E)-farnesyl]-3,4-dihydroquinoline 1-oxide)" data-entry="C21141" />
+		<area id="E7707410" shape="circle" coords="894,204,4" data-coords="894,204,4" class="original" href="/entry/C21140" title="C21140 (Aurachin B)" data-entry="C21140" />
+		<area id="E7708CF7" shape="circle" coords="984,204,4" data-coords="984,204,4" class="original" href="/entry/C21874" title="C21874 (Aurachin B epoxide)" data-entry="C21874" />
+		<area id="A2AF29EE" shape="circle" coords="1074,204,4" data-coords="1074,204,4" class="original" href="/entry/C21875" title="C21875 (Aurachin A)" data-entry="C21875" />
+		<area id="E76FE7B6" shape="circle" coords="254,424,4" data-coords="254,424,4" class="original" href="/entry/C00082" title="C00082 (L-Tyrosine)" data-entry="C00082" />
+		<area id="E77032CF" shape="circle" coords="564,424,4" data-coords="564,424,4" class="original" href="/entry/C07028" title="C07028 (N-Acetyl-N6,N6,O-tridemethylpuromycin-5'-phosphate)" data-entry="C07028" />
+		<area id="00704BD4" shape="circle" coords="669,424,4" data-coords="669,424,4" class="original" href="/entry/C07029" title="C07029 (N-Acetyl-N6,O-didemethylpuromycin-5'-phosphate)" data-entry="C07029" />
+		<area id="E77064E8" shape="circle" coords="774,424,4" data-coords="774,424,4" class="original" href="/entry/C07030" title="C07030 (N-Acetyl-O-demethylpuromycin-5'-phosphate)" data-entry="C07030" />
+		<area id="00707DED" shape="circle" coords="879,424,4" data-coords="879,424,4" class="original" href="/entry/C07031" title="C07031 (N-Acetyl-O-demethylpuromycin)" data-entry="C07031" />
+		<area id="E7709701" shape="circle" coords="984,424,4" data-coords="984,424,4" class="original" href="/entry/C07032" title="C07032 (N-Acetylpuromycin)" data-entry="C07032" />
+		<area id="BBAF3411" shape="circle" coords="1089,424,4" data-coords="1089,424,4" class="original" href="/entry/C01610" title="C01610 (Puromycin)" data-entry="C01610" />
+		<area id="E56FFB66" shape="circle" coords="314,362,4" data-coords="314,362,4" class="original" href="/entry/C07026" title="C07026 (3'-Amino-3'-deoxy-AMP)" data-entry="C07026" />
+		<area id="E5701466" shape="circle" coords="414,362,4" data-coords="414,362,4" class="original" href="/entry/C07025" title="C07025 (3'-Keto-3'-deoxy-AMP)" data-entry="C07025" />
+		<area id="E5702D66" shape="circle" coords="514,362,4" data-coords="514,362,4" class="original" href="/entry/C07024" title="C07024 (3'-Keto-3'-deoxy-ATP)" data-entry="C07024" />
+		<area id="E5704666" shape="circle" coords="614,362,4" data-coords="614,362,4" class="original" href="/entry/C00002" title="C00002 (ATP)" data-entry="C00002" />
+		<area id="007019BB" shape="circle" coords="459,424,4" data-coords="459,424,4" class="original" href="/entry/C07027" title="C07027 (N6,N6,O-Tridemethylpuromycin-5'-phosphate)" data-entry="C07027" />
+		<area id="E76FD35C" shape="circle" coords="104,594,4" data-coords="104,594,4" class="original" href="/entry/C00074" title="C00074 (Phosphoenolpyruvate)" data-entry="C00074" />
+		<area id="E76FC42F" shape="circle" coords="104,204,4" data-coords="104,204,4" class="original" href="/entry/C05345" title="C05345 (beta-D-Fructose 6-phosphate)" data-entry="C05345" />
+		<area id="006FF67F" shape="circle" coords="339,204,4" data-coords="339,204,4" class="original" href="/entry/C00108" title="C00108 (Anthranilate)" data-entry="C00108" />
+		<area id="E76FE2C0" shape="circle" coords="254,344,4" data-coords="254,344,4" class="original" href="/entry/C01179" title="C01179 (3-(4-Hydroxyphenyl)pyruvate)" data-entry="C01179" />
+		<area id="006FEC93" shape="circle" coords="229,594,4" data-coords="229,594,4" class="original" href="/entry/C02798" title="C02798 (3-Phosphonopyruvate)" data-entry="C02798" />
+		<area id="E77005D9" shape="circle" coords="354,594,4" data-coords="354,594,4" class="original" href="/entry/C03167" title="C03167 (Phosphonoacetaldehyde)" data-entry="C03167" />
+		<area id="00701F10" shape="circle" coords="479,594,4" data-coords="479,594,4" class="original" href="/entry/C06451" title="C06451 (2-Hydroxyethylphosphonate)" data-entry="C06451" />
+		<area id="E770505C" shape="circle" coords="604,594,4" data-coords="604,594,4" class="original" href="/entry/C22216" title="C22216 (Cytidine 5'-{[hydroxy(2-hydroxyethyl)phosphonoyl]phosphate})" data-entry="C22216" />
+		<area id="00706993" shape="circle" coords="729,594,4" data-coords="729,594,4" class="original" href="/entry/C22217" title="C22217 (Cytidine 5'-{[hydroxy(2-hydroxypropyl)phosphonoyl]phosphate})" data-entry="C22217" />
+		<area id="E77082D9" shape="circle" coords="854,594,4" data-coords="854,594,4" class="original" href="/entry/C06452" title="C06452 ((S)-2-Hydroxypropylphosphonate)" data-entry="C06452" />
+		<area id="00709C10" shape="circle" coords="979,594,4" data-coords="979,594,4" class="original" href="/entry/C06454" title="C06454 (Fosfomycin)" data-entry="C06454" />
+		<area id="EC700593" shape="circle" coords="344,509,4" data-coords="344,509,4" class="original" href="/entry/C01005" title="C01005 (O-Phospho-L-serine)" data-entry="C01005" />
+		<area id="EC701EF7" shape="circle" coords="484,509,4" data-coords="484,509,4" class="original" href="/entry/C21559" title="C21559 (N-[(2S)-2-Amino-2-carboxyethyl]-L-glutamate)" data-entry="C21559" />
+		<area id="EC705061" shape="circle" coords="624,509,4" data-coords="624,509,4" class="original" href="/entry/C03401" title="C03401 (L-2,3-Diaminopropanoate)" data-entry="C03401" />
+		<area id="EC7069C5" shape="circle" coords="764,509,4" data-coords="764,509,4" class="original" href="/entry/C20961" title="C20961 (N3-Fumaroyl-L-2,3-diaminopropanoate)" data-entry="C20961" />
+		<area id="E7709B2F" shape="circle" coords="903,509,4" data-coords="903,509,4" class="original" href="/entry/C20966" title="C20966 (3-{[(2E)-4-Amino-4-oxobut-2-enoyl]amino}-L-alanine)" data-entry="C20966" />
+		<area id="A2AF33C6" shape="circle" coords="1043,479,4" data-coords="1043,479,4" class="original" href="/entry/C20962" title="C20962 (Dapdiamide A)" data-entry="C20962" />
+		<area id="A2AF38A3" shape="circle" coords="1043,509,4" data-coords="1043,509,4" class="original" href="/entry/C20963" title="C20963 (Dapdiamide B)" data-entry="C20963" />
+		<area id="A2AF38B2" shape="circle" coords="1043,539,4" data-coords="1043,539,4" class="original" href="/entry/C20964" title="C20964 (Dapdiamide C)" data-entry="C20964" />
+		<area id="EC6FD32F" shape="circle" coords="104,509,4" data-coords="104,509,4" class="original" href="/entry/C00197" title="C00197 (3-Phospho-D-glycerate)" data-entry="C00197" />
+		<area id="056FEC66" shape="circle" coords="229,509,4" data-coords="229,509,4" class="original" href="/entry/C00065" title="C00065 (L-Serine)" data-entry="C00065" />
+		<area id="E76FD848" shape="circle" coords="104,654,4" data-coords="104,654,4" class="original" href="/entry/C00022" title="C00022 (Pyruvate)" data-entry="C00022" />
+		<area id="EC6FDD4D" shape="circle" coords="104,769,4" data-coords="104,769,4" class="original" href="/entry/C00024" title="C00024 (Acetyl-CoA)" data-entry="C00024" />
+		<area id="EC6FDE2E" shape="circle" coords="194,769,4" data-coords="194,769,4" class="original" href="/entry/C00129" title="C00129 (Isopentenyl diphosphate)" data-entry="C00129" />
+		<area id="0570144D" shape="circle" coords="309,859,4" data-coords="309,859,4" class="original" href="/entry/C00353" title="C00353 (Geranylgeranyl diphosphate)" data-entry="C00353" />
+		<area id="05702D98" shape="circle" coords="439,859,4" data-coords="439,859,4" class="original" href="/entry/C19815" title="C19815 (Terpentedienyl diphosphate)" data-entry="C19815" />
+		<area id="057046E3" shape="circle" coords="569,859,4" data-coords="569,859,4" class="original" href="/entry/C19814" title="C19814 (Terpentetriene)" data-entry="C19814" />
+		<area id="0570602E" shape="circle" coords="699,859,4" data-coords="699,859,4" class="original" href="/entry/C21093" title="C21093 (Terpentecin)" data-entry="C21093" />
+		<area id="05700F52" shape="circle" coords="309,769,4" data-coords="309,769,4" class="original" href="/entry/C00448" title="C00448 (trans,trans-Farnesyl diphosphate)" data-entry="C00448" />
+		<area id="EC7028CA" shape="circle" coords="454,769,4" data-coords="454,769,4" class="original" href="/entry/C01841" title="C01841 (Pentalenene)" data-entry="C01841" />
+		<area id="05704201" shape="circle" coords="579,769,4" data-coords="579,769,4" class="original" href="/entry/C19939" title="C19939 (Pentalen-13-al)" data-entry="C19939" />
+		<area id="EC705AB1" shape="circle" coords="644,769,4" data-coords="644,769,4" class="original" href="/entry/C20404" title="C20404 (1-Deoxypentalenate)" data-entry="C20404" />
+		<area id="0570739D" shape="circle" coords="739,769,4" data-coords="739,769,4" class="original" href="/entry/C20403" title="C20403 (1-Deoxy-11beta-hydroxypentalenate)" data-entry="C20403" />
+		<area id="EC708C98" shape="circle" coords="834,769,4" data-coords="834,769,4" class="original" href="/entry/C20400" title="C20400 (1-Deoxy-11-oxopentalenate)" data-entry="C20400" />
+		<area id="0570A584" shape="circle" coords="929,769,4" data-coords="929,769,4" class="original" href="/entry/C20399" title="C20399 (Pentalenolactone D)" data-entry="C20399" />
+		<area id="A7AF428F" shape="circle" coords="1024,769,4" data-coords="1024,769,4" class="original" href="/entry/C20397" title="C20397 (Pentalenolactone F)" data-entry="C20397" />
+		<area id="A7AF5B8F" shape="circle" coords="1124,769,4" data-coords="1124,769,4" class="original" href="/entry/C20407" title="C20407 (Pentalenolactone)" data-entry="C20407" />
+		<area id="E7709189" shape="circle" coords="834,834,4" data-coords="834,834,4" class="original" href="/entry/C20402" title="C20402 (Neopentalenolactone D)" data-entry="C20402" />
+		<area id="E7705FA2" shape="circle" coords="644,834,4" data-coords="644,834,4" class="original" href="/entry/C20405" title="C20405 (Pentalenate)" data-entry="C20405" />
+		<area id="EC701948" shape="circle" coords="304,959,4" data-coords="304,959,4" class="original" href="/entry/C00025" title="C00025 (L-Glutamate)" data-entry="C00025" />
+		<area id="E770195C" shape="circle" coords="304,994,4" data-coords="304,994,4" class="original" href="/entry/C00077" title="C00077 (L-Ornithine)" data-entry="C00077" />
+		<area id="7FFA1FB2" shape="circle" coords="304,1039,4" data-coords="304,1039,4" class="original" href="/entry/C00062" title="C00062 (L-Arginine)" data-entry="C00062" />
+		<area id="8013522F" shape="circle" coords="429,1039,4" data-coords="429,1039,4" class="original" href="/entry/C05933" title="C05933 (N(omega)-Hydroxyarginine)" data-entry="C05933" />
+		<area id="057032C0" shape="circle" coords="449,989,4" data-coords="449,989,4" class="original" href="/entry/C00065" title="C00065 (L-Serine)" data-entry="C00065" />
+		<area id="05704BF2" shape="circle" coords="569,989,4" data-coords="569,989,4" class="original" href="/entry/C00979" title="C00979 (O-Acetyl-L-serine)" data-entry="C00979" />
+		<area id="802C842F" shape="circle" coords="549,1039,4" data-coords="549,1039,4" class="original" href="/entry/C07044" title="C07044 (Hydroxyurea)" data-entry="C07044" />
+		<area id="8045B62F" shape="circle" coords="669,1039,4" data-coords="669,1039,4" class="original" href="/entry/C20639" title="C20639 (O-Ureido-L-serine)" data-entry="C20639" />
+		<area id="805EE82F" shape="circle" coords="789,1039,4" data-coords="789,1039,4" class="original" href="/entry/C20651" title="C20651 (O-Ureido-D-serine)" data-entry="C20651" />
+		<area id="8090202F" shape="circle" coords="909,1039,4" data-coords="909,1039,4" class="original" href="/entry/C08057" title="C08057 (Cycloserine)" data-entry="C08057" />
+		<area id="E76FE77A" shape="circle" coords="134,904,4" data-coords="134,904,4" class="original" href="/entry/C00061" title="C00061 (FMN)" data-entry="C00061" />
+		<area id="E7700093" shape="circle" coords="244,904,4" data-coords="244,904,4" class="original" href="/entry/C21803" title="C21803 (8-Demethyl-8-formylriboflavin 5'-phosphate)" data-entry="C21803" />
+		<area id="E77019AC" shape="circle" coords="354,904,4" data-coords="354,904,4" class="original" href="/entry/C21804" title="C21804 (8-Carboxy-8-demethylriboflavin 5'-phosphate)" data-entry="C21804" />
+		<area id="0570332E" shape="circle" coords="499,959,4" data-coords="499,959,4" class="original" href="/entry/C21805" title="C21805 (8-Amino-8-demethylriboflavin 5'-phosphate)" data-entry="C21805" />
+		<area id="05706498" shape="circle" coords="639,959,4" data-coords="639,959,4" class="original" href="/entry/C21646" title="C21646 (8-Amino-8-demethylriboflavin)" data-entry="C21646" />
+		<area id="05707DFC" shape="circle" coords="779,959,4" data-coords="779,959,4" class="original" href="/entry/C21648" title="C21648 (8-Demethyl-8-(methylamino)riboflavin)" data-entry="C21648" />
+		<area id="0570AF66" shape="circle" coords="919,959,4" data-coords="919,959,4" class="original" href="/entry/C21647" title="C21647 (Roseoflavin)" data-entry="C21647" />
+		<area id="EC6FE748" shape="circle" coords="104,959,4" data-coords="104,959,4" class="original" href="/entry/C00026" title="C00026 (2-Oxoglutarate)" data-entry="C00026" />
+		<area id="006FD92E" shape="circle" coords="199,654,4" data-coords="199,654,4" class="original" href="/entry/C00036" title="C00036 (Oxaloacetate)" data-entry="C00036" />
+		<area id="E7700A61" shape="circle" coords="314,654,4" data-coords="314,654,4" class="original" href="/entry/C00049" title="C00049 (L-Aspartate)" data-entry="C00049" />
+		<area id="E7702861" shape="circle" coords="424,704,4" data-coords="424,704,4" class="original" href="/entry/C12115" title="C12115 (3-Amino-4-hydroxybenzoate)" data-entry="C12115" />
+		<area id="007041CA" shape="circle" coords="569,704,4" data-coords="569,704,4" class="original" href="/entry/C22455" title="C22455 (3-Amino-2,4-dihydroxybenzoate)" data-entry="C22455" />
+		<area id="E7707348" shape="circle" coords="714,704,4" data-coords="714,704,4" class="original" href="/entry/C22425" title="C22425 (3-Amino-2-hydroxy-4-methoxybenzoate)" data-entry="C22425" />
+		<area id="E7708C93" shape="circle" coords="844,704,4" data-coords="844,704,4" class="original" href="/entry/C22416" title="C22416 (Cremeomycin)" data-entry="C22416" />
+		<area id="E7700F48" shape="circle" coords="314,704,4" data-coords="314,704,4" class="original" href="/entry/C00441" title="C00441 (L-Aspartate 4-semialdehyde)" data-entry="C00441" />
+		<area id="00703C66" shape="circle" coords="519,654,4" data-coords="519,654,4" class="original" href="/entry/C22388" title="C22388 ((2S)-2-Nitrobutanedioate)" data-entry="C22388" />
+		<area id="00706E7F" shape="circle" coords="729,654,4" data-coords="729,654,4" class="original" href="/entry/C00088" title="C00088 (Nitrite)" data-entry="C00088" />
+		<area id="2E168758" shape="poly" coords="563,283,633,283,633,285,563,285" data-coords="563,283,633,283,633,285,563,285" class="original" href="/entry/R11066" title="R11066" />
+		<area id="CFACAEAF" shape="rect" coords="140,125,186,142" data-coords="140,125,186,142" class="original" href="/entry/K18652+1.1.1.361+R10519" title="K18652 (ntdC), 1.1.1.361, R10519" />
+		<area id="D98C2702" shape="rect" coords="270,125,316,142" data-coords="270,125,316,142" class="original" href="/entry/K18653+2.6.1.104+R10698" title="K18653 (ntdA), 2.6.1.104, R10698" />
+		<area id="DE9FF7EB" shape="rect" coords="400,125,446,142" data-coords="400,125,446,142" class="original" href="/entry/K18654+3.1.3.92+R10547" title="K18654 (ntdB), 3.1.3.92, R10547" />
+		<area id="64BBF82F" shape="rect" coords="345,276,391,293" data-coords="345,276,391,293" class="original" href="/entry/K19546+4.1.1.100+R10934" title="K19546 (bacA), 4.1.1.100, R10934" />
+		<area id="E49B8AE4" shape="rect" coords="480,275,526,292" data-coords="480,275,526,292" class="original" href="/entry/K19547+5.3.3.19+R11065" title="K19547 (bacB), 5.3.3.19, R11065" />
+		<area id="5F9B4F11" shape="rect" coords="665,275,711,292" data-coords="665,275,711,292" class="original" href="/entry/K19550+R11067" title="K19550 (bacG), R11067" />
+		<area id="64A2C282" shape="rect" coords="775,275,821,292" data-coords="775,275,821,292" class="original" href="/entry/K19549+R11068" title="K19549 (bacF), R11068" />
+		<area id="69A53382" shape="rect" coords="875,275,921,292" data-coords="875,275,921,292" class="original" href="/entry/K19548+1.1.1.385+R10917" title="K19548 (bacC), 1.1.1.385, R10917" />
+		<area id="96B3231B" shape="rect" coords="980,275,1026,292" data-coords="980,275,1026,292" class="original" href="/entry/K13037+6.3.2.49+R11064" title="K13037 (bacD), 6.3.2.49, R11064" />
+		<area id="DF8B9B6D" shape="rect" coords="370,195,416,212" data-coords="370,195,416,212" class="original" href="/entry/K09460+6.2.1.32+R00982" title="K09460 (auaEII), 6.2.1.32, R00982" />
+		<area id="558DF10B" shape="rect" coords="465,195,511,212" data-coords="465,195,511,212" class="original" href="/entry/K14245+K14246+K22798+K02078+R12049" title="K14245 (auaC), K14246 (auaD), K22798 (auaE), K02078 (acpP), R12049" />
+		<area id="5A8B5F9A" shape="rect" coords="555,195,601,212" data-coords="555,195,601,212" class="original" href="/entry/K22799+R12050" title="K22799 (auaA), R12050" />
+		<area id="5ABACE29" shape="rect" coords="645,195,691,212" data-coords="645,195,691,212" class="original" href="/entry/K22800+R12051" title="K22800 (auaF), R12051" />
+		<area id="6BB35AAE" shape="rect" coords="731,195,777,212" data-coords="731,195,777,212" class="original" href="/entry/K21272+1.14.13.222+R11382+R11383" title="K21272 (auaG), 1.14.13.222, R11382, R11383" />
+		<area id="70B0C93D" shape="rect" coords="821,195,867,212" data-coords="821,195,867,212" class="original" href="/entry/K21271+1.1.1.394+R11149" title="K21271 (auaH), 1.1.1.394, R11149" />
+		<area id="75AE37CC" shape="rect" coords="911,195,957,212" data-coords="911,195,957,212" class="original" href="/entry/K22801+R12052+R12053" title="K22801 (auaJ), R12052, R12053" />
+		<area id="F5DB82B5" shape="rect" coords="1001,195,1047,212" data-coords="1001,195,1047,212" class="original" href="/entry/K22802+R12054" title="K22802 (auaI), R12054" />
+		<area id="DCB709A3" shape="rect" coords="350,415,396,432" data-coords="350,415,396,432" class="original" href="/entry/K12631+R05671" title="K12631 (pur6), R05671" />
+		<area id="5C9DDA05" shape="rect" coords="585,415,631,432" data-coords="585,415,631,432" class="original" href="/entry/K12633+R05673" title="K12633 (pur5), R05673" />
+		<area id="F0A06667" shape="rect" coords="690,415,736,432" data-coords="690,415,736,432" class="original" href="/entry/K12633+R05674" title="K12633 (pur5), R05674" />
+		<area id="66A7BE76" shape="rect" coords="795,415,841,432" data-coords="795,415,841,432" class="original" href="/entry/K12634+R05675" title="K12634 (pur3), R05675" />
+		<area id="FAACA36E" shape="rect" coords="900,415,946,432" data-coords="900,415,946,432" class="original" href="/entry/K12635+2.1.1.38+R05676" title="K12635 (dmpM), 2.1.1.38, R05676" />
+		<area id="F9558679" shape="rect" coords="1005,415,1051,432" data-coords="1005,415,1051,432" class="original" href="/entry/K12636+R05677" title="K12636 (napH), R05677" />
+		<area id="E69681F6" shape="rect" coords="480,415,526,432" data-coords="480,415,526,432" class="original" href="/entry/K12632+R05672" title="K12632 (pac), R05672" />
+		<area id="D4AAA59D" shape="rect" coords="140,585,186,602" data-coords="140,585,186,602" class="original" href="/entry/K01841+K23999+5.4.2.9+R00661" title="K01841 (pepM), K23999 (fom1), 5.4.2.9, R00661" />
+		<area id="DE851B7F" shape="rect" coords="260,585,306,602" data-coords="260,585,306,602" class="original" href="/entry/K09459+4.1.1.82+R04053" title="K09459 (E4.1.1.82), 4.1.1.82, R04053" />
+		<area id="FC97954F" shape="rect" coords="390,596,436,613" data-coords="390,596,436,613" class="original" href="/entry/K12901+R08861" title="K12901 (fomC), R08861" />
+		<area id="E8A5624A" shape="rect" coords="510,585,556,602" data-coords="510,585,556,602" class="original" href="/entry/K23999+2.7.7.104+R12498" title="K23999 (fom1), 2.7.7.104, R12498" />
+		<area id="EDB6DA9D" shape="rect" coords="640,585,686,602" data-coords="640,585,686,602" class="original" href="/entry/K12902+2.1.1.308+R12497" title="K12902 (fom3), 2.1.1.308, R12497" />
+		<area id="F79652F0" shape="rect" coords="770,585,816,602" data-coords="770,585,816,602" class="original" href="/entry/K24000+R12499" title="K24000 (fomD), R12499" />
+		<area id="FCA2C8D2" shape="rect" coords="890,585,936,602" data-coords="890,585,936,602" class="original" href="/entry/K12903+K22392+1.11.1.23+R08863" title="K12903 (fom4), K22392 (hppE), 1.11.1.23, R08863" />
+		<area id="E29F9355" shape="rect" coords="390,575,436,592" data-coords="390,575,436,592" class="original" href="/entry/K12904+1.1.1.309+R09478" title="K12904 (phpC), 1.1.1.309, R09478" />
+		<area id="33BA7235" shape="rect" coords="345,354,391,371" data-coords="345,354,391,371" class="original" href="/entry/K12630+R05670" title="K12630 (pur4), R05670" />
+		<area id="AFBCF23A" shape="rect" coords="448,354,494,371" data-coords="448,354,494,371" class="original" href="/entry/K12629+R05669" title="K12629 (pur7), R05669" />
+		<area id="BABF5935" shape="rect" coords="546,354,592,371" data-coords="546,354,592,371" class="original" href="/entry/K12628+R05668" title="K12628 (pur10), R05668" />
+		<area id="E3978E8D" shape="rect" coords="389,501,435,518" data-coords="389,501,435,518" class="original" href="/entry/K21949+2.5.1.140+R11705" title="K21949 (sbnA), 2.5.1.140, R11705" />
+		<area id="6BB55F58" shape="rect" coords="538,501,584,518" data-coords="538,501,584,518" class="original" href="/entry/K21721+1.5.1.51+R11655" title="K21721 (sbnB), 1.5.1.51, R11655" />
+		<area id="7B94CDA6" shape="rect" coords="666,501,712,518" data-coords="666,501,712,518" class="original" href="/entry/K22113+6.3.2.46+R10940" title="K22113 (ddaG), 6.3.2.46, R10940" />
+		<area id="9B0D5ADF" shape="rect" coords="955,500,1001,517" data-coords="955,500,1001,517" class="original" href="/entry/K22114+6.3.2.47+R10943" title="K22114 (ddaF), 6.3.2.47, R10943" />
+		<area id="9B11D1DF" shape="rect" coords="955,530,1001,547" data-coords="955,530,1001,547" class="original" href="/entry/K22114+6.3.2.47+R10944" title="K22114 (ddaF), 6.3.2.47, R10944" />
+		<area id="999AC5DF" shape="rect" coords="955,470,1001,487" data-coords="955,470,1001,487" class="original" href="/entry/K22114+6.3.2.47+R10942" title="K22114 (ddaF), 6.3.2.47, R10942" />
+		<area id="80A645F9" shape="rect" coords="796,501,842,518" data-coords="796,501,842,518" class="original" href="/entry/K01957+R12352" title="K01957 (ddaH), R12352" />
+		<area id="B01994D9" shape="poly" coords="573,858,693,858,693,860,573,860" data-coords="573,858,693,858,693,860,573,860" class="original" href="/entry/R11069" title="R11069" />
+		<area id="C9191536" shape="poly" coords="583,768,638,768,638,770,583,770" data-coords="583,768,638,768,638,770,583,770" class="original" href="/entry/R11315" title="R11315" />
+		<area id="E7BBF435" shape="rect" coords="347,851,393,868" data-coords="347,851,393,868" class="original" href="/entry/K19835+5.5.1.15+R09714" title="K19835 (cyc1), 5.5.1.15, R09714" />
+		<area id="DE9B6183" shape="rect" coords="475,850,521,867" data-coords="475,850,521,867" class="original" href="/entry/K19834+4.2.3.36+R09684" title="K19834 (cyc2), 4.2.3.36, R09684" />
+		<area id="D88F6F1E" shape="rect" coords="355,760,401,777" data-coords="355,760,401,777" class="original" href="/entry/K12250+4.2.3.7+R02305" title="K12250 (ptlA), 4.2.3.7, R02305" />
+		<area id="E39C0F6C" shape="rect" coords="483,760,529,777" data-coords="483,760,529,777" class="original" href="/entry/K15907+1.14.15.32+R09814" title="K15907 (ptlI), 1.14.15.32, R09814" />
+		<area id="E0994728" shape="rect" coords="759,760,805,777" data-coords="759,760,805,777" class="original" href="/entry/K17747+1.1.1.340+R10156" title="K17747 (ptlF), 1.1.1.340, R10156" />
+		<area id="0BC8CD1E" shape="rect" coords="853,761,899,778" data-coords="853,761,899,778" class="original" href="/entry/K18091+1.14.13.170+R10154" title="K18091 (pntE), 1.14.13.170, R10154" />
+		<area id="FECB27B7" shape="rect" coords="949,761,995,778" data-coords="949,761,995,778" class="original" href="/entry/K18057+1.14.11.36+R10145" title="K18057 (pntD), 1.14.11.36, R10145" />
+		<area id="7D9BCA94" shape="rect" coords="666,761,712,778" data-coords="666,761,712,778" class="original" href="/entry/K18056+1.14.11.35+R10157" title="K18056 (pntH), 1.14.11.35, R10157" />
+		<area id="70B296D1" shape="rect" coords="814,790,860,807" data-coords="814,790,860,807" class="original" href="/entry/K18091+1.14.13.171+R10155" title="K18091 (pntE), 1.14.13.171, R10155" />
+		<area id="EFADDA38" shape="rect" coords="621,790,667,807" data-coords="621,790,667,807" class="original" href="/entry/K17876+1.14.15.11+R10158" title="K17876 (CYP105D), 1.14.15.11, R10158" />
+		<area id="FDF060B4" shape="rect" coords="1049,758,1095,775" data-coords="1049,758,1095,775" class="original" href="/entry/K17476+1.14.19.8+R10162" title="K17476 (penM), 1.14.19.8, R10162" />
+		<area id="75B5FBFF" shape="rect" coords="336,1031,382,1048" data-coords="336,1031,382,1048" class="original" href="/entry/K19741+R11033" title="K19741 (dcsA), R11033" />
+		<area id="C61D383B" shape="rect" coords="462,1031,508,1048" data-coords="462,1031,508,1048" class="original" href="/entry/K19723+3.5.3.25+R10466" title="K19723 (dcsB), 3.5.3.25, R10466" />
+		<area id="6E9EFB61" shape="rect" coords="480,980,526,997" data-coords="480,980,526,997" class="original" href="/entry/K19726+2.3.1.30+R00586" title="K19726 (dcsE), 2.3.1.30, R00586" />
+		<area id="4ADC1A63" shape="rect" coords="584,1031,630,1048" data-coords="584,1031,630,1048" class="original" href="/entry/K19725+2.6.99.3+R10461" title="K19725 (dcsD), 2.6.99.3, R10461" />
+		<area id="1E685518" shape="rect" coords="700,1030,746,1047" data-coords="700,1030,746,1047" class="original" href="/entry/K19724+5.1.1.19+R10488" title="K19724 (dcsC), 5.1.1.19, R10488" />
+		<area id="9E51C7B8" shape="rect" coords="821,1031,867,1048" data-coords="821,1031,867,1048" class="original" href="/entry/K19727+6.3.3.5+R10470" title="K19727 (dcsG), 6.3.3.5, R10470" />
+		<area id="DA9E6FF4" shape="rect" coords="385,950,431,967" data-coords="385,950,431,967" class="original" href="/entry/K22598+2.6.1.114+R11963" title="K22598 (rosB), 2.6.1.114, R11963" />
+		<area id="DFC14830" shape="rect" coords="545,950,591,967" data-coords="545,950,591,967" class="original" href="/entry/R12114" title="R12114" />
+		<area id="4D8A090B" shape="rect" coords="165,895,211,912" data-coords="165,895,211,912" class="original" href="/entry/K22598+2.6.1.114+R11961" title="K22598 (rosB), 2.6.1.114, R11961" />
+		<area id="52917C7C" shape="rect" coords="275,895,321,912" data-coords="275,895,321,912" class="original" href="/entry/K22598+2.6.1.114+R11962" title="K22598 (rosB), 2.6.1.114, R11962" />
+		<area id="E9A0C083" shape="rect" coords="675,950,721,967" data-coords="675,950,721,967" class="original" href="/entry/K22269+2.1.1.343+R11779" title="K22269 (rosA), 2.1.1.343, R11779" />
+		<area id="7DB9AF44" shape="rect" coords="820,950,866,967" data-coords="820,950,866,967" class="original" href="/entry/K22269+2.1.1.343+R11780" title="K22269 (rosA), 2.1.1.343, R11780" />
+		<area id="E9907D6D" shape="rect" coords="470,695,516,712" data-coords="470,695,516,712" class="original" href="/entry/K25563+1.14.13.249+R12912" title="K25563 (creL), 1.14.13.249, R12912" />
+		<area id="EEAE5338" shape="rect" coords="620,695,666,712" data-coords="620,695,666,712" class="original" href="/entry/K25594+2.1.1.380+R12928" title="K25594 (creN), 2.1.1.380, R12928" />
+		<area id="F892CDFC" shape="rect" coords="760,695,806,712" data-coords="760,695,806,712" class="original" href="/entry/K25598+6.7.1.1+R12943" title="K25598 (creM), 6.7.1.1, R12943" />
+		<area id="549CF37C" shape="rect" coords="385,645,431,662" data-coords="385,645,431,662" class="original" href="/entry/K25562+1.14.13.248+R12907" title="K25562 (creE), 1.14.13.248, R12907" />
+		<area id="5EA6D7ED" shape="rect" coords="595,645,641,662" data-coords="595,645,641,662" class="original" href="/entry/K25597+4.3.99.5+R12947" title="K25597 (creD), 4.3.99.5, R12947" />
+		<area id="37B7BACE" shape="rect" coords="40,45,352,70" data-coords="40,45,352,70" class="original" href="/entry/map00998" title="map00998: Biosynthesis of various antibiotics" data-entry="map00998" />
+		<area id="D7AEB2A3" shape="rect" coords="140,365,298,400" data-coords="140,365,298,400" class="original" href="/pathway/map00400" title="map00400: Phenylalanine, tyrosine and tryptophan biosynthesis" data-entry="map00400" />
+		<area id="FCC9398D" shape="rect" coords="44,317,156,349" data-coords="44,317,156,349" class="original" href="/pathway/map00010" title="map00010: Glycolysis / Gluconeogenesis" data-entry="map00010" />
+		<area id="DBAD9FF0" shape="rect" coords="170,785,285,820" data-coords="170,785,285,820" class="original" href="/pathway/map00900" title="map00900: Terpenoid backbone biosynthesis" data-entry="map00900" />
+		<area id="67A30BD1" shape="rect" coords="123,446,252,480" data-coords="123,446,252,480" class="original" href="/pathway/map00260" title="map00260: Glycine, serine and threonine metabolism" data-entry="map00260" />
+		<area id="04C68D5F" shape="rect" coords="215,1010,290,1045" data-coords="215,1010,290,1045" class="original" href="/pathway/map00220" title="map00220: Arginine biosynthesis" data-entry="map00220" />
+		<area id="B43CC02A" shape="rect" coords="95,970,219,1005" data-coords="95,970,219,1005" class="original" href="/pathway/map00250" title="map00250: Alanine, aspartate and glutamate metabolism" data-entry="map00250" />
+		<area id="5F912FE8" shape="rect" coords="116,231,228,263" data-coords="116,231,228,263" class="original" href="/pathway/map00030" title="map00030: Pentose phosphate pathway" data-entry="map00030" />
+		<area id="E6BB58A2" shape="rect" coords="552,535,683,570" data-coords="552,535,683,570" class="original" href="/pathway/map00440" title="map00440: Phosphonate and phosphinate metabolism" data-entry="map00440" />
+		<area id="DA8809AF" shape="rect" coords="130,675,212,700" data-coords="130,675,212,700" class="original" href="/pathway/map00020" title="map00020: Citrate cycle (TCA cycle)" data-entry="map00020" />
+	</map>
+	<map id="module_mapdata" name="module_mapdata" data-scale="1">
+		<area shape="poly" coords="318,653,513,653,513,655,318,655" data-coords="318,653,513,653,513,655,318,655" href="javascript:void(0)"  data-refid="9F138675" data-module="M00951" class="module" />
+		<area shape="poly" coords="513,654,504,657,504,650" data-coords="513,654,504,657,504,650" href="javascript:void(0)"  data-refid="60505677" data-module="M00951" class="module" />
+		<area shape="poly" coords="367,133,487,133,487,135,367,135" data-coords="367,133,487,133,487,135,367,135" href="javascript:void(0)"  data-refid="3610EF55" data-module="M00877" class="module" />
+		<area shape="poly" coords="487,134,478,137,478,130" data-coords="487,134,478,137,478,130" href="javascript:void(0)"  data-refid="466E31FA" data-module="M00877" class="module" />
+		<area shape="poly" coords="237,133,357,133,357,135,237,135" data-coords="237,133,357,133,357,135,237,135" href="javascript:void(0)"  data-refid="360E5DB7" data-module="M00877" class="module" />
+		<area shape="poly" coords="357,134,348,137,348,130" data-coords="357,134,348,137,348,130" href="javascript:void(0)"  data-refid="694931B9" data-module="M00877" class="module" />
+		<area shape="poly" coords="108,133,228,133,228,135,108,135" data-coords="108,133,228,133,228,135,108,135" href="javascript:void(0)"  data-refid="B80BCC19" data-module="M00877" class="module" />
+		<area shape="poly" coords="228,134,219,137,219,130" data-coords="228,134,219,137,219,130" href="javascript:void(0)"  data-refid="8C30E878" data-module="M00877" class="module" />
+		<area shape="poly" coords="958,283,1053,283,1053,285,958,285" data-coords="958,283,1053,283,1053,285,958,285" href="javascript:void(0)"  data-refid="4DB67A92" data-module="M00787" class="module" />
+		<area shape="poly" coords="1053,284,1044,287,1044,280" data-coords="1053,284,1044,287,1044,280" href="javascript:void(0)"  data-refid="1FB55D4A" data-module="M00787" class="module" />
+		<area shape="poly" coords="853,283,948,283,948,285,853,285" data-coords="853,283,948,283,948,285,853,285" href="javascript:void(0)"  data-refid="471E2300" data-module="M00787" class="module" />
+		<area shape="poly" coords="948,284,939,287,939,280" data-coords="948,284,939,287,939,280" href="javascript:void(0)"  data-refid="3E55EA44" data-module="M00787" class="module" />
+		<area shape="poly" coords="748,283,843,283,843,285,748,285" data-coords="748,283,843,283,843,285,748,285" href="javascript:void(0)"  data-refid="9F1B9699" data-module="M00787" class="module" />
+		<area shape="poly" coords="843,284,834,287,834,280" data-coords="843,284,834,287,834,280" href="javascript:void(0)"  data-refid="87165703" data-module="M00787" class="module" />
+		<area shape="poly" coords="643,283,738,283,738,285,643,285" data-coords="643,283,738,283,738,285,643,285" href="javascript:void(0)"  data-refid="47190C76" data-module="M00787" class="module" />
+		<area shape="poly" coords="738,284,729,287,729,280" data-coords="738,284,729,287,729,280" href="javascript:void(0)"  data-refid="C39EE9C2" data-module="M00787" class="module" />
+		<area shape="poly" coords="563,283,633,283,633,285,563,285" data-coords="563,283,633,283,633,285,563,285" href="javascript:void(0)"  data-refid="2E168758" data-module="M00787" class="module" />
+		<area shape="poly" coords="633,284,624,287,624,280" data-coords="633,284,624,287,624,280" href="javascript:void(0)"  data-refid="0C5F5686" data-module="M00787" class="module" />
+		<area shape="poly" coords="458,283,553,283,553,285,458,285" data-coords="458,283,553,283,553,285,458,285" href="javascript:void(0)"  data-refid="9F13FB23" data-module="M00787" class="module" />
+		<area shape="poly" coords="553,284,544,287,544,280" data-coords="553,284,544,287,544,280" href="javascript:void(0)"  data-refid="6ECD5645" data-module="M00787" class="module" />
+		<area shape="poly" coords="258,283,448,283,448,285,258,285" data-coords="258,283,448,283,448,285,258,285" href="javascript:void(0)"  data-refid="B80F000A" data-module="M00787" class="module" />
+		<area shape="poly" coords="448,284,439,287,439,280" data-coords="448,284,439,287,439,280" href="javascript:void(0)"  data-refid="AB55E904" data-module="M00787" class="module" />
+		<area shape="poly" coords="988,203,1068,203,1068,205,988,205" data-coords="988,203,1068,203,1068,205,988,205" href="javascript:void(0)"  data-refid="66B9E583" data-module="M00848" class="module" />
+		<area shape="poly" coords="1068,204,1059,207,1059,200" data-coords="1068,204,1059,207,1059,200" href="javascript:void(0)"  data-refid="E02352D7" data-module="M00848" class="module" />
+		<area shape="poly" coords="898,203,978,203,978,205,898,205" data-coords="898,203,978,203,978,205,898,205" href="javascript:void(0)"  data-refid="B81E2909" data-module="M00848" class="module" />
+		<area shape="poly" coords="978,204,969,207,969,200" data-coords="978,204,969,207,969,200" href="javascript:void(0)"  data-refid="5022EA44" data-module="M00848" class="module" />
+		<area shape="poly" coords="808,203,888,203,888,205,808,205" data-coords="808,203,888,203,888,205,808,205" href="javascript:void(0)"  data-refid="B81DFA29" data-module="M00848" class="module" />
+		<area shape="poly" coords="888,204,879,207,879,200" data-coords="888,204,879,207,879,200" href="javascript:void(0)"  data-refid="A5D9EA03" data-module="M00848" class="module" />
+		<area shape="poly" coords="718,203,798,203,798,205,718,205" data-coords="718,203,798,203,798,205,718,205" href="javascript:void(0)"  data-refid="B81B72B3" data-module="M00848" class="module" />
+		<area shape="poly" coords="798,204,789,207,789,200" data-coords="798,204,789,207,789,200" href="javascript:void(0)"  data-refid="FB90E9C2" data-module="M00848" class="module" />
+		<area shape="poly" coords="628,203,708,203,708,205,628,205" data-coords="628,203,708,203,708,205,628,205" href="javascript:void(0)"  data-refid="B8190343" data-module="M00848" class="module" />
+		<area shape="poly" coords="708,204,699,207,699,200" data-coords="708,204,699,207,699,200" href="javascript:void(0)"  data-refid="0C35E9C2" data-module="M00848" class="module" />
+		<area shape="poly" coords="538,203,618,203,618,205,538,205" data-coords="538,203,618,203,618,205,538,205" href="javascript:void(0)"  data-refid="B8167BCD" data-module="M00848" class="module" />
+		<area shape="poly" coords="618,204,609,207,609,200" data-coords="618,204,609,207,609,200" href="javascript:void(0)"  data-refid="DED8E981" data-module="M00848" class="module" />
+		<area shape="poly" coords="448,203,528,203,528,205,448,205" data-coords="448,203,528,203,528,205,448,205" href="javascript:void(0)"  data-refid="B813F457" data-module="M00848" class="module" />
+		<area shape="poly" coords="528,204,519,207,519,200" data-coords="528,204,519,207,519,200" href="javascript:void(0)"  data-refid="348FE945" data-module="M00848" class="module" />
+		<area shape="poly" coords="343,203,439,203,439,205,343,205" data-coords="343,203,439,203,439,205,343,205" href="javascript:void(0)"  data-refid="4C116A66" data-module="M00848" class="module" />
+		<area shape="poly" coords="439,204,430,207,430,200" data-coords="439,204,430,207,430,200" href="javascript:void(0)"  data-refid="8AD08C04" data-module="M00848" class="module" />
+		<area shape="poly" coords="449,423,323,423,323,423,321,423,320,424,319,423,320,422,318,422,317,423,316,422,316,422,315,421,315,421,314,420,314,420,314,418,314,418,313,417,313,417,313,415,313,415,313,366,315,366,315,415,315,415,315,417,315,417,316,418,316,418,316,420,316,420,317,421,317,421,318,422,318,422,319,423,318,424,320,424,321,423,322,424,321,425,323,425,323,425,449,425" data-coords="449,423,323,423,323,423,321,423,320,424,319,423,320,422,318,422,317,423,316,422,316,422,315,421,315,421,314,420,314,420,314,418,314,418,313,417,313,417,313,415,313,415,313,366,315,366,315,415,315,415,315,417,315,417,316,418,316,418,316,420,316,420,317,421,317,421,318,422,318,422,319,423,318,424,320,424,321,423,322,424,321,425,323,425,323,425,449,425" href="javascript:void(0)"  data-refid="C81C05D5" data-module="M00889" class="module" />
+		<area shape="poly" coords="258,423,454,423,454,425,258,425" data-coords="258,423,454,423,454,425,258,425" href="javascript:void(0)"  data-refid="A4100117" data-module="M00889" class="module" />
+		<area shape="poly" coords="454,424,445,427,445,420" data-coords="454,424,445,427,445,420" href="javascript:void(0)"  data-refid="BE980D1D" data-module="M00889" class="module" />
+		<area shape="poly" coords="568,423,663,423,663,425,568,425" data-coords="568,423,663,423,663,425,568,425" href="javascript:void(0)"  data-refid="9F1788A1" data-module="M00889" class="module" />
+		<area shape="poly" coords="663,424,654,427,654,420" data-coords="663,424,654,427,654,420" href="javascript:void(0)"  data-refid="3942569F" data-module="M00889" class="module" />
+		<area shape="poly" coords="673,423,768,423,768,425,673,425" data-coords="673,423,768,423,768,425,673,425" href="javascript:void(0)"  data-refid="471A1508" data-module="M00889" class="module" />
+		<area shape="poly" coords="768,424,759,427,759,420" data-coords="768,424,759,427,759,420" href="javascript:void(0)"  data-refid="F081E9DB" data-module="M00889" class="module" />
+		<area shape="poly" coords="778,423,873,423,873,425,778,425" data-coords="778,423,873,423,873,425,778,425" href="javascript:void(0)"  data-refid="9F1C9F2B" data-module="M00889" class="module" />
+		<area shape="poly" coords="873,424,864,427,864,420" data-coords="873,424,864,427,864,420" href="javascript:void(0)"  data-refid="B3F9571C" data-module="M00889" class="module" />
+		<area shape="poly" coords="883,423,978,423,978,425,883,425" data-coords="883,423,978,423,978,425,883,425" href="javascript:void(0)"  data-refid="471F2B92" data-module="M00889" class="module" />
+		<area shape="poly" coords="978,424,969,427,969,420" data-coords="978,424,969,427,969,420" href="javascript:void(0)"  data-refid="6B38EA5D" data-module="M00889" class="module" />
+		<area shape="poly" coords="988,423,1083,423,1083,425,988,425" data-coords="988,423,1083,423,1083,425,988,425" href="javascript:void(0)"  data-refid="4EB4E9BF" data-module="M00889" class="module" />
+		<area shape="poly" coords="1083,424,1074,427,1074,420" data-coords="1083,424,1074,427,1074,420" href="javascript:void(0)"  data-refid="02D73626" data-module="M00889" class="module" />
+		<area shape="poly" coords="463,423,558,423,558,425,463,425" data-coords="463,423,558,423,558,425,463,425" href="javascript:void(0)"  data-refid="4714FE7E" data-module="M00889" class="module" />
+		<area shape="poly" coords="558,424,549,427,549,420" data-coords="558,424,549,427,549,420" href="javascript:void(0)"  data-refid="75CAE95E" data-module="M00889" class="module" />
+		<area shape="rect" coords="140,125,186,142" data-coords="140,125,186,142" href="javascript:void(0)"  data-refid="CFACAEAF" data-module="M00877" class="module" />
+		<area shape="rect" coords="270,125,316,142" data-coords="270,125,316,142" href="javascript:void(0)"  data-refid="D98C2702" data-module="M00877" class="module" />
+		<area shape="rect" coords="400,125,446,142" data-coords="400,125,446,142" href="javascript:void(0)"  data-refid="DE9FF7EB" data-module="M00877" class="module" />
+		<area shape="rect" coords="345,276,391,293" data-coords="345,276,391,293" href="javascript:void(0)"  data-refid="64BBF82F" data-module="M00787" class="module" />
+		<area shape="rect" coords="480,275,526,292" data-coords="480,275,526,292" href="javascript:void(0)"  data-refid="E49B8AE4" data-module="M00787" class="module" />
+		<area shape="rect" coords="665,275,711,292" data-coords="665,275,711,292" href="javascript:void(0)"  data-refid="5F9B4F11" data-module="M00787" class="module" />
+		<area shape="rect" coords="775,275,821,292" data-coords="775,275,821,292" href="javascript:void(0)"  data-refid="64A2C282" data-module="M00787" class="module" />
+		<area shape="rect" coords="875,275,921,292" data-coords="875,275,921,292" href="javascript:void(0)"  data-refid="69A53382" data-module="M00787" class="module" />
+		<area shape="rect" coords="980,275,1026,292" data-coords="980,275,1026,292" href="javascript:void(0)"  data-refid="96B3231B" data-module="M00787" class="module" />
+		<area shape="rect" coords="370,195,416,212" data-coords="370,195,416,212" href="javascript:void(0)"  data-refid="DF8B9B6D" data-module="M00848" class="module" />
+		<area shape="rect" coords="465,195,511,212" data-coords="465,195,511,212" href="javascript:void(0)"  data-refid="558DF10B" data-module="M00848" class="module" />
+		<area shape="rect" coords="555,195,601,212" data-coords="555,195,601,212" href="javascript:void(0)"  data-refid="5A8B5F9A" data-module="M00848" class="module" />
+		<area shape="rect" coords="645,195,691,212" data-coords="645,195,691,212" href="javascript:void(0)"  data-refid="5ABACE29" data-module="M00848" class="module" />
+		<area shape="rect" coords="731,195,777,212" data-coords="731,195,777,212" href="javascript:void(0)"  data-refid="6BB35AAE" data-module="M00848" class="module" />
+		<area shape="rect" coords="821,195,867,212" data-coords="821,195,867,212" href="javascript:void(0)"  data-refid="70B0C93D" data-module="M00848" class="module" />
+		<area shape="rect" coords="911,195,957,212" data-coords="911,195,957,212" href="javascript:void(0)"  data-refid="75AE37CC" data-module="M00848" class="module" />
+		<area shape="rect" coords="1001,195,1047,212" data-coords="1001,195,1047,212" href="javascript:void(0)"  data-refid="F5DB82B5" data-module="M00848" class="module" />
+		<area shape="rect" coords="350,415,396,432" data-coords="350,415,396,432" href="javascript:void(0)"  data-refid="DCB709A3" data-module="M00889" class="module" />
+		<area shape="rect" coords="585,415,631,432" data-coords="585,415,631,432" href="javascript:void(0)"  data-refid="5C9DDA05" data-module="M00889" class="module" />
+		<area shape="rect" coords="690,415,736,432" data-coords="690,415,736,432" href="javascript:void(0)"  data-refid="F0A06667" data-module="M00889" class="module" />
+		<area shape="rect" coords="795,415,841,432" data-coords="795,415,841,432" href="javascript:void(0)"  data-refid="66A7BE76" data-module="M00889" class="module" />
+		<area shape="rect" coords="900,415,946,432" data-coords="900,415,946,432" href="javascript:void(0)"  data-refid="FAACA36E" data-module="M00889" class="module" />
+		<area shape="rect" coords="1005,415,1051,432" data-coords="1005,415,1051,432" href="javascript:void(0)"  data-refid="F9558679" data-module="M00889" class="module" />
+		<area shape="rect" coords="480,415,526,432" data-coords="480,415,526,432" href="javascript:void(0)"  data-refid="E69681F6" data-module="M00889" class="module" />
+		<area shape="poly" coords="108,593,223,593,223,595,108,595" data-coords="108,593,223,593,223,595,108,595" href="javascript:void(0)"  data-refid="9F0DD725" data-module="M00903" class="module" />
+		<area shape="poly" coords="223,594,214,597,214,590" data-coords="223,594,214,597,214,590" href="javascript:void(0)"  data-refid="C73355AA" data-module="M00903" class="module" />
+		<area shape="poly" coords="233,593,348,593,348,595,233,595" data-coords="233,593,348,593,348,595,233,595" href="javascript:void(0)"  data-refid="471068A0" data-module="M00903" class="module" />
+		<area shape="poly" coords="348,594,339,597,339,590" data-coords="348,594,339,597,339,590" href="javascript:void(0)"  data-refid="97E0E8EB" data-module="M00903" class="module" />
+		<area shape="poly" coords="358,593,473,593,473,595,358,595" data-coords="358,593,473,593,473,595,358,595" href="javascript:void(0)"  data-refid="9F12F7D7" data-module="M00903" class="module" />
+		<area shape="poly" coords="473,594,464,597,464,590" data-coords="473,594,464,597,464,590" href="javascript:void(0)"  data-refid="74C6562C" data-module="M00903" class="module" />
+		<area shape="poly" coords="483,593,598,593,598,595,483,595" data-coords="483,593,598,593,598,595,483,595" href="javascript:void(0)"  data-refid="47158952" data-module="M00903" class="module" />
+		<area shape="poly" coords="598,594,589,597,589,590" data-coords="598,594,589,597,589,590" href="javascript:void(0)"  data-refid="4573E96D" data-module="M00903" class="module" />
+		<area shape="poly" coords="608,593,723,593,723,595,608,595" data-coords="608,593,723,593,723,595,608,595" href="javascript:void(0)"  data-refid="9F1A8925" data-module="M00903" class="module" />
+		<area shape="poly" coords="723,594,714,597,714,590" data-coords="723,594,714,597,714,590" href="javascript:void(0)"  data-refid="5A3356EA" data-module="M00903" class="module" />
+		<area shape="poly" coords="733,593,848,593,848,595,733,595" data-coords="733,593,848,593,848,595,733,595" href="javascript:void(0)"  data-refid="471D1AA0" data-module="M00903" class="module" />
+		<area shape="poly" coords="848,594,839,597,839,590" data-coords="848,594,839,597,839,590" href="javascript:void(0)"  data-refid="2AE0EA2B" data-module="M00903" class="module" />
+		<area shape="poly" coords="858,593,973,593,973,595,858,595" data-coords="858,593,973,593,973,595,858,595" href="javascript:void(0)"  data-refid="9F1FA9D7" data-module="M00903" class="module" />
+		<area shape="poly" coords="973,594,964,597,964,590" data-coords="973,594,964,597,964,590" href="javascript:void(0)"  data-refid="07C6576C" data-module="M00903" class="module" />
+		<area shape="rect" coords="140,585,186,602" data-coords="140,585,186,602" href="javascript:void(0)"  data-refid="D4AAA59D" data-module="M00903" class="module" />
+		<area shape="rect" coords="260,585,306,602" data-coords="260,585,306,602" href="javascript:void(0)"  data-refid="DE851B7F" data-module="M00903" class="module" />
+		<area shape="rect" coords="390,596,436,613" data-coords="390,596,436,613" href="javascript:void(0)"  data-refid="FC97954F" data-module="M00903" class="module" />
+		<area shape="rect" coords="510,585,556,602" data-coords="510,585,556,602" href="javascript:void(0)"  data-refid="E8A5624A" data-module="M00903" class="module" />
+		<area shape="rect" coords="640,585,686,602" data-coords="640,585,686,602" href="javascript:void(0)"  data-refid="EDB6DA9D" data-module="M00903" class="module" />
+		<area shape="rect" coords="770,585,816,602" data-coords="770,585,816,602" href="javascript:void(0)"  data-refid="F79652F0" data-module="M00903" class="module" />
+		<area shape="rect" coords="890,585,936,602" data-coords="890,585,936,602" href="javascript:void(0)"  data-refid="FCA2C8D2" data-module="M00903" class="module" />
+		<area shape="circle" coords="104,134,4" data-coords="104,134,4" href="javascript:void(0)"  data-refid="E76FBF3E" data-module="M00877" class="module" />
+		<area shape="circle" coords="234,134,4" data-coords="234,134,4" href="javascript:void(0)"  data-refid="E76FD889" data-module="M00877" class="module" />
+		<area shape="circle" coords="364,134,4" data-coords="364,134,4" href="javascript:void(0)"  data-refid="E76FF1D4" data-module="M00877" class="module" />
+		<area shape="circle" coords="494,134,4" data-coords="494,134,4" href="javascript:void(0)"  data-refid="E7700B1F" data-module="M00877" class="module" />
+		<area shape="circle" coords="254,284,4" data-coords="254,284,4" href="javascript:void(0)"  data-refid="E76FDDD4" data-module="M00787" class="module" />
+		<area shape="circle" coords="454,284,4" data-coords="454,284,4" href="javascript:void(0)"  data-refid="E7700FD4" data-module="M00787" class="module" />
+		<area shape="circle" coords="559,284,4" data-coords="559,284,4" href="javascript:void(0)"  data-refid="007028D9" data-module="M00787" class="module" />
+		<area shape="circle" coords="639,284,4" data-coords="639,284,4" href="javascript:void(0)"  data-refid="007041A7" data-module="M00787" class="module" />
+		<area shape="circle" coords="744,284,4" data-coords="744,284,4" href="javascript:void(0)"  data-refid="E7705ABB" data-module="M00787" class="module" />
+		<area shape="circle" coords="849,284,4" data-coords="849,284,4" href="javascript:void(0)"  data-refid="007073C0" data-module="M00787" class="module" />
+		<area shape="circle" coords="954,284,4" data-coords="954,284,4" href="javascript:void(0)"  data-refid="E7708CD4" data-module="M00787" class="module" />
+		<area shape="circle" coords="1059,284,4" data-coords="1059,284,4" href="javascript:void(0)"  data-refid="BBAF29E4" data-module="M00787" class="module" />
+		<area shape="circle" coords="444,204,4" data-coords="444,204,4" href="javascript:void(0)"  data-refid="E7700F93" data-module="M00848" class="module" />
+		<area shape="circle" coords="534,204,4" data-coords="534,204,4" href="javascript:void(0)"  data-refid="E770287A" data-module="M00848" class="module" />
+		<area shape="circle" coords="624,204,4" data-coords="624,204,4" href="javascript:void(0)"  data-refid="E7704161" data-module="M00848" class="module" />
+		<area shape="circle" coords="714,204,4" data-coords="714,204,4" href="javascript:void(0)"  data-refid="E7705A48" data-module="M00848" class="module" />
+		<area shape="circle" coords="804,204,4" data-coords="804,204,4" href="javascript:void(0)"  data-refid="E770732F" data-module="M00848" class="module" />
+		<area shape="circle" coords="894,204,4" data-coords="894,204,4" href="javascript:void(0)"  data-refid="E7707410" data-module="M00848" class="module" />
+		<area shape="circle" coords="984,204,4" data-coords="984,204,4" href="javascript:void(0)"  data-refid="E7708CF7" data-module="M00848" class="module" />
+		<area shape="circle" coords="1074,204,4" data-coords="1074,204,4" href="javascript:void(0)"  data-refid="A2AF29EE" data-module="M00848" class="module" />
+		<area shape="circle" coords="254,424,4" data-coords="254,424,4" href="javascript:void(0)"  data-refid="E76FE7B6" data-module="M00889" class="module" />
+		<area shape="circle" coords="564,424,4" data-coords="564,424,4" href="javascript:void(0)"  data-refid="E77032CF" data-module="M00889" class="module" />
+		<area shape="circle" coords="669,424,4" data-coords="669,424,4" href="javascript:void(0)"  data-refid="00704BD4" data-module="M00889" class="module" />
+		<area shape="circle" coords="774,424,4" data-coords="774,424,4" href="javascript:void(0)"  data-refid="E77064E8" data-module="M00889" class="module" />
+		<area shape="circle" coords="879,424,4" data-coords="879,424,4" href="javascript:void(0)"  data-refid="00707DED" data-module="M00889" class="module" />
+		<area shape="circle" coords="984,424,4" data-coords="984,424,4" href="javascript:void(0)"  data-refid="E7709701" data-module="M00889" class="module" />
+		<area shape="circle" coords="1089,424,4" data-coords="1089,424,4" href="javascript:void(0)"  data-refid="BBAF3411" data-module="M00889" class="module" />
+		<area shape="poly" coords="410,361,320,361,320,363,410,363" data-coords="410,361,320,361,320,363,410,363" href="javascript:void(0)"  data-refid="74143FFC" data-module="M00889" class="module" />
+		<area shape="poly" coords="320,362,328,358,328,365" data-coords="320,362,328,358,328,365" href="javascript:void(0)"  data-refid="60D3FAD2" data-module="M00889" class="module" />
+		<area shape="poly" coords="510,361,420,361,420,363,510,363" data-coords="510,361,420,361,420,363,510,363" href="javascript:void(0)"  data-refid="7416C9FC" data-module="M00889" class="module" />
+		<area shape="poly" coords="420,362,428,358,428,365" data-coords="420,362,428,358,428,365" href="javascript:void(0)"  data-refid="17D3FB13" data-module="M00889" class="module" />
+		<area shape="poly" coords="610,361,520,361,520,363,610,363" data-coords="610,361,520,361,520,363,610,363" href="javascript:void(0)"  data-refid="741953FC" data-module="M00889" class="module" />
+		<area shape="poly" coords="520,362,528,358,528,365" data-coords="520,362,528,358,528,365" href="javascript:void(0)"  data-refid="CED3FB4F" data-module="M00889" class="module" />
+		<area shape="rect" coords="345,354,391,371" data-coords="345,354,391,371" href="javascript:void(0)"  data-refid="33BA7235" data-module="M00889" class="module" />
+		<area shape="rect" coords="448,354,494,371" data-coords="448,354,494,371" href="javascript:void(0)"  data-refid="AFBCF23A" data-module="M00889" class="module" />
+		<area shape="rect" coords="546,354,592,371" data-coords="546,354,592,371" href="javascript:void(0)"  data-refid="BABF5935" data-module="M00889" class="module" />
+		<area shape="circle" coords="314,362,4" data-coords="314,362,4" href="javascript:void(0)"  data-refid="E56FFB66" data-module="M00889" class="module" />
+		<area shape="circle" coords="414,362,4" data-coords="414,362,4" href="javascript:void(0)"  data-refid="E5701466" data-module="M00889" class="module" />
+		<area shape="circle" coords="514,362,4" data-coords="514,362,4" href="javascript:void(0)"  data-refid="E5702D66" data-module="M00889" class="module" />
+		<area shape="circle" coords="614,362,4" data-coords="614,362,4" href="javascript:void(0)"  data-refid="E5704666" data-module="M00889" class="module" />
+		<area shape="circle" coords="459,424,4" data-coords="459,424,4" href="javascript:void(0)"  data-refid="007019BB" data-module="M00889" class="module" />
+		<area shape="circle" coords="104,594,4" data-coords="104,594,4" href="javascript:void(0)"  data-refid="E76FD35C" data-module="M00903" class="module" />
+		<area shape="circle" coords="339,204,4" data-coords="339,204,4" href="javascript:void(0)"  data-refid="006FF67F" data-module="M00848" class="module" />
+		<area shape="circle" coords="229,594,4" data-coords="229,594,4" href="javascript:void(0)"  data-refid="006FEC93" data-module="M00903" class="module" />
+		<area shape="circle" coords="354,594,4" data-coords="354,594,4" href="javascript:void(0)"  data-refid="E77005D9" data-module="M00903" class="module" />
+		<area shape="circle" coords="479,594,4" data-coords="479,594,4" href="javascript:void(0)"  data-refid="00701F10" data-module="M00903" class="module" />
+		<area shape="circle" coords="604,594,4" data-coords="604,594,4" href="javascript:void(0)"  data-refid="E770505C" data-module="M00903" class="module" />
+		<area shape="circle" coords="729,594,4" data-coords="729,594,4" href="javascript:void(0)"  data-refid="00706993" data-module="M00903" class="module" />
+		<area shape="circle" coords="854,594,4" data-coords="854,594,4" href="javascript:void(0)"  data-refid="E77082D9" data-module="M00903" class="module" />
+		<area shape="circle" coords="979,594,4" data-coords="979,594,4" href="javascript:void(0)"  data-refid="00709C10" data-module="M00903" class="module" />
+		<area shape="poly" coords="902,512,902,530,902,530,902,531,902,531,903,533,903,533,903,534,903,534,904,535,904,535,906,537,906,537,907,538,908,537,909,537,909,537,911,538,911,538,912,538,912,538,1037,538,1037,540,912,540,912,540,911,540,911,540,909,539,909,539,908,539,909,538,908,537,908,537,906,535,906,535,905,534,905,534,905,533,905,533,904,531,904,531,904,530,904,530,904,512" data-coords="902,512,902,530,902,530,902,531,902,531,903,533,903,533,903,534,903,534,904,535,904,535,906,537,906,537,907,538,908,537,909,537,909,537,911,538,911,538,912,538,912,538,1037,538,1037,540,912,540,912,540,911,540,911,540,909,539,909,539,908,539,909,538,908,537,908,537,906,535,906,535,905,534,905,534,905,533,905,533,904,531,904,531,904,530,904,530,904,512" href="javascript:void(0)"  data-refid="25EED83E" data-module="M00904" class="module" />
+		<area shape="poly" coords="1037,539,1028,542,1028,535" data-coords="1037,539,1028,542,1028,535" href="javascript:void(0)"  data-refid="CF4160CD" data-module="M00904" class="module" />
+		<area shape="poly" coords="628,508,758,508,758,510,628,510" data-coords="628,508,758,508,758,510,628,510" href="javascript:void(0)"  data-refid="3A1A89C5" data-module="M00904" class="module" />
+		<area shape="poly" coords="758,509,749,512,749,505" data-coords="758,509,749,512,749,505" href="javascript:void(0)"  data-refid="69D9A6EA" data-module="M00904" class="module" />
+		<area shape="poly" coords="767,508,897,508,897,510,767,510" data-coords="767,508,897,508,897,510,767,510" href="javascript:void(0)"  data-refid="B81D1DE8" data-module="M00904" class="module" />
+		<area shape="poly" coords="897,509,888,512,888,505" data-coords="897,509,888,512,888,505" href="javascript:void(0)"  data-refid="53A8F02B" data-module="M00904" class="module" />
+		<area shape="poly" coords="907,508,1038,508,1038,510,907,510" data-coords="907,508,1038,508,1038,510,907,510" href="javascript:void(0)"  data-refid="6D1D6C38" data-module="M00904" class="module" />
+		<area shape="poly" coords="1038,509,1029,512,1029,505" data-coords="1038,509,1029,512,1029,505" href="javascript:void(0)"  data-refid="B9BB416A" data-module="M00904" class="module" />
+		<area shape="poly" coords="902,506,902,488,902,488,902,487,902,487,903,485,903,485,903,484,903,484,904,483,904,483,906,481,906,481,907,480,908,479,909,479,909,479,911,478,911,478,912,478,912,478,1037,478,1037,480,912,480,912,480,911,480,911,480,909,481,909,481,908,481,909,480,908,481,908,481,906,483,906,483,905,484,905,484,905,485,905,485,904,487,904,487,904,488,904,488,904,506" data-coords="902,506,902,488,902,488,902,487,902,487,903,485,903,485,903,484,903,484,904,483,904,483,906,481,906,481,907,480,908,479,909,479,909,479,911,478,911,478,912,478,912,478,1037,478,1037,480,912,480,912,480,911,480,911,480,909,481,909,481,908,481,909,480,908,481,908,481,906,483,906,483,905,484,905,484,905,485,905,485,904,487,904,487,904,488,904,488,904,506" href="javascript:void(0)"  data-refid="BDB90598" data-module="M00904" class="module" />
+		<area shape="poly" coords="1037,479,1028,482,1028,475" data-coords="1037,479,1028,482,1028,475" href="javascript:void(0)"  data-refid="32395C29" data-module="M00904" class="module" />
+		<area shape="circle" coords="624,509,4" data-coords="624,509,4" href="javascript:void(0)"  data-refid="EC705061" data-module="M00904" class="module" />
+		<area shape="circle" coords="764,509,4" data-coords="764,509,4" href="javascript:void(0)"  data-refid="EC7069C5" data-module="M00904" class="module" />
+		<area shape="rect" coords="666,501,712,518" data-coords="666,501,712,518" href="javascript:void(0)"  data-refid="7B94CDA6" data-module="M00904" class="module" />
+		<area shape="circle" coords="903,509,4" data-coords="903,509,4" href="javascript:void(0)"  data-refid="E7709B2F" data-module="M00904" class="module" />
+		<area shape="circle" coords="1043,479,4" data-coords="1043,479,4" href="javascript:void(0)"  data-refid="A2AF33C6" data-module="M00904" class="module" />
+		<area shape="circle" coords="1043,509,4" data-coords="1043,509,4" href="javascript:void(0)"  data-refid="A2AF38A3" data-module="M00904" class="module" />
+		<area shape="circle" coords="1043,539,4" data-coords="1043,539,4" href="javascript:void(0)"  data-refid="A2AF38B2" data-module="M00904" class="module" />
+		<area shape="rect" coords="955,500,1001,517" data-coords="955,500,1001,517" href="javascript:void(0)"  data-refid="9B0D5ADF" data-module="M00904" class="module" />
+		<area shape="rect" coords="955,530,1001,547" data-coords="955,530,1001,547" href="javascript:void(0)"  data-refid="9B11D1DF" data-module="M00904" class="module" />
+		<area shape="rect" coords="955,470,1001,487" data-coords="955,470,1001,487" href="javascript:void(0)"  data-refid="999AC5DF" data-module="M00904" class="module" />
+		<area shape="rect" coords="796,501,842,518" data-coords="796,501,842,518" href="javascript:void(0)"  data-refid="80A645F9" data-module="M00904" class="module" />
+		<area shape="poly" coords="573,858,693,858,693,860,573,860" data-coords="573,858,693,858,693,860,573,860" href="javascript:void(0)"  data-refid="B01994D9" data-module="M00788" class="module" />
+		<area shape="poly" coords="693,859,684,862,684,855" data-coords="693,859,684,862,684,855" href="javascript:void(0)"  data-refid="932D13D1" data-module="M00788" class="module" />
+		<area shape="poly" coords="443,858,563,858,563,860,443,860" data-coords="443,858,563,858,563,860,443,860" href="javascript:void(0)"  data-refid="B017033B" data-module="M00788" class="module" />
+		<area shape="poly" coords="563,859,554,862,554,855" data-coords="563,859,554,862,554,855" href="javascript:void(0)"  data-refid="B6081390" data-module="M00788" class="module" />
+		<area shape="poly" coords="313,858,433,858,433,860,313,860" data-coords="313,858,433,858,433,860,313,860" href="javascript:void(0)"  data-refid="B014719D" data-module="M00788" class="module" />
+		<area shape="poly" coords="433,859,424,862,424,855" data-coords="433,859,424,862,424,855" href="javascript:void(0)"  data-refid="D8E3134F" data-module="M00788" class="module" />
+		<area shape="poly" coords="1028,768,1118,768,1118,770,1028,770" data-coords="1028,768,1118,768,1118,770,1028,770" href="javascript:void(0)"  data-refid="02BE90C1" data-module="M00819" class="module" />
+		<area shape="poly" coords="1118,769,1109,772,1109,765" data-coords="1118,769,1109,772,1109,765" href="javascript:void(0)"  data-refid="5D0C8701" data-module="M00819" class="module" />
+		<area shape="poly" coords="933,768,1018,768,1018,770,933,770" data-coords="933,768,1018,768,1018,770,933,770" href="javascript:void(0)"  data-refid="6E21AD60" data-module="M00819" class="module" />
+		<area shape="poly" coords="1018,769,1009,772,1009,765" data-coords="1018,769,1009,772,1009,765" href="javascript:void(0)"  data-refid="57CF7B90" data-module="M00819" class="module" />
+		<area shape="poly" coords="838,768,923,768,923,770,838,770" data-coords="838,768,923,768,923,770,838,770" href="javascript:void(0)"  data-refid="2120A6F7" data-module="M00819" class="module" />
+		<area shape="poly" coords="923,769,914,772,914,765" data-coords="923,769,914,772,914,765" href="javascript:void(0)"  data-refid="D6B71480" data-module="M00819" class="module" />
+		<area shape="poly" coords="744,768,829,768,829,770,744,770" data-coords="744,768,829,768,829,770,744,770" href="javascript:void(0)"  data-refid="4B1E1F5E" data-module="M00819" class="module" />
+		<area shape="poly" coords="829,769,820,772,820,765" data-coords="829,769,820,772,820,765" href="javascript:void(0)"  data-refid="20804A44" data-module="M00819" class="module" />
+		<area shape="poly" coords="458,768,573,768,573,770,458,770" data-coords="458,768,573,768,573,770,458,770" href="javascript:void(0)"  data-refid="21168456" data-module="M00819" class="module" />
+		<area shape="poly" coords="573,769,564,772,564,765" data-coords="573,769,564,772,564,765" href="javascript:void(0)"  data-refid="3A4A1386" data-module="M00819" class="module" />
+		<area shape="poly" coords="313,768,448,768,448,770,313,770" data-coords="313,768,448,768,448,770,313,770" href="javascript:void(0)"  data-refid="C913F038" data-module="M00819" class="module" />
+		<area shape="poly" coords="448,769,439,772,439,765" data-coords="448,769,439,772,439,765" href="javascript:void(0)"  data-refid="5D64A645" data-module="M00819" class="module" />
+		<area shape="poly" coords="583,768,638,768,638,770,583,770" data-coords="583,768,638,768,638,770,583,770" href="javascript:void(0)"  data-refid="C9191536" data-module="M00819" class="module" />
+		<area shape="poly" coords="638,769,629,772,629,765" data-coords="638,769,629,772,629,765" href="javascript:void(0)"  data-refid="BEADA6C2" data-module="M00819" class="module" />
+		<area shape="poly" coords="648,768,733,768,733,770,648,770" data-coords="648,768,733,768,733,770,648,770" href="javascript:void(0)"  data-refid="211B9581" data-module="M00819" class="module" />
+		<area shape="poly" coords="733,769,724,772,724,765" data-coords="733,769,724,772,724,765" href="javascript:void(0)"  data-refid="756E1403" data-module="M00819" class="module" />
+		<area shape="circle" coords="309,859,4" data-coords="309,859,4" href="javascript:void(0)"  data-refid="0570144D" data-module="M00788" class="module" />
+		<area shape="rect" coords="347,851,393,868" data-coords="347,851,393,868" href="javascript:void(0)"  data-refid="E7BBF435" data-module="M00788" class="module" />
+		<area shape="rect" coords="475,850,521,867" data-coords="475,850,521,867" href="javascript:void(0)"  data-refid="DE9B6183" data-module="M00788" class="module" />
+		<area shape="circle" coords="439,859,4" data-coords="439,859,4" href="javascript:void(0)"  data-refid="05702D98" data-module="M00788" class="module" />
+		<area shape="circle" coords="569,859,4" data-coords="569,859,4" href="javascript:void(0)"  data-refid="057046E3" data-module="M00788" class="module" />
+		<area shape="circle" coords="699,859,4" data-coords="699,859,4" href="javascript:void(0)"  data-refid="0570602E" data-module="M00788" class="module" />
+		<area shape="circle" coords="309,769,4" data-coords="309,769,4" href="javascript:void(0)"  data-refid="05700F52" data-module="M00819" class="module" />
+		<area shape="rect" coords="355,760,401,777" data-coords="355,760,401,777" href="javascript:void(0)"  data-refid="D88F6F1E" data-module="M00819" class="module" />
+		<area shape="rect" coords="483,760,529,777" data-coords="483,760,529,777" href="javascript:void(0)"  data-refid="E39C0F6C" data-module="M00819" class="module" />
+		<area shape="rect" coords="759,760,805,777" data-coords="759,760,805,777" href="javascript:void(0)"  data-refid="E0994728" data-module="M00819" class="module" />
+		<area shape="rect" coords="853,761,899,778" data-coords="853,761,899,778" href="javascript:void(0)"  data-refid="0BC8CD1E" data-module="M00819" class="module" />
+		<area shape="rect" coords="949,761,995,778" data-coords="949,761,995,778" href="javascript:void(0)"  data-refid="FECB27B7" data-module="M00819" class="module" />
+		<area shape="rect" coords="666,761,712,778" data-coords="666,761,712,778" href="javascript:void(0)"  data-refid="7D9BCA94" data-module="M00819" class="module" />
+		<area shape="rect" coords="1049,758,1095,775" data-coords="1049,758,1095,775" href="javascript:void(0)"  data-refid="FDF060B4" data-module="M00819" class="module" />
+		<area shape="circle" coords="454,769,4" data-coords="454,769,4" href="javascript:void(0)"  data-refid="EC7028CA" data-module="M00819" class="module" />
+		<area shape="circle" coords="579,769,4" data-coords="579,769,4" href="javascript:void(0)"  data-refid="05704201" data-module="M00819" class="module" />
+		<area shape="circle" coords="644,769,4" data-coords="644,769,4" href="javascript:void(0)"  data-refid="EC705AB1" data-module="M00819" class="module" />
+		<area shape="circle" coords="739,769,4" data-coords="739,769,4" href="javascript:void(0)"  data-refid="0570739D" data-module="M00819" class="module" />
+		<area shape="circle" coords="834,769,4" data-coords="834,769,4" href="javascript:void(0)"  data-refid="EC708C98" data-module="M00819" class="module" />
+		<area shape="circle" coords="929,769,4" data-coords="929,769,4" href="javascript:void(0)"  data-refid="0570A584" data-module="M00819" class="module" />
+		<area shape="circle" coords="1024,769,4" data-coords="1024,769,4" href="javascript:void(0)"  data-refid="A7AF428F" data-module="M00819" class="module" />
+		<area shape="circle" coords="1124,769,4" data-coords="1124,769,4" href="javascript:void(0)"  data-refid="A7AF5B8F" data-module="M00819" class="module" />
+		<area shape="poly" coords="793,1038,903,1038,903,1040,793,1040" data-coords="793,1038,903,1038,903,1040,793,1040" href="javascript:void(0)"  data-refid="F12E31E8" data-module="M00785" class="module" />
+		<area shape="poly" coords="903,1039,894,1042,894,1035" data-coords="903,1039,894,1042,894,1035" href="javascript:void(0)"  data-refid="C996B58E" data-module="M00785" class="module" />
+		<area shape="poly" coords="673,1038,783,1038,783,1040,673,1040" data-coords="673,1038,783,1038,783,1040,673,1040" href="javascript:void(0)"  data-refid="7B1AF9DE" data-module="M00785" class="module" />
+		<area shape="poly" coords="783,1039,774,1042,774,1035" data-coords="783,1039,774,1042,774,1035" href="javascript:void(0)"  data-refid="476A8793" data-module="M00785" class="module" />
+		<area shape="poly" coords="552,1038,663,1038,663,1040,552,1040" data-coords="552,1038,663,1038,663,1040,552,1040" href="javascript:void(0)"  data-refid="051D56D4" data-module="M00785" class="module" />
+		<area shape="poly" coords="663,1039,654,1042,654,1035" data-coords="663,1039,654,1042,654,1035" href="javascript:void(0)"  data-refid="FFE4FF93" data-module="M00785" class="module" />
+		<area shape="poly" coords="568,993,568,1030,568,1030,568,1031,568,1031,569,1033,569,1033,569,1034,569,1034,570,1035,570,1035,572,1037,572,1037,573,1038,574,1037,575,1037,575,1037,577,1038,577,1038,578,1038,578,1038,663,1038,663,1040,578,1040,578,1040,577,1040,577,1040,575,1039,575,1039,574,1039,575,1038,574,1037,574,1037,572,1035,572,1035,571,1034,571,1034,571,1033,571,1033,570,1031,570,1031,570,1030,570,1030,570,993" data-coords="568,993,568,1030,568,1030,568,1031,568,1031,569,1033,569,1033,569,1034,569,1034,570,1035,570,1035,572,1037,572,1037,573,1038,574,1037,575,1037,575,1037,577,1038,577,1038,578,1038,578,1038,663,1038,663,1040,578,1040,578,1040,577,1040,577,1040,575,1039,575,1039,574,1039,575,1038,574,1037,574,1037,572,1035,572,1035,571,1034,571,1034,571,1033,571,1033,570,1031,570,1031,570,1030,570,1030,570,993" href="javascript:void(0)"  data-refid="77AC8D5D" data-module="M00785" class="module" />
+		<area shape="poly" coords="663,1039,654,1042,654,1035" data-coords="663,1039,654,1042,654,1035" href="javascript:void(0)"  data-refid="FFE4FF93" data-module="M00785" class="module" />
+		<area shape="poly" coords="453,988,563,988,563,990,453,990" data-coords="453,988,563,988,563,990,453,990" href="javascript:void(0)"  data-refid="B0178932" data-module="M00785" class="module" />
+		<area shape="poly" coords="563,989,554,992,554,985" data-coords="563,989,554,992,554,985" href="javascript:void(0)"  data-refid="48A9139F" data-module="M00785" class="module" />
+		<area shape="poly" coords="308,1038,423,1038,423,1040,308,1040" data-coords="308,1038,423,1038,423,1040,308,1040" href="javascript:void(0)"  data-refid="16C498BB" data-module="M00785" class="module" />
+		<area shape="poly" coords="423,1039,414,1042,414,1035" data-coords="423,1039,414,1042,414,1035" href="javascript:void(0)"  data-refid="70D9EF9D" data-module="M00785" class="module" />
+		<area shape="poly" coords="433,1038,543,1038,543,1040,433,1040" data-coords="433,1038,543,1038,543,1040,433,1040" href="javascript:void(0)"  data-refid="8F2495C5" data-module="M00785" class="module" />
+		<area shape="poly" coords="543,1039,534,1042,534,1035" data-coords="543,1039,534,1042,534,1035" href="javascript:void(0)"  data-refid="B85F7798" data-module="M00785" class="module" />
+		<area shape="circle" coords="304,959,4" data-coords="304,959,4" href="javascript:void(0)"  data-refid="EC701948" data-module="M00890" class="module" />
+		<area shape="circle" coords="304,1039,4" data-coords="304,1039,4" href="javascript:void(0)"  data-refid="7FFA1FB2" data-module="M00785" class="module" />
+		<area shape="rect" coords="336,1031,382,1048" data-coords="336,1031,382,1048" href="javascript:void(0)"  data-refid="75B5FBFF" data-module="M00785" class="module" />
+		<area shape="rect" coords="462,1031,508,1048" data-coords="462,1031,508,1048" href="javascript:void(0)"  data-refid="C61D383B" data-module="M00785" class="module" />
+		<area shape="rect" coords="480,980,526,997" data-coords="480,980,526,997" href="javascript:void(0)"  data-refid="6E9EFB61" data-module="M00785" class="module" />
+		<area shape="rect" coords="584,1031,630,1048" data-coords="584,1031,630,1048" href="javascript:void(0)"  data-refid="4ADC1A63" data-module="M00785" class="module" />
+		<area shape="rect" coords="700,1030,746,1047" data-coords="700,1030,746,1047" href="javascript:void(0)"  data-refid="1E685518" data-module="M00785" class="module" />
+		<area shape="rect" coords="821,1031,867,1048" data-coords="821,1031,867,1048" href="javascript:void(0)"  data-refid="9E51C7B8" data-module="M00785" class="module" />
+		<area shape="circle" coords="429,1039,4" data-coords="429,1039,4" href="javascript:void(0)"  data-refid="8013522F" data-module="M00785" class="module" />
+		<area shape="circle" coords="449,989,4" data-coords="449,989,4" href="javascript:void(0)"  data-refid="057032C0" data-module="M00785" class="module" />
+		<area shape="circle" coords="569,989,4" data-coords="569,989,4" href="javascript:void(0)"  data-refid="05704BF2" data-module="M00785" class="module" />
+		<area shape="circle" coords="549,1039,4" data-coords="549,1039,4" href="javascript:void(0)"  data-refid="802C842F" data-module="M00785" class="module" />
+		<area shape="circle" coords="669,1039,4" data-coords="669,1039,4" href="javascript:void(0)"  data-refid="8045B62F" data-module="M00785" class="module" />
+		<area shape="circle" coords="789,1039,4" data-coords="789,1039,4" href="javascript:void(0)"  data-refid="805EE82F" data-module="M00785" class="module" />
+		<area shape="circle" coords="909,1039,4" data-coords="909,1039,4" href="javascript:void(0)"  data-refid="8090202F" data-module="M00785" class="module" />
+		<area shape="poly" coords="783,958,913,958,913,960,783,960" data-coords="783,958,913,958,913,960,783,960" href="javascript:void(0)"  data-refid="B01F4582" data-module="M00890" class="module" />
+		<area shape="poly" coords="913,959,904,962,904,955" data-coords="913,959,904,962,904,955" href="javascript:void(0)"  data-refid="DD751499" data-module="M00890" class="module" />
+		<area shape="poly" coords="643,958,773,958,773,960,643,960" data-coords="643,958,773,958,773,960,643,960" href="javascript:void(0)"  data-refid="B01C9954" data-module="M00890" class="module" />
+		<area shape="poly" coords="773,959,764,962,764,955" data-coords="773,959,764,962,764,955" href="javascript:void(0)"  data-refid="BBBF141C" data-module="M00890" class="module" />
+		<area shape="poly" coords="503,958,633,958,633,960,503,960" data-coords="503,958,633,958,633,960,503,960" href="javascript:void(0)"  data-refid="B01A052C" data-module="M00890" class="module" />
+		<area shape="poly" coords="633,959,624,962,624,955" data-coords="633,959,624,962,624,955" href="javascript:void(0)"  data-refid="D1E313DB" data-module="M00890" class="module" />
+		<area shape="poly" coords="353,908,353,950,353,950,353,951,353,951,354,953,354,953,354,954,354,954,355,955,355,955,356,957,356,957,357,958,358,957,360,957,359,958,360,959,361,958,363,958,363,958,493,958,493,960,363,960,363,960,361,960,362,959,361,958,360,959,358,959,359,958,358,957,358,957,357,955,357,955,356,954,356,954,356,953,356,953,355,951,355,951,355,950,355,950,355,908" data-coords="353,908,353,950,353,950,353,951,353,951,354,953,354,953,354,954,354,954,355,955,355,955,356,957,356,957,357,958,358,957,360,957,359,958,360,959,361,958,363,958,363,958,493,958,493,960,363,960,363,960,361,960,362,959,361,958,360,959,358,959,359,958,358,957,358,957,357,955,357,955,356,954,356,954,356,953,356,953,355,951,355,951,355,950,355,950,355,908" href="javascript:void(0)"  data-refid="2C82D816" data-module="M00890" class="module" />
+		<area shape="poly" coords="493,958,484,962,484,955" data-coords="493,958,484,962,484,955" href="javascript:void(0)"  data-refid="B02AA25E" data-module="M00890" class="module" />
+		<area shape="poly" coords="308,958,493,958,493,960,308,960" data-coords="308,958,493,958,493,960,308,960" href="javascript:void(0)"  data-refid="2114F1D1" data-module="M00890" class="module" />
+		<area shape="poly" coords="493,959,484,962,484,955" data-coords="493,959,484,962,484,955" href="javascript:void(0)"  data-refid="B02D135E" data-module="M00890" class="module" />
+		<area shape="poly" coords="248,903,348,903,348,905,248,905" data-coords="248,903,348,903,348,905,248,905" href="javascript:void(0)"  data-refid="B8126E89" data-module="M00890" class="module" />
+		<area shape="poly" coords="348,904,339,907,339,900" data-coords="348,904,339,907,339,900" href="javascript:void(0)"  data-refid="ACFDE91D" data-module="M00890" class="module" />
+		<area shape="poly" coords="138,903,238,903,238,905,138,905" data-coords="138,903,238,903,238,905,138,905" href="javascript:void(0)"  data-refid="B80FE1FF" data-module="M00890" class="module" />
+		<area shape="poly" coords="238,904,229,907,229,900" data-coords="238,904,229,907,229,900" href="javascript:void(0)"  data-refid="E946E8DC" data-module="M00890" class="module" />
+		<area shape="rect" coords="385,950,431,967" data-coords="385,950,431,967" href="javascript:void(0)"  data-refid="DA9E6FF4" data-module="M00890" class="module" />
+		<area shape="rect" coords="545,950,591,967" data-coords="545,950,591,967" href="javascript:void(0)"  data-refid="DFC14830" data-module="M00890" class="module" />
+		<area shape="rect" coords="165,895,211,912" data-coords="165,895,211,912" href="javascript:void(0)"  data-refid="4D8A090B" data-module="M00890" class="module" />
+		<area shape="rect" coords="275,895,321,912" data-coords="275,895,321,912" href="javascript:void(0)"  data-refid="52917C7C" data-module="M00890" class="module" />
+		<area shape="rect" coords="675,950,721,967" data-coords="675,950,721,967" href="javascript:void(0)"  data-refid="E9A0C083" data-module="M00890" class="module" />
+		<area shape="rect" coords="820,950,866,967" data-coords="820,950,866,967" href="javascript:void(0)"  data-refid="7DB9AF44" data-module="M00890" class="module" />
+		<area shape="circle" coords="134,904,4" data-coords="134,904,4" href="javascript:void(0)"  data-refid="E76FE77A" data-module="M00890" class="module" />
+		<area shape="circle" coords="244,904,4" data-coords="244,904,4" href="javascript:void(0)"  data-refid="E7700093" data-module="M00890" class="module" />
+		<area shape="circle" coords="354,904,4" data-coords="354,904,4" href="javascript:void(0)"  data-refid="E77019AC" data-module="M00890" class="module" />
+		<area shape="circle" coords="499,959,4" data-coords="499,959,4" href="javascript:void(0)"  data-refid="0570332E" data-module="M00890" class="module" />
+		<area shape="circle" coords="639,959,4" data-coords="639,959,4" href="javascript:void(0)"  data-refid="05706498" data-module="M00890" class="module" />
+		<area shape="circle" coords="779,959,4" data-coords="779,959,4" href="javascript:void(0)"  data-refid="05707DFC" data-module="M00890" class="module" />
+		<area shape="circle" coords="919,959,4" data-coords="919,959,4" href="javascript:void(0)"  data-refid="0570AF66" data-module="M00890" class="module" />
+		<area shape="circle" coords="314,654,4" data-coords="314,654,4" href="javascript:void(0)"  data-refid="E7700A61" data-module="M00951" class="module" />
+		<area shape="circle" coords="424,704,4" data-coords="424,704,4" href="javascript:void(0)"  data-refid="E7702861" data-module="M00951" class="module" />
+		<area shape="circle" coords="569,704,4" data-coords="569,704,4" href="javascript:void(0)"  data-refid="007041CA" data-module="M00951" class="module" />
+		<area shape="circle" coords="714,704,4" data-coords="714,704,4" href="javascript:void(0)"  data-refid="E7707348" data-module="M00951" class="module" />
+		<area shape="poly" coords="428,703,563,703,563,705,428,705" data-coords="428,703,563,703,563,705,428,705" href="javascript:void(0)"  data-refid="9F1679D9" data-module="M00951" class="module" />
+		<area shape="poly" coords="563,704,554,707,554,700" data-coords="563,704,554,707,554,700" href="javascript:void(0)"  data-refid="1E2C5686" data-module="M00951" class="module" />
+		<area shape="poly" coords="573,703,708,703,708,705,573,705" data-coords="573,703,708,703,708,705,573,705" href="javascript:void(0)"  data-refid="4719286E" data-module="M00951" class="module" />
+		<area shape="poly" coords="708,704,699,707,699,700" data-coords="708,704,699,707,699,700" href="javascript:void(0)"  data-refid="C335E9FE" data-module="M00951" class="module" />
+		<area shape="poly" coords="718,703,838,703,838,705,718,705" data-coords="718,703,838,703,838,705,718,705" href="javascript:void(0)"  data-refid="B81E151D" data-module="M00951" class="module" />
+		<area shape="poly" coords="838,704,829,707,829,700" data-coords="838,704,829,707,829,700" href="javascript:void(0)"  data-refid="1D46EA44" data-module="M00951" class="module" />
+		<area shape="circle" coords="844,704,4" data-coords="844,704,4" href="javascript:void(0)"  data-refid="E7708C93" data-module="M00951" class="module" />
+		<area shape="rect" coords="470,695,516,712" data-coords="470,695,516,712" href="javascript:void(0)"  data-refid="E9907D6D" data-module="M00951" class="module" />
+		<area shape="rect" coords="620,695,666,712" data-coords="620,695,666,712" href="javascript:void(0)"  data-refid="EEAE5338" data-module="M00951" class="module" />
+		<area shape="poly" coords="523,653,723,653,723,655,523,655" data-coords="523,653,723,653,723,655,523,655" href="javascript:void(0)"  data-refid="2E189CF5" data-module="M00951" class="module" />
+		<area shape="poly" coords="723,654,714,657,714,650" data-coords="723,654,714,657,714,650" href="javascript:void(0)"  data-refid="DB0756F4" data-module="M00951" class="module" />
+		<area shape="poly" coords="728,658,728,695,728,695,728,697,728,697,729,698,729,698,729,700,729,700,730,701,731,700,733,701,732,702,733,703,734,702,735,702,735,702,737,703,737,703,738,703,738,703,838,703,838,705,738,705,738,705,737,705,737,705,735,704,735,704,734,704,735,703,734,702,733,703,731,702,732,701,731,700,731,700,731,698,731,698,730,697,730,697,730,695,730,695,730,658" data-coords="728,658,728,695,728,695,728,697,728,697,729,698,729,698,729,700,729,700,730,701,731,700,733,701,732,702,733,703,734,702,735,702,735,702,737,703,737,703,738,703,738,703,838,703,838,705,738,705,738,705,737,705,737,705,735,704,735,704,734,704,735,703,734,702,733,703,731,702,732,701,731,700,731,700,731,698,731,698,730,697,730,697,730,695,730,695,730,658" href="javascript:void(0)"  data-refid="9569C3B0" data-module="M00951" class="module" />
+		<area shape="poly" coords="838,704,829,707,829,700" data-coords="838,704,829,707,829,700" href="javascript:void(0)"  data-refid="1D46EA44" data-module="M00951" class="module" />
+		<area shape="rect" coords="760,695,806,712" data-coords="760,695,806,712" href="javascript:void(0)"  data-refid="F892CDFC" data-module="M00951" class="module" />
+		<area shape="rect" coords="385,645,431,662" data-coords="385,645,431,662" href="javascript:void(0)"  data-refid="549CF37C" data-module="M00951" class="module" />
+		<area shape="rect" coords="595,645,641,662" data-coords="595,645,641,662" href="javascript:void(0)"  data-refid="5EA6D7ED" data-module="M00951" class="module" />
+		<area shape="circle" coords="519,654,4" data-coords="519,654,4" href="javascript:void(0)"  data-refid="00703C66" data-module="M00951" class="module" />
+		<area shape="circle" coords="729,654,4" data-coords="729,654,4" href="javascript:void(0)"  data-refid="00706E7F" data-module="M00951" class="module" />
+	</map>
+</div>
+<!-- pathway image end -->
+
+<!-- control panel start -->
+
+<div id="controlPanel">
+	<div class="controller">
+		<div class="feature option">
+			<h5>Option</h5>
+			<div>
+				<div class="row scale">
+					<span class="title">Scale:</span>
+					<span class="content">
+						<input type="range" min="0.1" max="1" step="0.1" value="1">
+						<span class="label">100%</span>
+					</span>
+				</div>
+				<div class="row image-resolution hidden">
+					<span class="title">Image resolution:</span>
+					<span class="content">
+						<label>
+							<input type="checkbox" value="high"> High
+						</label>
+					</span>
+				</div>
+				
+				
+				
+			</div>
+		</div>
+		<div class="feature search">
+			<h5>Search</h5>
+			<div>
+				<div class="row query">
+					<form>
+						<input type="text" name="query" style="width:130px;" autocomplete="off" value="">
+						<input type="submit" value="Go">
+						<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+					</form>
+				</div>
+				<div class="row result">
+				</div>
+			</div>
+		</div>
+		<div class="feature search-pathway">
+			<h5>ID search
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				<form>
+					<div class="row" style="display:grid; grid-template-columns:135px 1fr; column-gap:5px;">
+						<div>
+							<textarea class="query" rows="2" style="width:130px; resize:none;"></textarea>
+						</div>
+						<div>
+							<input type="submit" class="submit" value="Go">
+							<span class="ui-icon button ui-icon-close clear-query hidden"></span>
+						</div>
+					</div>
+				</form>
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="feature color-pathway">
+			<h5>Color
+				<span class="ui-icon ui-icon-plus"></span>
+			</h5>
+			<div>
+				
+				<div class="row personal hidden">
+					<ul class="mappers"></ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="feature">
+			<h5>Module</h5>
+			<div>
+			  
+				<div class="row">
+					<ul class="tree module-tree">
+					
+						
+	<li class="classification class-A  ">
+		<span>
+		<input type="checkbox" >
+		Pathway modules
+
+		</span>
+		<ul>
+	<li class="classification class-B  ">
+		<span>
+		<input type="checkbox" >
+		Biosynthesis of other secondary metabolites
+
+		</span>
+		<ul>
+	<li class="classification class-C  ">
+		<span>
+		<input type="checkbox" >
+		Biosynthesis of other antibiotics
+
+		</span>
+		<ul>
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00877" data-entry="M00877" target="_blank" >M00877</a>
+		
+		Kanosamine biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00889" data-entry="M00889" target="_blank" >M00889</a>
+		
+		Puromycin biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00904" data-entry="M00904" target="_blank" >M00904</a>
+		
+		Dapdiamides biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00787" data-entry="M00787" target="_blank" >M00787</a>
+		
+		Bacilysin biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00785" data-entry="M00785" target="_blank" >M00785</a>
+		
+		Cycloserine biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00848" data-entry="M00848" target="_blank" >M00848</a>
+		
+		Aurachin biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00788" data-entry="M00788" target="_blank" >M00788</a>
+		
+		Terpentecin biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00819" data-entry="M00819" target="_blank" >M00819</a>
+		
+		Pentalenolactone biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00903" data-entry="M00903" target="_blank" >M00903</a>
+		
+		Fosfomycin biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00890" data-entry="M00890" target="_blank" >M00890</a>
+		
+		Roseoflavin biosynthesis
+
+		</span>
+	</li>
+
+	<li class="entry class-D module complete">
+		<span>
+		<input type="checkbox" >
+		<a  href="/module/M00951" data-entry="M00951" target="_blank" >M00951</a>
+		
+		Cremeomycin biosynthesis
+
+		</span>
+	</li>
+
+		</ul>
+	</li>
+
+		</ul>
+	</li>
+
+		</ul>
+	</li>
+
+					
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<div class="feature">
+			<h5>Related Brite table</h5>
+			<div class="related-data">
+				<ul class="simple">
+					
+					<li><a href="/kegg/compound/br08011.html" target="_blank">br08011</a>&nbsp;&nbsp;Secondary metabolites in pathway maps</li>
+					
+				</ul>
+			</div>
+		</div>
+		
+	</div>
+	<button class="close">
+		<img src="/Fig/left_triangle_12x12.png">
+	</button>
+	<button class="open">
+		<img src="/Fig/right_triangle_12x12.png">
+	</button>
+</div>
+<!-- control panel end -->
+
+
+<form id="downloadForm" action="/kegg-bin/download" method="post">
+	<input type="hidden" name="name" value="map00998.png" />
+	<input type="hidden" name="content" />
+	<input type="hidden" name="dpi" />
+	<input type="hidden" name="decode" value="base64" />
+</form>
+
+<div id="waiting-circle">
+	<img src="/Fig/waiting-circle-small.gif">
+</div>
+
+<!-- pathway image url start -->
+<form class="imageset" data-name="">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00998.png 1x"
+	       data-src="/kegg/pathway/map/map00998.png" data-situation="1x">
+	<input type="hidden" name="image_normal" value="/kegg/pathway/map/map00998@2x.png 2x"
+	       data-src="/kegg/pathway/map/map00998@2x.png" data-situation="2x">
+</form>
+<!-- pathway image url end -->
+
+<div id="download-menu" style="display:none;">
+	<!--<div><a id="downloadImageLink" href="#downloadImage">Image (png)</a></div>-->
+	<div><a class="downloadImageNx" data-scale="1" href="#downloadImage1x">Image (png) file 1x</a></div>
+	<div><a class="downloadImageNx" data-scale="2" href="#downloadImage2x">Image (png) file 2x</a></div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
