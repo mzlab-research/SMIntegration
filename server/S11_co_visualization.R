@@ -54,14 +54,6 @@ output$download_Co_visualisation_plot <- downloadHandler(
   })
 
 
-
-##############test
-# data_rds<- reactive({
-#   data_rds<-readRDS("data_rds.rds")
-#   return(data_rds)
-# })
-#########
-
 spatial_coordlist<-eventReactive(c(input$start_Co_visualisation_analysis), {
   req(data_rds())
 
