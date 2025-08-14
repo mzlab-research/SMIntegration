@@ -152,23 +152,6 @@ output$download_venn_plot <- downloadHandler(
   })
 #--------------------------------
 
-
-  # x<-readRDS(file.path("diff_omics.rds"))
-  # diff_omics(x)
-
-
-# observeEvent(input$start_annotation, {
-#   x<-readRDS(file.path("spatial_pattern_ionlist.rds"))
-#   spatial_pattern_ionlist(x)
-# })
-#
-# data_rds<- reactive({
-#   data_rds<-readRDS("data_rds.rds")
-#   return(data_rds)
-# })
-
-
-
 metabidenti<-eventReactive(c(input$start_annotation), {
   if(input$demo_select == "Use demo data"){
     metabidenti=read_delim("./example_data/metab_identi.xls")
