@@ -63,31 +63,6 @@ output$download_cornetwork_plot2 <- downloadHandler(
     })
   })
 
-###################test
-# observe({
-#   file="celldiff"
-#   x<-readRDS(file.path(file,"diff_omics.rds"))
-#   diff_omics(x)
-# })
-# samplelist<- reactive({
-#   file="celldiff"
-#   samplelist<-readRDS(file.path(file,"samplelist.rds"))
-# return(samplelist)
-# })
-# data_rds_group<- reactive({
-#   
-#   data_rds_group<-readRDS(file.path("data_rds_group.rds"))
-# return(data_rds_group)
-# })
-# x<-readRDS(file.path("diff_omics.rds"))
-# diff_omics(x)
-# 
-# omics_count<- reactive({
-#   
-#   omics_count<-readRDS(file.path("omics_count.rds"))
-#   return(omics_count)
-# })
-#################
 omics_count<- eventReactive(c(input$start_diff_analysis), {
   req(data_rds_group())
   withProgress(message = "Processing data...",value=0.8,{
