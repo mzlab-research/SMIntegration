@@ -129,12 +129,7 @@ output$download_negatively_correlated_ions_t_plot <- downloadHandler(
       
     })
   })
-###################test
-# data_rds<- eventReactive(c(input$start_visualisation_analysis), {
-#   data_rds<-readRDS("data_rds.rds")
-#   return(data_rds)
-# })
-#########
+
 
 spatial_coord<-eventReactive(c(input$start_visualisation_analysis), {
   req(data_rds())
