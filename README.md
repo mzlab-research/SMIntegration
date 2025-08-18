@@ -79,7 +79,7 @@ Test dataset: **Mouse brain coronal adjacent sections**
  - Acquisition & Processing: AFAD-ESI (+) mode, 50μm resolution, spatially registered to identical pixel coordinates
  - Content: 14,530 pixels × 500 metabolites
 Access:
-Built-in dataset in SManalyst (Tutorial Panel → Example Data)
+Built-in dataset in SMIntegration (Tutorial Panel → Example Data)
 Raw data: [NGDC OMIX Repository](https://ngdc.cncb.ac.cn/omix) ID: OMIX009541
 
 ## Community & Support
