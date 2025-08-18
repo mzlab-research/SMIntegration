@@ -14,6 +14,7 @@ pip install spatialdata napari napari-spatialdata
   - Metabolite feature matrix: metab_C02928A2_pos.txt 
   - Gene feature matrix: C02928A2.tissue.gef
   - ssDNA-stained image: C02928A2_ssDNA_regist.tif
+
 The input files required for this tutorial are available at the OMIX database under accession [OMIX011494](https://ngdc.cncb.ac.cn/omix/OMIX011494). Please visit the page and download the files manually.
 
 ### **2. Convert Metabolite Matrix to Zarr**
