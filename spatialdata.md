@@ -105,6 +105,7 @@ python knn_interpolation.py \
 
 ## Convert to RDS/TXT Format
 ### **Required metadata files**:
+  - knn_interpolation.zarr
   - metab_identi.xls with columns: mz, Name, KEGG.ID
   - id_to_name.tsv with columns: geneid, symbol
 
