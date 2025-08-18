@@ -86,8 +86,8 @@ set_transformation(
 # Save aligned data
 mt.write("mz_aligned.zarr")
 ```
-https://github.com/mzlab-research/SMIntegration/tree/main/spatialdata/landmark_alignment.png
-Interactive landmark selection in Napari 
+Interactive landmark selection in Napari (spatialdata/landmark_alignment.png)
+
 
 ## KNN Interpolation
 ```bash
@@ -110,7 +110,13 @@ python knn_interpolation.py \
 
 ```bash
 Rscript spatialdata_to_rds.R \
-  $main_dir \
-  $metab_resolution \
+  "./spatialdata/data/" \
+  50 \ 
   "C:/Users/denghaoke/AppData/Local/Programs/Python/Python311"
+```
+
+
+```bash
+Rscript rds_to_txt.R \
+  "./spatialdata/data/"
 ```
