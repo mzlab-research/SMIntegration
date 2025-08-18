@@ -86,7 +86,7 @@ set_transformation(
 # Save aligned data
 mt.write("mz_aligned.zarr")
 ```
-Interactive landmark selection in Napari (spatialdata/landmark_alignment.png)
+![Interactive landmark selection in Napari](spatialdata/landmark_alignment.png)
 
 
 ## KNN Interpolation
