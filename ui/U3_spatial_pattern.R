@@ -3,8 +3,8 @@ tabItem(tabName = "Spatial_Pattern",
           h2("Step2: Spatial Pattern Analysis"),
           p("This module employs the SpaGene algorithm to identify spatially co-varying molecular modules and discover cross-modal pattern correlations."),
           tags$ul(
-            tags$li("Step 1: Construct spatial neighborhood networks for each feature"),
-            tags$li("Step 2: Identify significant spatial patterns (FDR-adjusted p<0.05) by comparing actual connectivity to 100 random permutations"),
+            tags$li("Step 1: Construct k-nearest neighbor spatial networks for each omics layer"),
+            tags$li("Step 2: Identify spatially variable features by comparing actual Earth mover's distance (EMDg) against a null distribution from 500 random permutations"),
             tags$li("Step 3: Cluster significant features into spatial modules"),
             tags$li("Step 4: Quantify cross-omics pattern correlations using Moran's I (spdep)"),
             tags$li("Step 5: Screen pattern-specific features")
