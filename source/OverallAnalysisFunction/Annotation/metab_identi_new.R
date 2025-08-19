@@ -9,6 +9,56 @@ run_sp<-function(data){
     dplyr::select(x,y,all_of(col))
   return(sp)
 }
+detect_input_type <- function(sp) {
+  mz_cols <- colnames(sp)[!colnames(sp) %in% c("x", "y")]
+  suppressWarnings(num_test <- as.numeric(mz_cols))
+  valid_num_ratio <- sum(!is.na(num_test)) / length(mz_cols)
+  if(valid_num_ratio > 0.8) {
+    mz_values <- num_test[!is.na(num_test)]
+    mz_range_ok <- mean(mz_values >= 50 & mz_values <= 2000) > 0.8
+    
+    if(mz_range_ok) {
+      return("mz") 
+    }
+  }
+  name_features <- grepl("[[:alpha:]]", mz_cols)  
+  if(mean(name_features) > 0.8) {
+    return("metab_name")
+  }
+  return("mz")
+}
+run_metab_name_processing <- function(sp,mode) {
+  metab_info <- data.frame(
+    Name = colnames(sp)[-c(1, 2)],  
+    check.names = FALSE
+  )
+  iso_add_identi <- dataidenti2(databasepath=Dirdatabase,mode=mode,data0=metab_info) 
+  iso_add_identi=iso_add_identi|>
+    dplyr::select(-Name.y) |>
+    dplyr::rename("metabolite"="Name.x")
+  spotNb <- nrow(sp)
+  stats_data <- apply(sp[, -c(1, 2)], 2, function(x) {
+    non_miss_nb <- sum(!is.na(x))
+    miss_ratio <- 1 - non_miss_nb / spotNb
+    median_intensity <- median(x, na.rm = TRUE)
+    return(c(miss_ratio = miss_ratio, median_intensity = median_intensity))
+  })
+  
+  stats_data <- as.data.frame(t(stats_data))
+  stats_data$metabolite <- rownames(stats_data)
+
+  iso_add_identi <- merge(iso_add_identi, stats_data, by = "metabolite")
+
+  final_result <- iso_add_identi %>%
+    dplyr::select(
+      metabolite, `Molecular Weight`, Formula, `KEGG ID`,
+      `HMDB ID`, `Final Class`, Pathway, ID, 
+      miss_ratio, median_intensity
+    )
+  
+  return(final_result)
+}
+
 run_isotope<-function(sp,mode){
 
   sp6 <- sp
