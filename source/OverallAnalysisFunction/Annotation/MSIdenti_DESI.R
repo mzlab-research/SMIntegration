@@ -1,12 +1,10 @@
 dataidenti2 <- function(databasepath,mode,data0){
-  #=================================一级鉴定===========================
-  #读取数据库文件
-  #项目库
+
   database <- paste0(databasepath,"/animal_",mode,".txt")
   globel_data <- read_delim(database,delim="\t") %>%
     select(`Molecular Weight`,Name,Formula,`KEGG ID`,`HMDB ID`,`Final Class`,Pathway,ID) %>%
     as.data.frame()
-  #HMDB公共库
+
   HMDB <- read_delim(file.path(databasepath,"HMDB/end-hmdb5.0.gff"),delim="\t")
   hmdb_class <- read_csv(file.path(databasepath,"HMDB/hmdb_class.csv"))
   hmdb_path <- read_csv(file.path(databasepath,"HMDB/hmdb_info_cas_pathway.csv"))
@@ -16,7 +14,7 @@ dataidenti2 <- function(databasepath,mode,data0){
     select(mono_mw,name,formula,kegg_id,hmdbid,family,PATHWAY) %>%
     dplyr::rename(`Molecular Weight`=mono_mw,Name=name,Formula=formula,`KEGG ID`=kegg_id,`HMDB ID`=hmdbid,`Final Class`=family,Pathway=PATHWAY) %>%
     mutate(ID=`HMDB ID`)
-  #KEGG公共库
+
   KEGG <- read_delim(file.path(databasepath,"KEGG/KEGG_106.txt"),delim="\t")
   KEGG$`MONO_MW` <- gsub(";","",KEGG$`MONO_MW`)
   KEGG$`MONO_MW` <- gsub(" ","",KEGG$`MONO_MW`)
@@ -27,24 +25,67 @@ dataidenti2 <- function(databasepath,mode,data0){
     select(MONO_MW,NAME,FORMULA,KEGG_ID,hmdbid,family,PATHWAY) %>%
     dplyr::rename(`Molecular Weight`=MONO_MW,Name=NAME,Formula=FORMULA,`KEGG ID`=KEGG_ID,`HMDB ID`=hmdbid,`Final Class`=family,Pathway=PATHWAY) %>%
     mutate(ID=`KEGG ID`)
-  #将项目数据库中的MW替换成公共库的mw
+
   globel_data %<>%
     left_join(KEGG %>% select(KEGG_ID,MONO_MW) %>% as.data.frame(),c("ID"="KEGG_ID")) %>%
     left_join(HMDB %>% select(hmdbid,mono_mw),c("ID"="hmdbid")) %>%
     mutate(`Molecular Weight` = ifelse(!is.na(MONO_MW),MONO_MW,ifelse(is.na(MONO_MW)&!is.na(mono_mw),mono_mw,`Molecular Weight`))) %>%
     select(-MONO_MW,-mono_mw)
-  #自定义一级鉴定函数
+  if (!"mz" %in% colnames(data0)) {
+
+    globel_data$Database <- "Project"
+    KEGGdata$Database <- "KEGG"
+    HMDBdata$Database <- "HMDB"
+    combined_db <- bind_rows(globel_data, KEGGdata, HMDBdata)
+
+    clean_name <- function(name) {
+      name %>% 
+        tolower() %>% 
+        stringr::str_remove_all("[^[:alnum:]]") %>% 
+        stringr::str_trim()
+    }
+    
+
+    combined_db <- combined_db %>%
+      mutate(CleanName = clean_name(Name))
+    
+
+    data0 <- data0 %>%
+      mutate(CleanName = clean_name(Name))
+    
+
+    result <- data0 %>%
+      left_join(combined_db, by = "CleanName") %>%
+      arrange(Database) %>%  
+      group_by(CleanName) %>%
+      slice(1) %>%  
+      ungroup() %>%
+      mutate(
+        DatabaseLevel = case_when(
+          Database == "Project" ~ "1",
+          Database == "KEGG" ~ "2",
+          Database == "HMDB" ~ "3",
+          TRUE ~ "Unknown"
+        ),
+        Adduct = "Direct Name Match",
+        massError = 0  
+      ) %>%
+      dplyr::select(-CleanName, -Database)
+    
+    return(result)
+  }
+
   MSidenti=function(id,Data,database){
-    #鉴定对象，每一个compound
+
     dat <- Data %>%
       filter(mz==id)
-    #compound对应的质量数
+
     DataIdenti <- data.frame()
     for(i in 2:ncol(dat)){
       mw <- dat[,i] %>% as.numeric()
       print(names(dat)[i])
       Adducts <- names(dat)[i]
-      #计算质量误差，筛选符合条件的鉴定结果，10ppm以内
+
       identi <- database %>%
         mutate(massError = abs(`Molecular Weight`-mw)) %>%
         filter(massError == min(massError)) %>%
@@ -54,17 +95,15 @@ dataidenti2 <- function(databasepath,mode,data0){
         DataIdenti <- bind_rows(DataIdenti,identi)
       }
     }
-    #返回鉴定结果
+
     if(nrow(DataIdenti)>0){
-      result <- cbind(dat,DataIdenti) #%>%
-      #select(-massError,-Mz)
+      result <- cbind(dat,DataIdenti) 
     }else{
       result <- dat
     }
     return(result)
   }
-  #并行运算
-  #项目库鉴定
+
   cpu = 4
   cl <- makeCluster(getOption("cl.cores", cpu))
   clusterExport(cl, c("MSidenti"),envir=environment())
@@ -77,7 +116,7 @@ dataidenti2 <- function(databasepath,mode,data0){
       filter(!is.na(Adduct)) %>%
       mutate(DatabaseLevel="1")
   }
-  #KEGG库鉴定
+
   data1 <- data0 %>%
     filter(!mz %in% unique(endidenti0$mz))
   cpu = 4
@@ -92,7 +131,7 @@ dataidenti2 <- function(databasepath,mode,data0){
       filter(!is.na(Adduct)) %>%
       mutate(DatabaseLevel="2")
   }
-  #HMDB库鉴定
+
   data2 <- data1 %>%
     filter(!mz %in% unique(endidenti1$mz))
   cpu = 4
