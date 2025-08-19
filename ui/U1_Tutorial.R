@@ -121,10 +121,10 @@ tabItem(tabName = "Tutorial",
             class = "alert alert-warning",
             h4("Critical Preprocessing Steps:"),
             tags$ul( 
-              tags$li(strong("Spatial Registration:"), "Must align coordinates using ", 
-                      tags$a(href="https://github.com/mzlab-research/SMIntegration/SpatialData", "SpatialData"), " or ", tags$a(href="https://github.com/mzlab-research/SMIntegration/ImageJ", "ImageJ"), 
+              tags$li(strong("Spatial Registration:"), "Please align coordinates using ", 
+                      tags$a(href="https://github.com/mzlab-research/SMIntegration/SpatialData", "SpatialData"), 
                       " (scripts provided on GitHub)"),
-              tags$li(strong("Resolution Harmonization:"), "Aggregate higher-resolution data (e.g., bin40 for 500μm→50μm conversion)"),
+              tags$li(strong("Resolution Harmonization:"), "Aggregate higher-resolution data (e.g., bin100 for 500nm→50μm conversion)"),
               tags$li(strong("Coordinate System:"), "Identical coordinate units and origin point for both modalities"),
               tags$li(strong("Metabolite Identification:"), "Requires annotated metabolite names (not m/z values)")
             )
