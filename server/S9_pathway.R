@@ -179,6 +179,7 @@ metabidenti<-eventReactive(c(input$start_annotation), {
           end_deal_data<-run_add(combine,mode)
           more_to_one_identi<-run_metab_identi(end_deal_data,mode)
           metabidenti<-run_more_to_one(more_to_one_identi)
+          metabidenti$metabolite<-as.character(metabidenti$mz)
         }
         
         if("KEGG ID" %in% colnames(metabidenti)){
@@ -221,6 +222,7 @@ metabidenti<-eventReactive(c(input$start_annotation), {
             end_deal_data<-run_add(combine,mode)
             more_to_one_identi<-run_metab_identi(end_deal_data,mode)
             metabidenti<-run_more_to_one(more_to_one_identi)
+            metabidenti$metabolite<-as.character(metabidenti$mz)
           }
           if("KEGG ID" %in% colnames(metabidenti)){
             metabidenti<-metabidenti %>%
@@ -738,25 +740,29 @@ observeEvent(c(input$start_annotation, input$Pathway_select), {
 output$annotation_namemap_info_m <- renderTable({
   annotation_plotdata<-annotation_plotdata()
   req(annotation_plotdata)
-      if(any(!is.na(annotation_plotdata[[3]]))){
-        data<-annotation_plotdata[[3]]
-      }else{
-        data<-NA
-      }
+  if(any(!is.na(annotation_plotdata[[3]]))){
+    data<-annotation_plotdata[[3]]
+  }else{
+    data<-NA
+  }
   if(any(!is.na(data))){
     if("State" %in% colnames(data)){
-      data.frame(metabolite=data$metabolite,
-                 KEGG.ID=data$KEGG.ID,
-                 State=data$State,
-                 p_val_adj=data$p_val_adj,
-                 `log2(Fold Change)`=data$`log2(Fold Change)`
+      d= data.frame(metabolite=data$metabolite,
+                    KEGG.ID=data$KEGG.ID,
+                    State=data$State,
+                    p_val_adj=data$p_val_adj,
+                    `log2(Fold Change)`=data$`log2(Fold Change)`
       )
     }else{
-      data.frame(metabolite=data$metabolite,
-                 KEGG.ID=data$KEGG.ID
-
+      d=data.frame(metabolite=data$metabolite,
+                   KEGG.ID=data$KEGG.ID
+                   
       )
     }
+    if("mz" %in% colnames(data) && "Name" %in% colnames(data)){
+      d$Name=data$Name
+    }
+    d
   }
   
 })
