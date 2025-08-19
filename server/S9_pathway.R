@@ -150,7 +150,9 @@ output$download_venn_plot <- downloadHandler(
     file.copy(temp_venn_plot_file(), file, overwrite = TRUE)
     })
   })
-#--------------------------------
+
+
+
 
 metabidenti<-eventReactive(c(input$start_annotation), {
   if(input$demo_select == "Use demo data"){
@@ -161,47 +163,7 @@ metabidenti<-eventReactive(c(input$start_annotation), {
     print("metabidenti done")
     return(metabidenti)
   }else{
-  if (input$annotation_select == "use built-in database") {
-    req(data_rds())
-    withProgress(message = "Processing data...",value=0.8,{
-      print("metabidenti start")
-      source("./source/OverallAnalysisFunction/Annotation/metab_identi_new.R")
-      data<-data_rds()[[1]]
-      mode<-input$metab_mode
-      sp<-run_sp(data)
-
-      combine<-run_isotope(sp,mode)
-
-      end_deal_data<-run_add(combine,mode)
-
-      more_to_one_identi<-run_metab_identi(end_deal_data,mode)
-
-      metabidenti<-run_more_to_one(more_to_one_identi)
-      if("KEGG ID" %in% colnames(metabidenti)){
-        metabidenti<-metabidenti %>%
-          rename(KEGG.ID=`KEGG ID`)
-      }
-      print("metabidenti done")
-      return(metabidenti)
-    })
-  }else{
-
-    if(!is.null(input$metabannotationfile) && input$metabannotationfile$name != ""){
-      metabidenti <- read_delim(input$metabannotationfile$datapath)
-      if("KEGG ID" %in% colnames(metabidenti)){
-        metabidenti<-metabidenti %>%
-          rename(KEGG.ID=`KEGG ID`)
-      }
-      validate(
-        need(ncol(metabidenti) >= 2, 
-             "Data must have at least 2 columns (metabolite and KEGG.ID)"),
-        
-        need(colnames(metabidenti)[1] == "metabolite" && colnames(metabidenti)[2] == "KEGG.ID",
-             "First two columns must be named 'metabolite' and 'KEGG.ID'")
-      )
-      metabidenti$metabolite<-as.character(metabidenti$metabolite)
-      return(metabidenti)
-    }else{
+    if (input$annotation_select == "use built-in database") {
       req(data_rds())
       withProgress(message = "Processing data...",value=0.8,{
         print("metabidenti start")
@@ -209,28 +171,70 @@ metabidenti<-eventReactive(c(input$start_annotation), {
         data<-data_rds()[[1]]
         mode<-input$metab_mode
         sp<-run_sp(data)
-
-        combine<-run_isotope(sp,mode)
-
-        end_deal_data<-run_add(combine,mode)
-
-        more_to_one_identi<-run_metab_identi(end_deal_data,mode)
-
-        metabidenti<-run_more_to_one(more_to_one_identi)
+        input_type <- detect_input_type(sp)
+        if(input_type == "metab_name") {
+          metabidenti <- run_metab_name_processing(sp,mode)
+        }else{
+          combine<-run_isotope(sp,mode)
+          end_deal_data<-run_add(combine,mode)
+          more_to_one_identi<-run_metab_identi(end_deal_data,mode)
+          metabidenti<-run_more_to_one(more_to_one_identi)
+        }
+        
         if("KEGG ID" %in% colnames(metabidenti)){
           metabidenti<-metabidenti %>%
             rename(KEGG.ID=`KEGG ID`)
         }
-        metabidenti$metabolite<-as.character(metabidenti$metabolite)
-
         print("metabidenti done")
         return(metabidenti)
       })
+    }else{
+      
+      if(!is.null(input$metabannotationfile) && input$metabannotationfile$name != ""){
+        metabidenti <- read_delim(input$metabannotationfile$datapath)
+        if("KEGG ID" %in% colnames(metabidenti)){
+          metabidenti<-metabidenti %>%
+            rename(KEGG.ID=`KEGG ID`)
+        }
+        validate(
+          need(ncol(metabidenti) >= 2, 
+               "Data must have at least 2 columns (metabolite and KEGG.ID)"),
+          
+          need(colnames(metabidenti)[1] == "metabolite" && colnames(metabidenti)[2] == "KEGG.ID",
+               "First two columns must be named 'metabolite' and 'KEGG.ID'")
+        )
+        metabidenti$metabolite<-as.character(metabidenti$metabolite)
+        return(metabidenti)
+      }else{
+        req(data_rds())
+        withProgress(message = "Processing data...",value=0.8,{
+          print("metabidenti start")
+          source("./source/OverallAnalysisFunction/Annotation/metab_identi_new.R")
+          data<-data_rds()[[1]]
+          mode<-input$metab_mode
+          sp<-run_sp(data)
+          input_type <- detect_input_type(sp)
+          if(input_type == "metab_name") {
+            metabidenti <- run_metab_name_processing(sp,mode)
+          }else{
+            combine<-run_isotope(sp,mode)
+            end_deal_data<-run_add(combine,mode)
+            more_to_one_identi<-run_metab_identi(end_deal_data,mode)
+            metabidenti<-run_more_to_one(more_to_one_identi)
+          }
+          if("KEGG ID" %in% colnames(metabidenti)){
+            metabidenti<-metabidenti %>%
+              rename(KEGG.ID=`KEGG ID`)
+          }
+          metabidenti$metabolite<-as.character(metabidenti$metabolite)
+          
+          print("metabidenti done")
+          return(metabidenti)
+        })
+      }
     }
   }
-  }
 })
-
 
 transidenti<-eventReactive(c(input$start_annotation), {
   if(input$demo_select == "Use demo data"){
