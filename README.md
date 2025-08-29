@@ -82,6 +82,7 @@ Test dataset: **Mouse brain coronal adjacent sections**
 2. **Spatial Metabolomics Data**: 
  - Acquisition & Processing: AFAD-ESI (+) mode, 50μm resolution, spatially registered to identical pixel coordinates
  - Content: 14,530 pixels × 500 metabolites
+
 Access:
 Built-in dataset in SMIntegration (Tutorial Panel → Example Data)
 
