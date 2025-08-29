@@ -122,7 +122,7 @@ tabItem(tabName = "Tutorial",
             h4("Critical Preprocessing Steps:"),
             tags$ul( 
               tags$li(strong("Spatial Registration:"), "Please align coordinates using ", 
-                      tags$a(href="https://github.com/mzlab-research/SMIntegration/SpatialData", "SpatialData"), 
+                      tags$a(href = "https://github.com/mzlab-research/SMIntegration/blob/main/SpatialData.md", "SpatialData", target = "_blank"),
                       " (scripts provided on GitHub)"),
               tags$li(strong("Resolution Harmonization:"), "Aggregate higher-resolution data (e.g., bin100 for 500nm→50μm conversion)"),
               tags$li(strong("Coordinate System:"), "Identical coordinate units and origin point for both modalities"),
@@ -233,14 +233,13 @@ tabItem(tabName = "Tutorial",
             tags$img(src = "feature_matrix_txt.png", width = "100%", style = "max-width: 400px;"))),
           fluidRow(
 
-          h2("Additional Resources"),
-          tags$div(
-            class = "list-group",
-            a(href = "https://github.com/mzlab-research/SMIntegration.git", 
-              class = "list-group-item",
-              icon("github"), " Source Code & Local Installation Guide")
-          ),
-
+            h2("Additional Resources"),
+            tags$div(
+              class = "list-group",
+              a(href = "https://github.com/mzlab-research/SMIntegration.git", 
+                class = "list-group-item", target = "_blank",
+                icon("github"), " Source Code & Local Installation Guide")
+            ),
           h2("Technical Support"),
           p("For immediate assistance:"),
           tags$ul(
