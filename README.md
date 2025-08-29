@@ -84,6 +84,7 @@ Test dataset: **Mouse brain coronal adjacent sections**
  - Content: 14,530 pixels × 500 metabolites
 Access:
 Built-in dataset in SMIntegration (Tutorial Panel → Example Data)
+
 Raw data: [NGDC OMIX Repository](https://ngdc.cncb.ac.cn/omix) ID: OMIX009541
 
 ## Community & Support
