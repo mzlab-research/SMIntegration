@@ -51,9 +51,11 @@ Spatial metabolomics + transcriptomics must share identical pixel coordinates，
 
 2、Supported Formats:
 SMIntegration requires two **feature matrices** in TXT or RDS format:
+
 **TXT Format**:
   - Columns 1-4: Feature name (metabolite or gene), pixel coordinates (x, y), feature abundance (Intensity or MIDCount)
   - Each row represents one spatial pixel
+
 **RDS Format (Seurat object)**:
   - Spatial location information stored in meta.data (x, y)
   - Feature matrix stored in data@assays$Spatial (Format: Features as rows, spatial pixels as columns, values represent feature abundance)
