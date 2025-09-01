@@ -2,10 +2,7 @@
 ## Environment Configuration
 Install SpatialData following the official documentation:
 ```bash
-# Create and activate conda environment
-conda create -n spatialdata python=3.10
-conda activate spatialdata
-
+# spatialdata requires Python version >= 3.9 to run 
 # Install SpatialData and visualization tools
 pip install spatialdata napari napari-spatialdata
 ```
