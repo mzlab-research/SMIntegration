@@ -11,17 +11,18 @@ pip install spatialdata napari napari-spatialdata
 ```
 ## Data Preparation
 ### **1. Input Data Formats**
-  - Metabolite feature matrix: metab_C02928A2_pos.txt 
-  - Gene feature matrix: C02928A2.tissue.gef
-  - ssDNA-stained image: C02928A2_ssDNA_regist.tif
+  - Metabolite feature matrix: spatial_metabolomics_before_registration_txt.txt 
+  - Gene feature matrix: spatial_transcriptomics_before_registration_gef.gef
+  - ssDNA-stained image: ssDNA_staining_image_tif.tif
 
-The input files required for this tutorial are available at the OMIX database under accession [OMIX011494](https://ngdc.cncb.ac.cn/omix/OMIX011494). Please visit the page and download the files manually.
+The input files required for this tutorial are available at the OMIX database under accession [OMIX011674](https://ngdc.cncb.ac.cn/omix/OMIX011674). Please visit the page and download the files manually.
+Some of the input files required for this tutorial are available from the OMIX database under accession number [OMIX011674](https://ngdc.cncb.ac.cn/omix/OMIX011674). Please visit the provided link to manually download the relevant files. The scripts and additional input files needed for this tutorial can be accessed on GitHub at https://github.com/mzlab-research/SMIntegration/tree/main/spatialdata.
 
 ### **2. Convert Metabolite Matrix to Zarr**
 ```bash
 python spatialmetab.py \
-  --metab_file "metab_C02928A2_pos.txt" \
-  --out_zarr "metab_C02928A2_pos.zarr" \
+  --metab_file "spatial_metabolomics_before_registration_txt.txt" \
+  --out_zarr "spatial_metabolomics_before_registration.zarr" \
   --resolution 50
 ```
 
@@ -29,9 +30,9 @@ python spatialmetab.py \
 ```bash
 python stereoseq.py \
   --bins 100 \
-  --out_zarr "trans_C02928A2.zarr" \
-  --regist_image "C02928A2_ssDNA_regist.tif" \
-  --squarebin_gef "C02928A2.tissue.gef"
+  --out_zarr "spatial_transcriptomics_before_registration.zarr" \
+  --regist_image "ssDNA_staining_image_tif.tif" \
+  --squarebin_gef "spatial_transcriptomics_before_registration_gef.gef"
 ```
 ## Spatial Registration of Metabolite Matrix
 ### **1. Registration Workflow**
@@ -46,8 +47,8 @@ from spatialdata.transformations import (
 )
 
 # Load datasets
-mt = sd.read_zarr("metab_C02928A2_pos.zarr")
-st = sd.read_zarr("trans_C02928A2.zarr")
+mt = sd.read_zarr("spatial_metabolomics_before_registration.zarr")
+st = sd.read_zarr("spatial_transcriptomics_before_registration.zarr")
 
 # Step 1: Initial landmark selection
 Interactive([st, mt])
@@ -82,7 +83,7 @@ affine2 = get_transformation_between_landmarks(
 set_transformation(
     mt["mz_point"],
     Sequence([affine1, affine2]),
-    to_coordinate_system="demo2"
+    to_coordinate_system="aligned"
 )
 
 # Save aligned data
@@ -94,7 +95,7 @@ mt.write("mz_aligned.zarr")
 ## KNN Interpolation
 ```bash
 python knn_interpolation.py \
-  -s "trans_C02928A2.zarr" \
+  -s "spatial_transcriptomics_before_registration.zarr" \
   -m "mz_aligned.zarr" \
   -o "knn_interpolation.zarr" \
   --stPoint "bin100_genes" \
@@ -102,7 +103,7 @@ python knn_interpolation.py \
   --stTable "bin100_table" \
   --mzTable "mz_table" \
   --stCoord "global" \
-  --mzCoord "demo2"
+  --mzCoord "aligned"
 ```
 
 ## Convert to RDS/TXT Format
