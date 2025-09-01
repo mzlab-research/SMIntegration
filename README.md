@@ -80,7 +80,7 @@ Test dataset: **Mouse brain coronal adjacent sections**
  - Acquisition & Processing: Stereo-seq, 0.05μm resolution, aggregated to 50μm resolution
  - Content: 14,530 pixels × 500 genes
 2. **Spatial Metabolomics Data**: 
- - Acquisition & Processing: AFAD-ESI (+) mode, 50μm resolution, spatially registered to identical pixel coordinates
+ - Acquisition & Processing: AFADESI (+) mode, 50μm resolution, spatially registered to identical pixel coordinates
  - Content: 14,530 pixels × 500 metabolites
 
 Access:
