@@ -1,4 +1,4 @@
-# Spatial Metabolomics and Transcriptomics Data Integration Tutorial
+# Spatial Metabolomics and Transcriptomics Data Registration Tutorial
 ## Environment Configuration
 Install SpatialData following the official documentation:
 ```bash
