@@ -86,7 +86,7 @@ Test dataset: **Mouse brain coronal adjacent sections**
 Access:
 Built-in dataset in SMIntegration (Tutorial Panel → Example Data)
 
-Raw data: [NGDC OMIX Repository](https://ngdc.cncb.ac.cn/omix) ID: OMIX011674
+Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
 
 ## Community & Support
 
