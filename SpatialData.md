@@ -12,7 +12,7 @@ pip install spatialdata napari napari-spatialdata
   - Gene feature matrix: spatial_transcriptomics_before_registration_gef.gef
   - ssDNA-stained image: ssDNA_staining_image_tif.tif
 
-Some of the input files required for this tutorial are available from the OMIX database under accession number [OMIX011674](https://ngdc.cncb.ac.cn/omix/OMIX011674). Please visit the provided link to manually download the relevant files. The scripts and additional input files needed for this tutorial can be accessed on GitHub at https://github.com/mzlab-research/SMIntegration/tree/main/spatialdata.
+Some of the input files required for this tutorial are available from the OMIX database under accession number [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674). Please visit the provided link to manually download the relevant files. The scripts and additional input files needed for this tutorial can be accessed on GitHub at https://github.com/mzlab-research/SMIntegration/tree/main/spatialdata.
 
 ### **2. Convert Metabolite Matrix to Zarr**
 ```bash
