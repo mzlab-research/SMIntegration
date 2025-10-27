@@ -34,10 +34,10 @@ Access the live platform without installation:
 🔗 [[[Docker Installation Guide](https://docs.docker.com/get-started/get-docker/)]
 ```bash
 # Pull the latest Docker image
-docker pull crpi-pjcujkw4652f020i.cn-shenzhen.personal.cr.aliyuncs.com/mzlab/smintegration:v-1.0
+docker pull mzlabresearch/smintegration:v-1.0
 
 # Run with ShinyProxy
-docker run -d -p 8787:3838  crpi-pjcujkw4652f020i.cn-shenzhen.personal.cr.aliyuncs.com/mzlab/smintegration:v-1.0
+docker run -d -p 8787:3838  mzlabresearch/smintegration:v-1.0
 ```
 Please use a web browser to access: http://localhost:8787
 
