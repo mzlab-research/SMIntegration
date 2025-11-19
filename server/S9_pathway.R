@@ -19,7 +19,6 @@ output$download_metab_pathway_annotation_demo <- downloadHandler(
     withProgress(message = 'Downloading file...', value = 0.7, {
       DemoData=read_delim("./example_data/metab_identi.xls") |>
         dplyr::select(mz,metabolite,KEGG.ID)
-     # colnames(DemoData)[2]<-"Name"
       write_delim(DemoData,file, delim = '\t')
     })
   }
@@ -1159,5 +1158,6 @@ NULL
   }
 
 })
+
 
 
