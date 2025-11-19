@@ -530,7 +530,7 @@ diffion_distribution_plot_save <- eventReactive(c(input$diff_ion_select,input$st
   req(diffion_distribution_plotdata_m())
   withProgress(message = "Processing data...",value=0.8,{
     data <- diffion_distribution_plotdata_m()
-  if(all(!is.na(data))){
+  if(any(!is.na(data))){
   heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
 
     p <- ggplot(data, aes(x = x, y = y)) +
@@ -570,7 +570,7 @@ diffion_distribution_plot_save_t <- eventReactive(c(input$diff_ion_select_t,inpu
   req(diffion_distribution_plotdata_t())
   withProgress(message = "Processing data...",value=0.8,{
     data <- diffion_distribution_plotdata_t()
-  if(all(!is.na(data))){
+  if(any(!is.na(data))){
   heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
 
   p <- ggplot(data, aes(x = x, y = y)) +

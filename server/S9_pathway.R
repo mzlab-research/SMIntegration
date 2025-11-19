@@ -19,7 +19,7 @@ output$download_metab_pathway_annotation_demo <- downloadHandler(
     withProgress(message = 'Downloading file...', value = 0.7, {
       DemoData=read_delim("./example_data/metab_identi.xls") |>
         dplyr::select(mz,metabolite,KEGG.ID)
-      colnames(DemoData)[2]<-"Name"
+     # colnames(DemoData)[2]<-"Name"
       write_delim(DemoData,file, delim = '\t')
     })
   }
@@ -201,8 +201,9 @@ metabidenti<-eventReactive(c(input$start_annotation), {
           need(ncol(metabidenti) >= 2, 
                "Data must have at least 2 columns (metabolite and KEGG.ID)"),
           
-          need(colnames(metabidenti)[1] == "metabolite" && colnames(metabidenti)[2] == "KEGG.ID",
-               "First two columns must be named 'metabolite' and 'KEGG.ID'")
+          need("metabolite" %in% colnames(metabidenti) && "KEGG.ID" %in% colnames(metabidenti),
+               "First two columns must be named 'metabolite' and 'KEGG.ID'")       
+
         )
         metabidenti$metabolite<-as.character(metabidenti$metabolite)
         return(metabidenti)
@@ -269,8 +270,9 @@ transidenti<-eventReactive(c(input$start_annotation), {
         need(ncol(transidenti) >= 2, 
              "Data must have at least 2 columns (gene and KEGG.ID)"),
         
-        need(colnames(transidenti)[1] == "gene" && colnames(transidenti)[2] == "KEGG.ID",
-             "First two columns must be named 'gene' and 'KEGG.ID'")
+          need("gene" %in% colnames(transidenti) && "KEGG.ID" %in% colnames(transidenti),
+               "First two columns must be named 'gene' and 'KEGG.ID'")
+
       )
       transidenti$gene<-as.character(transidenti$gene)
       return(transidenti)
