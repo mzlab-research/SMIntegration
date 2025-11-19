@@ -5,7 +5,6 @@ tabItem(tabName = "Tutorial",
           p(strong("SMIntegration"), "is an innovative open-source platform for integrated analysis of spatial transcriptomics and metabolomics data. It addresses critical challenges in spatial multi-omics by providing:"),
           tags$ul(
             tags$li(strong("Comprehensive integrated spatial analysis:"), "Joint analysis pipeline from initial visualization to biological interpretation"),
-            tags$li(strong("Flexible differential analysis:"), "Comparative analysis supporting multiple region definition strategies"),
             tags$li(strong("Multimodal pattern discovery:"), "Multiple algorithms for identifying spatially co-varying regions and gene-metabolite modules"),
             tags$li(strong("Flexible differential analysis:"), "Comparative analysis supporting multiple region definition strategies"),
             tags$li(strong("Inter-group network comparison:"), "Construction and comparison of condition-specific correlation networks for differential molecules (DEGs/DAMs)"),
