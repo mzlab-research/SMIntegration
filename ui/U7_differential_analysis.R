@@ -43,7 +43,7 @@ tabItem(tabName = "diff_analysis",
               title = "UMAP: Metabolite",
               tags$ul(
                 tags$li("Points represent spatial spots"),
-                tags$li("Color indicates treatment (red) vs control (blue) groups"),
+                tags$li("Color indicates treatment vs control groups"),
                 tags$li("Separation distance reflects group dissimilarity")
               ),
               width = 6,
@@ -57,7 +57,7 @@ tabItem(tabName = "diff_analysis",
               title = "UMAP: Gene",
               tags$ul(
                 tags$li("Points represent spatial spots"),
-                tags$li("Color indicates treatment (red) vs control (blue) groups"),
+                tags$li("Color indicates treatment vs control groups"),
                 tags$li("Separation distance reflects group dissimilarity")
               ),
               width = 6,
