@@ -1,3 +1,10 @@
+#' @title Process Spatial Coordinates and Features
+#' @description Merges feature expression data with spatial coordinates.
+#' Optionally rescales expression values to [0,1] for visualization.
+#' @param combined_matrix Feature expression matrix (features x samples).
+#' @param meta.data Data frame containing 'x' and 'y' coordinates.
+#' @param rescale Boolean, whether to normalize expression to max 1 (default: TRUE).
+#' @return A data frame with x, y, and feature columns.
 spatial_coord_processing<-function(combined_matrix,meta.data,rescale=TRUE){
 
   decon_mtrx = t(combined_matrix)
@@ -20,6 +27,11 @@ spatial_coord_processing<-function(combined_matrix,meta.data,rescale=TRUE){
 }
 
 
+#' @title Generate Multi-Feature RGB Plot
+#' @description Visualizes up to 3 features simultaneously using Red, Green, and Blue color channels.
+#' @param spatial_coord Data frame from `spatial_coord_processing`.
+#' @param pair Vector of length 3 containing feature names for R, G, B channels (NA for unused).
+#' @return A list containing the ggplot object and the plotting data.
 multiple_ions_plot<-function(spatial_coord,pair){
   pt.size=1
   pairname=c("feature1","feature2","feature3")
@@ -89,6 +101,12 @@ multiple_ions_plot<-function(spatial_coord,pair){
 
 
 
+#' @title Generate Co-Expression Category Plot
+#' @description Categorizes spatial spots based on high/medium/low expression levels of selected features.
+#' Creates a combined label for each spot (e.g., "high_low_medium") and visualizes the spatial distribution of these categories.
+#' @param spatial_coord Data frame from `spatial_coord_processing`.
+#' @param pair Vector of length 3 containing feature names (NA for unused).
+#' @return A list containing the ggplot object and the classified data frame.
 Co_visualisation_plot<-function(spatial_coord,pair){
   pairname=c("feature1","feature2","feature3")
   f1_col=NULL
