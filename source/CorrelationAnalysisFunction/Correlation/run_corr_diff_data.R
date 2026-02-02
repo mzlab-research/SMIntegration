@@ -1,4 +1,10 @@
 
+#' @title Prepare Correlation Data
+#' @description Formats metabolite and transcriptomic data for correlation analysis.
+#' Converts data frames to numeric matrices and sets rownames.
+#' @param diff_m_cor Metabolomics data frame (rows=features, cols=samples).
+#' @param diff_t_cor Transcriptomics data frame (rows=features, cols=samples).
+#' @return A list containing the two formatted numeric matrices.
 run_cordata<-function(diff_m_cor,diff_t_cor){
 
   metab_diff1<- diff_m_cor[,-1]
@@ -14,6 +20,11 @@ run_cordata<-function(diff_m_cor,diff_t_cor){
   
 }
 
+#' @title Compute Cross-Omics Correlation
+#' @description Merges metabolomics and transcriptomics data by sample (rowname) and computes Spearman correlations.
+#' Calculates correlation coefficients, p-values, and Bonferroni-adjusted p-values for all feature pairs.
+#' @param omics_corr_data_save List containing the two numeric matrices from `run_cordata`.
+#' @return A data frame of feature pairs (from, to) with 'cor', 'p', and 'padj' statistics.
 run_corr_diff_data <- function(omics_corr_data_save){
   metabdata=omics_corr_data_save[[1]] 
   transdata=omics_corr_data_save[[2]]

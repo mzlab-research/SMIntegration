@@ -1,3 +1,13 @@
+#' @title Visualize Correlation Network
+#' @description Creates a network plot using ggraph/igraph.
+#' Supports multiple layout algorithms (fr, kk, nicely) and coloring schemes.
+#' @param igraph igraph object representing the network.
+#' @param layout_type Layout algorithm ("fr", "kk", "nicely").
+#' @param color_type Attribute for node coloring (e.g., "Normalized mean", "Class").
+#' @param show_node_name Boolean, whether to display node labels.
+#' @param node_name_size Numeric, font size for labels.
+#' @param node_size Numeric, size of nodes.
+#' @return A ggplot/ggraph object.
 net_show<-function(igraph,layout_type="fr",color_type ="Normalized mean",show_node_name=FALSE,
                    node_name_size=2,node_size=6){
   set.seed(123)
@@ -34,6 +44,10 @@ net_show<-function(igraph,layout_type="fr",color_type ="Normalized mean",show_no
 } 
 
 
+#' @title Generate Color Mapping
+#' @description Creates a discrete color mapping for node classes.
+#' @param annotation_table Data frame with a "Class" column.
+#' @return Named vector of colors.
 run_color<-function(annotation_table=NULL){
   unique_classes<-unique(annotation_table$Class)
   qual_col_pals <- RColorBrewer::brewer.pal.info[RColorBrewer::brewer.pal.info$category == 'qual',]
@@ -44,6 +58,13 @@ run_color<-function(annotation_table=NULL){
   color_mapping <- setNames(cluster_Palette[1:length(unique_classes)], unique_classes)
   return(color_mapping)
 }
+#' @title Construct igraph Object
+#' @description Builds an igraph object from node and edge lists.
+#' Annotates edges with correlation type (positive/negative) and width.
+#' Calculates node centrality metrics (betweenness, degree, eigenvector).
+#' @param nodes Data frame of nodes.
+#' @param edges Data frame of edges with 'cor' column.
+#' @return An annotated igraph object.
 run_igraph <- function(nodes=NULL,edges=NULL){
   net1 <- igraph::graph_from_data_frame(d=as.data.frame(edges),vertices=as.data.frame(nodes),directed = F)
 
@@ -68,6 +89,15 @@ run_igraph <- function(nodes=NULL,edges=NULL){
   return(net1)
 }
 
+#' @title Create Network Plot (ggraph)
+#' @description Core plotting function using ggraph.
+#' Handles edge coloring, node shaping (by Class), and node coloring (Gradient or Discrete).
+#' @param igraph igraph object.
+#' @param colormap Color palette for nodes.
+#' @param edgecolormap Color mapping for edges.
+#' @param color_type Node attribute to map to color.
+#' @param plot_layout Network layout matrix or name.
+#' @return A ggraph plot object.
 run_ggraph_plot <- function(igraph=NULL, colormap=NULL,edgecolormap=NULL, color_type = "Normalized mean",plot_layout="fr",
                             edge_color_type="color",
                             alpha = 1,show_edge_legend=FALSE,show_node_legend=FALSE,node_size=6) {
@@ -131,6 +161,10 @@ run_ggraph_plot <- function(igraph=NULL, colormap=NULL,edgecolormap=NULL, color_
   return(plot)
 }
 
+#' @title Standardize Edge Direction
+#' @description Ensures consistent edge naming (A_B vs B_A) for comparison.
+#' @param edges Data frame with 'from' and 'to' columns.
+#' @return Data frame with a standardized 'from_to' ID column.
 run_compare_edge<-function(edges){
   edges <-transform(edges, sorted_from = pmin(from, to), sorted_to = pmax(from, to)) 
   edges$from_to<-paste0(edges$sorted_to,"_",edges$sorted_from)
