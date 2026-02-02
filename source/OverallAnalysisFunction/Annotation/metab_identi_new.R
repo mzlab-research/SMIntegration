@@ -1,5 +1,9 @@
 source("./source/OverallAnalysisFunction/Annotation/MSIdenti_DESI.R")
 Dirdatabase <- "./source/Database"
+#' @title Extract Spatial Matrix
+#' @description Extracts the feature expression matrix and coordinates from a Seurat object.
+#' @param data A Seurat object containing 'Spatial' assay and 'x'/'y' coordinates.
+#' @return A data frame with x, y, and feature columns.
 run_sp<-function(data){
   sp_df <- as.data.frame(t(as.matrix(data@assays$Spatial$counts)))
   col<-colnames(sp_df)
@@ -9,6 +13,11 @@ run_sp<-function(data){
     dplyr::select(x,y,all_of(col))
   return(sp)
 }
+#' @title Detect Feature Type
+#' @description Heuristic to determine if input features are m/z values or metabolite names.
+#' Checks if >80% of features are numeric and within [50, 2000] (m/z range).
+#' @param sp Spatial data frame.
+#' @return "mz" or "metab_name".
 detect_input_type <- function(sp) {
   mz_cols <- colnames(sp)[!colnames(sp) %in% c("x", "y")]
   suppressWarnings(num_test <- as.numeric(mz_cols))
@@ -27,6 +36,12 @@ detect_input_type <- function(sp) {
   }
   return("mz")
 }
+#' @title Process Metabolite Names
+#' @description Identifies metabolites based on names using a local database.
+#' Calculates basic statistics (missing ratio, median intensity).
+#' @param sp Spatial data frame.
+#' @param mode Ionization mode ("pos" or "neg").
+#' @return Annotated data frame with KEGG/HMDB IDs.
 run_metab_name_processing <- function(sp,mode) {
   metab_info <- data.frame(
     Name = colnames(sp)[-c(1, 2)],  
@@ -59,6 +74,12 @@ run_metab_name_processing <- function(sp,mode) {
   return(final_result)
 }
 
+#' @title Isotope Detection
+#' @description Identifies isotopologues based on m/z values and spatial correlation.
+#' Groups features into isotopic clusters.
+#' @param sp Spatial data frame.
+#' @param mode Ionization mode.
+#' @return A list containing isotope metadata and cleaned data (non-monoisotopic peaks removed).
 run_isotope<-function(sp,mode){
 
   sp6 <- sp
@@ -127,6 +148,11 @@ run_isotope<-function(sp,mode){
 }
 
 
+#' @title Adduct Detection
+#' @description Identifies potential adducts (e.g., [M+H]+, [M+Na]+) by comparing m/z differences and spatial correlations.
+#' @param combine List from `run_isotope` (metadata + cleaned data).
+#' @param mode Ionization mode ("pos" or "neg").
+#' @return Data frame with assigned adducts and neutral masses.
 run_add<-function(combine,mode){
 
   deal_data_iso <- combine[[1]] 
@@ -233,6 +259,12 @@ run_add<-function(combine,mode){
   return(end_deal_data)
 }
 
+#' @title Metabolite Identification
+#' @description Matches features (m/z or neutral mass) to a local database.
+#' Validates matches using isotopic pattern simulation and scoring.
+#' @param end_deal_data Data frame from `run_add`.
+#' @param mode Ionization mode.
+#' @return Annotated data frame with similarity scores.
 run_metab_identi<-function(end_deal_data,mode){
 
   end_deal_data0 <- end_deal_data 
@@ -396,7 +428,6 @@ run_metab_identi<-function(end_deal_data,mode){
       filter(single_ios == single_iso)
     real_data$minmz_intensity <- max(real_data$median_intensity)
     real_data$mz <- round(as.numeric(real_data$mz),4)
-
     real_data %<>% mutate(relative_intensity = (median_intensity / minmz_intensity) * 100) %>%
       dplyr::select(mz,relative_intensity) %>%
       arrange(desc(relative_intensity)) 
@@ -434,6 +465,14 @@ run_metab_identi<-function(end_deal_data,mode){
 }
 
 
+#' @title Resolve Multiple Matches
+#' @description Filters multiple identifications for a single feature based on:
+#' 1. Database level (confidence).
+#' 2. Isotope similarity score.
+#' 3. Adduct likelihood.
+#' 4. Intensity.
+#' @param more_to_one_identi Data frame from `run_metab_identi`.
+#' @return Final unique identification table.
 run_more_to_one<-function(more_to_one_identi){
 
 repeat_result <- more_to_one_identi

@@ -1,3 +1,12 @@
+#' @title Mass Spectrometry Identification
+#' @description Identifies metabolites by searching against Project, KEGG, and HMDB databases.
+#' Supports both m/z-based identification (by neutral mass calculation and error tolerance)
+#' and name-based identification (if `mz` column is missing).
+#' Uses parallel processing for m/z matching.
+#' @param databasepath Path to the directory containing database files (KEGG, HMDB, Project).
+#' @param mode Ionization mode ("pos" or "neg").
+#' @param data0 Data frame containing input features. If `mz` column is present, it uses m/z matching. Otherwise, it expects a `Name` column.
+#' @return A data frame containing identified metabolites, their IDs, formula, pathways, and database source level (1=Project, 2=KEGG, 3=HMDB).
 dataidenti2 <- function(databasepath,mode,data0){
 
   database <- paste0(databasepath,"/animal_",mode,".txt")
@@ -75,7 +84,13 @@ dataidenti2 <- function(databasepath,mode,data0){
     return(result)
   }
 
-  MSidenti=function(id,Data,database){
+  #' @title Helper: Single m/z Identification
+#' @description Matches a specific m/z's calculated neutral masses (assuming various adducts) against a database.
+#' @param id Target m/z value.
+#' @param Data Data frame containing the m/z and its calculated neutral masses for different adducts.
+#' @param database Reference database (Project, KEGG, or HMDB).
+#' @return Data frame of matches within mass tolerance (0.003 Da).
+MSidenti=function(id,Data,database){
 
     dat <- Data %>%
       filter(mz==id)

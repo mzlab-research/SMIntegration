@@ -1,3 +1,8 @@
+#' @title Map Genes to KEGG Identifiers
+#' @description Maps gene symbols/Entrez IDs to KEGG Orthology (KO) IDs using a local mapping file.
+#' @param id Data frame containing gene mapping info (SYMBOL, ENTREZID).
+#' @param speciesname Species prefix for KEGG (e.g., "mmu", "hsa").
+#' @return A data frame with 'gene', 'id' (Entrez), and 'KEGG.ID'.
 trans_identi_processing<-function(id,speciesname){
   root_path<-"./source/OverallAnalysisFunction/Annotation/"
   ko_genespath<-paste0(root_path,"/","ko_genes_definiton_new.list")#HSA,MMU
