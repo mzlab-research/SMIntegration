@@ -1,3 +1,16 @@
+#' @title Generate Pathway Annotation Dot Plot
+#' @description Creates a dot plot (bubble chart) to visualize the top annotated KEGG pathways.
+#' The plot displays the annotation count for both Genes and Metabolites across different pathways.
+#' Top 20 pathways are selected based on total feature count.
+#' @param df Data frame containing annotation results (Pathway, Count, Types).
+#' @param plot_title Title of the plot.
+#' @param plot_title_size Font size for the title.
+#' @param font_family Font family for text elements.
+#' @param text_size Font size for axis text.
+#' @param axis_title_size Font size for axis titles.
+#' @param legend_title_size Font size for legend title.
+#' @param legend_text_size Font size for legend text.
+#' @return A ggplot object.
 AnnotationDotPlot <- function(
     df,
     plot_title = "Top 20 Annotated Pathways", 
