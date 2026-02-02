@@ -1,3 +1,12 @@
+#' @title Visualize Spatial Patterns
+#' @description Generates spatial heatmaps for identified patterns.
+#' Uses dynamic alpha blending to highlight high-expression regions.
+#' @param pattern Object containing pattern matrix (Patterns x Spots).
+#' @param location Data frame of coordinates (x, y).
+#' @param max.cutoff Numeric. Quantile cutoff for color scaling (default 0.9).
+#' @param pt.size Numeric. Point size.
+#' @param alpha.min Numeric. Minimum transparency.
+#' @return A patchwork object of spatial plots.
 PlotPattern_c<-function (pattern, location, max.cutoff = 0.9, pt.size = 1, alpha.min = 0.1) 
 {
   if (!requireNamespace("RColorBrewer", quietly = TRUE)) {
@@ -8,10 +17,15 @@ PlotPattern_c<-function (pattern, location, max.cutoff = 0.9, pt.size = 1, alpha
   plist <- list()
   for (i in 1:npattern) {
     feature = pattern$pattern[i, ]
+    
+    # Cap values at cutoff to enhance contrast
     max.use <- quantile(feature, max.cutoff)
     feature[feature > max.use] <- max.use
+    
+    # Calculate transparency based on intensity
     alpha = (feature - min(feature))/(max(feature) - min(feature)) * 
       (1 - alpha.min) + alpha.min
+    
     tmp <- as.data.frame(cbind(location, exp = feature, alpha = alpha))
     p1 <- ggplot(tmp, aes(x = x, y = y, col = exp, alpha = alpha)) + 
       geom_point(size = pt.size) +
@@ -40,6 +54,13 @@ PlotPattern_c<-function (pattern, location, max.cutoff = 0.9, pt.size = 1, alpha
   }
 }
 
+#' @title Extract Spatial Pattern Data
+#' @description Exports pattern weights for each spot into a data frame.
+#' @param pattern Object containing pattern matrix.
+#' @param location Data frame of coordinates.
+#' @param max.cutoff Numeric. Quantile cutoff.
+#' @param colname Character. Prefix for pattern columns.
+#' @return Data frame with spot locations and pattern weights.
 Patterndata_c<-function (pattern, location,max.cutoff = 0.9,colname=""){
   npattern <- dim(pattern$pattern)[1]
   ddata <- data.frame(location=rownames(location))
