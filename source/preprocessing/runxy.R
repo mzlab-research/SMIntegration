@@ -1,3 +1,7 @@
+#' @title Standardize Column Names
+#' @description Renames columns of input data frame to standard format (geneID, x, y, MIDCount) and ensures correct data types.
+#' @param data Input data frame.
+#' @return Data frame with standardized column names and types.
 colname_change<-function(data){
 
 colnames(data)[1]<-"geneID"     
@@ -11,6 +15,18 @@ data$MIDCount<-as.numeric(data$MIDCount)
 return(data)
 }
 ###########################################################runxy
+
+#' @title Convert Coordinate Data to Seurat Object
+#' @description Processes raw coordinate-based data (geneID, x, y, MIDCount) into a spatial Seurat object.
+#' Performs binning (if binsize > 1), creates sparse matrix, and sets up spatial image structure.
+#' @param input Input data frame.
+#' @param binsize Numeric. Bin size for spatial aggregation (default: 1).
+#' @param minFeature Numeric. Minimum features per spot filter.
+#' @param maxFeature Numeric. Maximum features per spot filter.
+#' @param sample Character. Sample name prefix.
+#' @param minCount Numeric. Minimum counts per spot filter.
+#' @param maxCount Numeric. Maximum counts per spot filter.
+#' @return A Seurat object containing the spatial data.
 runxy<-function(input,binsize=1,minFeature=0,
                 maxFeature=NULL,
                 sample="sample",
@@ -67,7 +83,13 @@ scalefactors_json <- toJSON(list(fiducial_diameter_fullres = binsize,
                                  tissue_hires_scalef = 1,
                                  tissue_lowres_scalef = 1))
 
-#' function to create image object
+#' @title Helper Function to Create SpatialImage Object
+#' @description Internal helper to create a VisiumV1 object for Seurat.
+#' @param image Matrix representing the tissue image.
+#' @param scale.factors List of scale factors.
+#' @param tissue.positions Data frame of tissue positions.
+#' @param filter.matrix Logical. Whether to filter by tissue coverage.
+#' @return A VisiumV1 object.
 generate_spatialObj <- function(image, scale.factors, tissue.positions, filter.matrix = TRUE){
   if (filter.matrix) {
     tissue.positions <- tissue.positions[which(tissue.positions$tissue == 1), , drop = FALSE]
@@ -123,9 +145,7 @@ return(obj)
 }
 
 
-
-
-
+# Note: generate_spatialObj is defined again below, likely redundant but kept for script integrity.
 generate_spatialObj <- function(image, scale.factors, tissue.positions, filter.matrix = TRUE){
   if (filter.matrix) {
     tissue.positions <- tissue.positions[which(tissue.positions$tissue == 1), , drop = FALSE]
@@ -144,7 +164,21 @@ generate_spatialObj <- function(image, scale.factors, tissue.positions, filter.m
              spot.radius = spot.radius))
 }
 
-create_seurat <- function(mat,cell_coords,binsize){
+#' @title Create Seurat Object from Matrix and Coordinates
+#' @description Wraps sparse matrix and coordinates into a spatial Seurat object.
+#' @param mat Sparse matrix (Features x Spots).
+#' @param cell_coords Data frame of coordinates (x, y).
+#' @param binsize Numeric. Bin size.
+#' @return A Seurat object.
+create_seurat <- function(mat,cell_coords,binsize=1){
+
+  invalid_rownames <- is.na(rownames(mat)) | rownames(mat) == ""
+  if (any(invalid_rownames)) {
+    warning(paste("Removing", sum(invalid_rownames), "rows with invalid rownames (NA or empty string)."))
+    mat <- mat[!invalid_rownames, ]
+  }
+  rownames(mat)<-gsub("_", "-", rownames(mat))
+  
   rownames(cell_coords) <- colnames(mat)
   colnames(cell_coords) <- c("x","y")
   seurat_spatialObj <- CreateSeuratObject(counts = mat, project = 'Stereo', assay = 'Spatial',names.delim = ':', meta.data = cell_coords)
@@ -170,4 +204,23 @@ create_seurat <- function(mat,cell_coords,binsize){
   
   seurat_spatialObj[['slice1']] <- spatialObj
   return(seurat_spatialObj)
+}
+
+#' @title Create Sparse Matrix from Wide Format Data
+#' @description Converts a wide data frame (X, Y, Feature1, Feature2...) into a sparse DGCM matrix.
+#' @param df Wide data frame where first two columns are X and Y coordinates.
+#' @return Sparse matrix.
+create_sparse_from_wide <- function(df) {
+  
+  coords <- df[, 1:2]
+  
+  expr_mat <- as.matrix(df[, -c(1,2)])
+  
+  expr_mat_t <- t(expr_mat)
+  
+  colnames(expr_mat_t) <- paste0("sample:", coords$X, "_", coords$Y)
+  rownames(expr_mat_t) <- colnames(df)[-c(1,2)]
+  
+  sparse_mat <- as(expr_mat_t, "dgCMatrix")
+  return(sparse_mat)
 }

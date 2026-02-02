@@ -1,3 +1,10 @@
+#' @title Helper Function to Create SpatialImage Object
+#' @description Internal helper to create a VisiumV1 object for Seurat.
+#' @param image Matrix representing the tissue image.
+#' @param scale.factors List of scale factors.
+#' @param tissue.positions Data frame of tissue positions.
+#' @param filter.matrix Logical. Whether to filter by tissue coverage.
+#' @return A VisiumV1 object.
 generate_spatialObj <- function(image, scale.factors, tissue.positions, filter.matrix = TRUE){
   if (filter.matrix) {
     tissue.positions <- tissue.positions[which(tissue.positions$tissue == 1), , drop = FALSE]
@@ -16,6 +23,12 @@ generate_spatialObj <- function(image, scale.factors, tissue.positions, filter.m
              spot.radius = spot.radius))
 }
 
+#' @title Create Seurat Object from Matrix and Coordinates
+#' @description Wraps sparse matrix and coordinates into a spatial Seurat object.
+#' @param mat Sparse matrix (Features x Spots).
+#' @param cell_coords Data frame of coordinates (x, y).
+#' @param binsize Numeric. Bin size.
+#' @return A Seurat object.
 create_seurat <- function(mat,cell_coords,binsize=1){
   rownames(cell_coords) <- colnames(mat)
   colnames(cell_coords) <- c("x","y")
@@ -43,14 +56,23 @@ create_seurat <- function(mat,cell_coords,binsize=1){
   seurat_spatialObj[['slice1']] <- spatialObj
   return(seurat_spatialObj)
 }
+
+#' @title Merge Spatial Datasets
+#' @description Combines two spatial matrices (e.g., Metabolomics and Transcriptomics) into a single Seurat object
+#' by feature concatenation (rbind). Requires identical column names (spots).
+#' @param decon_mtrx Matrix 1 (e.g., Metabolomics counts).
+#' @param decon_ttrx Matrix 2 (e.g., Transcriptomics counts).
+#' @return A merged Seurat object containing features from both modalities.
 run_merge_rds<-function(decon_mtrx,decon_ttrx){
   stopifnot(identical(colnames(decon_mtrx), colnames(decon_ttrx)))
   mz_decon_mtrx = decon_mtrx
   st_decon_mtrx = decon_ttrx
 
+  # Combine features
   mat <- rbind(mz_decon_mtrx,st_decon_mtrx)
   
    mat <- rbind2(decon_mtrx, decon_ttrx)
+  # Extract coordinates from spot names (assumed format: prefix:x_y or similar)
   cell_coords <- data.frame(spot=colnames(mat)) %>%
     tidyr::separate(col = spot, 
              into = c("prefix", "x", "y"), 
