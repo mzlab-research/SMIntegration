@@ -73,15 +73,19 @@ annotationdatabase<-function(omics,species){
 
 #' @title Run Pathway Annotation Count
 #' @description Maps input features to KEGG pathways and counts the number of hits per pathway.
-#' Replaces statistical enrichment (p-value calculation) with a robust count-based approach.
 #' @param selectCid_data Data frame containing input features (KEGG IDs).
 #' @param database List object returned by annotationdatabase().
 #' @param omics_type Character. 'metab' or 'trans'.
-#' @param skip Logical. Unused parameter kept for compatibility.
+#' @param skip Logical. If TRUE (default), excludes global/broad metabolic pathways
+#' that are too general for meaningful interpretation. These include:
+#' - map01100: Metabolic pathways
+#' - map01110: Biosynthesis of secondary metabolites
+#' - map01120: Microbial metabolism in diverse environments
+#' Setting to FALSE will include these pathways in the output.
 #' @return A data frame containing:
 #'   - Pathway: Pathway Name
 #'   - Count: Number of mapped input features
-#'   - PathwayID: KEGG Pathway ID (e.g., map00010)
+#'   - PathwayID: KEGG Pathway ID 
 #'   - KEGG IDs: Semicolon-separated list of mapped feature IDs
 run_annotation_count <- function(selectCid_data=NULL, database=NULL,omics_type=NULL,skip=TRUE) {
   selectCid_data=selectCid_data[complete.cases(selectCid_data), ]
@@ -163,9 +167,17 @@ run_annotation_count <- function(selectCid_data=NULL, database=NULL,omics_type=N
     
     # Sort path list by count descending
     sorted_path <- path[order(sapply(path, function(x) x$count), decreasing = TRUE)]
+    # Global maps to exclude (Too general)
+    # 01100: Metabolic pathways
+    # 01110: Biosynthesis of secondary metabolites
+    # 01120: Microbial metabolism in diverse environments
     
+    global_maps <- c("01100", "01110", "01120")
     # Generate output content
     for (pwID in names(sorted_path)) {
+      if(skip){
+        if (pwID %in% global_maps) next
+      }
       num1 <- length(path[[pwID]]$cId) # Annotated Count
       num2 <- length(path[[pwID]]$cIdAll) # Background Count
       mapName <- path[[pwID]]$mapName
