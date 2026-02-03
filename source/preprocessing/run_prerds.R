@@ -80,9 +80,16 @@ RUNSCT<- function(obj, norm_method="TIC", transform_method="LogNormalize", scale
       obj[["SCT"]] <- CreateAssayObject(counts = as.matrix(obj@assays$Spatial$counts))
   }
   DefaultAssay(obj) <- "SCT"
+  seurat_version <- packageVersion("Seurat")
   
-  # Get raw counts
-  counts_mat <- GetAssayData(obj, slot = "counts", assay = "SCT")
+  if (seurat_version >= "5.0.0") {
+    # Get raw counts
+    counts_mat <- GetAssayData(obj, layer = "counts", assay = "SCT")
+  } else {
+    # Get raw counts
+    counts_mat <- GetAssayData(obj, slot = "counts", assay = "SCT")
+  }
+
   norm_mat <- counts_mat
 
   # 1. Normalization (Pixel-wise intensity correction)
