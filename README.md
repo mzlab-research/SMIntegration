@@ -88,6 +88,42 @@ Built-in dataset in SMIntegration (Tutorial Panel → Example Data)
 
 Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
 
+## Developer Guide
+
+This section is intended for developers who wish to understand the software architecture or contribute to the SMIntegration codebase.
+
+### 1. Software Architecture
+
+SMIntegration is built as a modular Shiny application. The codebase is organized to separate the User Interface (UI), Server Logic, and Core Analytical Functions.
+
+*   **`app.R`**: The main entry point. It initializes the application, loads required R libraries, and sources the UI and Server components.
+*   **`ui/`**: Contains the visual layout definitions for each module.
+    *   Files are named `U[X]_[Module].R` (e.g., `U1_Tutorial.R`, `U4_clustering.R`).
+*   **`server/`**: Contains the backend reactive logic corresponding to each UI module.
+    *   Files are named `S[X]_[Module].R` (e.g., `S1_Tutorial.R`, `S4_clustering.R`).
+*   **`source/`**: Houses utility functions and core algorithms used across the application.
+*   **`www/`**: Stores static assets such as images and CSS styles.
+
+### 2. Validation Suite
+
+To ensure reproducibility and reliability, SMIntegration includes a comprehensive dual-layer validation framework.
+
+#### Analytical Pipeline Validation
+*   **Entry Point**: `run_pipeline_validation.R`
+*   **Description**: This script executes a series of unit tests located in the `validation_pipeline/` directory. It uses the `testthat` package to verify the correctness of core algorithms (preprocessing, clustering, differential analysis, etc.) using the included demo dataset.
+*   **How to Run**:
+    ```r
+    Rscript run_pipeline_validation.R
+    ```
+
+#### Visualization Verification
+*   **Entry Point**: `run_validation_figure.R`
+*   **Description**: A regression test that automatically regenerates key manuscript figures from archived intermediate data (`.rds` files). This ensures that the visualization pipeline remains consistent.
+*   **How to Run**:
+    ```r
+    Rscript run_validation_figure.R
+    ```
+    
 ## Community & Support
 
 Developed by Haoke Deng (denghaoke\@genomics.cn)\
