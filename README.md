@@ -92,4 +92,4 @@ Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/re
 ## Community & Support
 
 Developed by Haoke Deng (denghaoke\@genomics.cn)\
-Last update: 2025-08-11
+Last update: 2026-02-04
