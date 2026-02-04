@@ -1,3 +1,28 @@
+# SMIntegration: Spatial Multi-omics Integration Platform
+# ==============================================================================
+# 
+# Purpose:
+#   Performs KNN-based interpolation to align metabolomics data with spatial 
+#   transcriptomics spots. It constructs a network relationship between the two
+#   modalities based on spatial proximity.
+#
+# Input Requirements:
+#   - Spatial transcriptomics and metabolomics data in SpatialData (Zarr) format.
+#   - Coordinate system names for both modalities.
+#
+# Mathematical/Analytical Logic:
+#   - Uses KDTree for efficient nearest neighbor search.
+#   - Calculates weights for metabolite points based on their distance to 
+#     transcriptomics spots (inverse distance weighting).
+#   - Imputes metabolite expression at transcriptomics spot locations.
+#   - Creates a new SpatialData object containing the paired data.
+#
+# Output:
+#   - A Zarr file containing the merged SpatialData object with interpolated
+#     metabolite values aligned to transcriptomics spots.
+#
+# ==============================================================================
+
 __author__ = "zhengshanqiao"
 __version__ = "0.0.1"
 

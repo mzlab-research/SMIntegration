@@ -1,3 +1,28 @@
+# SMIntegration: Spatial Multi-omics Integration Platform
+# ==============================================================================
+# 
+# Purpose:
+#   Converts Seurat RDS objects containing spatial transcriptomics and 
+#   metabolomics data into text-based formats (long format) for compatibility 
+#   with downstream tools or visualization.
+#
+# Input Requirements:
+#   - 'metab.rds': Seurat object for metabolomics data.
+#   - 'trans.rds': Seurat object for transcriptomics data.
+#   - Input files should be located in the specified project directory.
+#
+# Mathematical/Analytical Logic:
+#   - Loads Seurat objects.
+#   - Extracts count matrices and spatial coordinates.
+#   - Transforms data from wide matrix format to long format (gene/mz, x, y, count).
+#   - Handles string manipulation to clean coordinate identifiers.
+#
+# Output:
+#   - 'trans_bin_filter.txt': Processed transcriptomics data in tab-delimited format.
+#   - 'metab_bin_filter.txt': Processed metabolomics data in tab-delimited format.
+#
+# ==============================================================================
+
 # Load required R packages
 # tibble: Provides flexible data frame structures for data manipulation
 # Seurat, SeuratObject, SeuratDisk: For single-cell and spatial transcriptomics data analysis, object handling, and format conversion

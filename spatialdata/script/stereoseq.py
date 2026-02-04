@@ -1,3 +1,29 @@
+# SMIntegration: Spatial Multi-omics Integration Platform
+# ==============================================================================
+# 
+# Purpose:
+#   Parses Stereo-seq data files (GEF format) and converts them into the 
+#   SpatialData (Zarr) format. Supports both gene expression bins and 
+#   registered images.
+#
+# Input Requirements:
+#   - Square bin GEF file (.tissue.gef or .ssDNA.gef).
+#   - Optional registered image (HE or ssDNA).
+#   - List of bin sizes to process.
+#
+# Mathematical/Analytical Logic:
+#   - Reads HDF5-based GEF files.
+#   - extract gene expression data for specified bin sizes.
+#   - Decodes UTF-8 encoded gene names.
+#   - Constructs sparse matrices and spatial coordinate mappings.
+#   - Handles image data using 'dask_image' and 'xarray'.
+#   - Creates a multi-scale SpatialData object.
+#
+# Output:
+#   - A Zarr file containing the processed Stereo-seq data.
+#
+# ==============================================================================
+
 from collections.abc import Mapping
 from pathlib import Path
 from types import MappingProxyType

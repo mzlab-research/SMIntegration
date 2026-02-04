@@ -1,3 +1,32 @@
+# SMIntegration: Spatial Multi-omics Integration Platform
+# ==============================================================================
+# 
+# Purpose:
+#   Bridges the Python-based SpatialData format and R-based Seurat analysis.
+#   It converts the Zarr output from the interpolation step into Seurat RDS 
+#   objects for downstream analysis in R.
+#
+# Input Requirements:
+#   - 'knn_interpolation.zarr': Zarr file from the interpolation step.
+#   - 'id_to_name.tsv': Mapping file for gene IDs to names.
+#   - 'metab_identi.xls': Metabolite identification file.
+#   - Python environment with 'spatialdata' installed.
+#
+# Mathematical/Analytical Logic:
+#   - Uses 'reticulate' to interface with Python and read Zarr files.
+#   - Extracts sparse expression matrices and spatial coordinates.
+#   - Filters metabolites based on identification data.
+#   - Aggregates gene expression by gene symbol.
+#   - Performs standard Seurat preprocessing (normalization, variable feature selection)
+#     on the transcriptomics data.
+#
+# Output:
+#   - 'metab.rds': Seurat object for metabolomics.
+#   - 'trans.rds': Seurat object for transcriptomics.
+#   - 'metabolite_annotation.txt': Filtered metabolite annotation file.
+#
+# ==============================================================================
+
 # Parse command line arguments
 args <- commandArgs(T)
 main_dir <- args[1]  # Main directory path

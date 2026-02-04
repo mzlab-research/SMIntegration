@@ -1,3 +1,27 @@
+# SMIntegration: Spatial Multi-omics Integration Platform
+# ==============================================================================
+# 
+# Purpose:
+#   Ingests raw spatial metabolomics data (text format) and converts it into
+#   the standard SpatialData (Zarr) format used by the pipeline.
+#
+# Input Requirements:
+#   - Tab-delimited file containing metabolomics data with columns:
+#     'x', 'y', 'intensity', 'mz'.
+#   - Resolution parameter (in microns).
+#
+# Mathematical/Analytical Logic:
+#   - filters out zero-intensity points.
+#   - Converts pixel coordinates to physical coordinates based on resolution.
+#   - Bins coordinates to create unique spatial units.
+#   - Constructs a sparse expression matrix (COO format).
+#   - Assembles PointsModel and TableModel for SpatialData.
+#
+# Output:
+#   - A Zarr file storing the spatial metabolomics data in SpatialData format.
+#
+# ==============================================================================
+
 __author__ = "zhengshanqiao"
 __version__ = "0.0.1"
 import pandas as pd # type: ignore
