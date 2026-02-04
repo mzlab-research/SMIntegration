@@ -1,3 +1,34 @@
+# SMIntegration: Spatial Multi-omics Integration Platform
+# ==============================================================================
+# 
+# Purpose:
+#   This is the main entry point for the SMIntegration Shiny application. 
+#   It initializes the environment, loads necessary R libraries, defines the 
+#   User Interface (UI) structure using 'shinydashboard', and sets up the 
+#   Server logic by sourcing modular components.
+#
+# Input Requirements:
+#   - Valid R installation with required packages (see library() calls below).
+#   - Directory structure:
+#     - /ui: Contains UI definition scripts (U1_Tutorial.R, etc.)
+#     - /server: Contains server logic scripts (S1_Tutorial.R, etc.)
+#     - /source: Contains helper functions and core analytical modules.
+#     - /www: Contains static assets (images, css, etc.)
+#
+# Mathematical/Analytical Logic:
+#   - The application follows a modular architecture.
+#   - UI is built using 'shinydashboard' with a sidebar menu for navigation 
+#     between different analytical modules (QC, Clustering, Differential Analysis, etc.).
+#   - Server side logic is split into separate files (S1...S11) corresponding to 
+#     UI tabs to maintain code manageability.
+#   - High-performance computing settings (future.globals.maxSize) are configured 
+#     to handle large spatial multi-omics datasets.
+#
+# Output:
+#   - Launches a web-based interactive GUI for spatial multi-omics analysis.
+#
+# ==============================================================================
+
 ## app.R ##
 suppressMessages(library(shiny))
 suppressMessages(library(shinyjs))
@@ -62,7 +93,10 @@ suppressMessages(library(ggraph))
 suppressMessages(library(igraph))
 suppressMessages(library(spdep))
 suppressMessages(library(sf))
-
+suppressMessages(library(RNiftyReg))
+suppressMessages(library(mmand))
+suppressMessages(library(EBImage))
+options(Seurat.object.assay.version = 'v3')
 
 options(ggrepel.max.overlaps = Inf)
 options(encoding='UTF-8')
