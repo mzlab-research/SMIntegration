@@ -1,5 +1,15 @@
-########download
+# ==============================================================================
+# S11_co_visualization.R
+# Server logic for Step 7: Multi-feature Visualization
+# Handles RGB/Pseudocolor mapping for visualizing up to 3 features simultaneously.
+# ==============================================================================
 
+# ------------------------------------------------------------------------------
+# Download Handlers
+# ------------------------------------------------------------------------------
+
+#' @title Download Pseudocolor Data
+#' @description Exports the normalized intensity data used for the multi-feature plot.
 output$download_pseudocolor_data <- downloadHandler(
   filename = function() {
 
@@ -14,6 +24,8 @@ output$download_pseudocolor_data <- downloadHandler(
 
   })
 })
+
+#' @title Download Pseudocolor Plot
 output$download_pseudocolor_plot <- downloadHandler(
   filename = function() {
     "pseudocolor_plot.png"
@@ -27,6 +39,7 @@ output$download_pseudocolor_plot <- downloadHandler(
     })
   })
 
+#' @title Download Co-visualization Data
 output$download_Co_visualisation_data <- downloadHandler(
   filename = function() {
 
@@ -41,6 +54,8 @@ output$download_Co_visualisation_data <- downloadHandler(
     
   })
 })
+
+#' @title Download Co-visualization Plot
 output$download_Co_visualisation_plot <- downloadHandler(
   filename = function() {
     "co-expression_pattern_plot.png"
@@ -54,6 +69,12 @@ output$download_Co_visualisation_plot <- downloadHandler(
   })
 
 
+# ------------------------------------------------------------------------------
+# Core Multi-feature Visualization Logic
+# ------------------------------------------------------------------------------
+
+#' @title Prepare Combined Spatial Coordinates
+#' @description Merges metabolomics and transcriptomics matrices for multi-feature plotting.
 spatial_coordlist<-eventReactive(c(input$start_Co_visualisation_analysis), {
   req(data_rds())
 
@@ -76,6 +97,9 @@ spatial_coordlist<-eventReactive(c(input$start_Co_visualisation_analysis), {
 return(spatial_coordlist)
  })
 })
+
+#' @title Get Available Features
+#' @description Lists all available metabolites and genes for selection inputs.
 spatial_coord_features<-reactive({
   req(data_rds())
 
@@ -92,6 +116,9 @@ spatial_coord_features<-reactive({
   })
 })
 
+#' @title Generate Multi-feature Plots
+#' @description Creates RGB/Composite plots for 3 selected features.
+#' @return A list containing plot objects and underlying data tables.
 cor_gene_metabolite_Co_visualisation_plot_save<-eventReactive(c(input$start_Co_visualisation_analysis,input$cor_F1_select,input$cor_F2_select,input$cor_F3_select), {
 
   req(spatial_coordlist())
@@ -135,14 +162,18 @@ cor_gene_metabolite_Co_visualisation_plot_save<-eventReactive(c(input$start_Co_v
   })
 })
 
+#' @title Render Co-Visualization Plots
+#' @description Renders the pseudocolor plot (Metabolite) and the co-visualization plot (Transcript/Combined)
+#' side-by-side or sequentially based on the user's selected features (F1, F2, F3).
+#' Assigns plots to the global environment for potential export.
 observeEvent(c(input$start_Co_visualisation_analysis,input$cor_F1_select,input$cor_F2_select,input$cor_F3_select),{
   req(cor_gene_metabolite_Co_visualisation_plot_save())
   plotlist<-cor_gene_metabolite_Co_visualisation_plot_save()[[1]]
   mplot<-plotlist[[1]]
   tplot<-plotlist[[2]]
-
+  
   output$pseudocolor_plot <- renderPlot({
-
+    
     withProgress(message = "Plotting...",value=0.8,{
       
       p<-gridExtra::grid.arrange(mplot,ncol=1)
@@ -151,20 +182,24 @@ observeEvent(c(input$start_Co_visualisation_analysis,input$cor_F1_select,input$c
     })
   })
   output$cor_gene_metabolite_Co_visualisation_plot <- renderPlot({
-
+    
     withProgress(message = "Plotting...",value=0.8,{
       p<-gridExtra::grid.arrange(tplot,ncol=1)
       p
       assign("Co_visualisation_plot", p, envir = .GlobalEnv)
     })
   })
-
+  
 })
 
+#' @title Update Co-Visualization Feature Selectors
+#' @description Dynamically populates the three feature selection dropdowns (F1, F2, F3)
+#' with the list of available features from the spatial coordinate data.
+#' Sets default selections to the first three features if available.
 observe({
   req(spatial_coord_features())
   f=spatial_coord_features()
-
+  
   updateSelectizeInput(
     session = getDefaultReactiveDomain(),
     inputId = "cor_F1_select",

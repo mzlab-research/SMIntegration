@@ -1,7 +1,17 @@
+# ==============================================================================
+# S10_visualization.R
+# Server logic for Step 6: Data Visualization
+# Handles visualization of single features and their correlated partners.
+# ==============================================================================
 
+# ------------------------------------------------------------------------------
+# Download Handlers
+# ------------------------------------------------------------------------------
+
+#' @title Download Single Feature Data
 output$download_single_feature_data <- downloadHandler(
   filename = function() {
-
+    
     paste0("single_feature_data.txt")
   },
   content = function(file) {
@@ -11,6 +21,7 @@ output$download_single_feature_data <- downloadHandler(
       
     })
   })
+#' @title Download Single Feature Plot
 output$download_single_feature_plot <- downloadHandler(
   filename = function() {
     "single_feature_plot.png"
@@ -18,17 +29,17 @@ output$download_single_feature_plot <- downloadHandler(
   content = function(file) {
     withProgress(message = 'Downloading file...', value = 0.7, {
       p <- single_ionsplot_save()
-
+      
       ggsave(file, plot = p, device = "png", width = 10, height = 8,bg = "#FFFFFF", dpi = 300)
       
     })
   })
 
 
-
+#' @title Download Positively Correlated Metabolites Data
 output$download_positively_correlated_ions_m_data <- downloadHandler(
   filename = function() {
-
+    
     paste0("positively_correlated_metabolites_data.txt")
   },
   content = function(file) {
@@ -38,6 +49,7 @@ output$download_positively_correlated_ions_m_data <- downloadHandler(
       
     })
   })
+#' @title Download Positively Correlated Metabolites Plot
 output$download_positively_correlated_ions_m_plot <- downloadHandler(
   filename = function() {
     "positively_correlated_metabolites_plot.png"
@@ -46,15 +58,15 @@ output$download_positively_correlated_ions_m_plot <- downloadHandler(
     withProgress(message = 'Downloading file...', value = 0.7, {
       pp<- positively_correlated_ions_m()[[1]]
       p<-gridExtra::grid.arrange(pp[[1]],pp[[2]],pp[[3]],pp[[4]],pp[[5]],pp[[6]],ncol=3)
-
+      
       ggsave(file, plot = p, device = "png", width = 10, height = 8,bg = "#FFFFFF", dpi = 300)
       
     })
   })
-
+#' @title Download Negatively Correlated Metabolites Data
 output$download_negatively_correlated_ions_m_data <- downloadHandler(
   filename = function() {
-
+    
     paste0("negatively_correlated_metabolites_data.txt")
   },
   content = function(file) {
@@ -64,6 +76,7 @@ output$download_negatively_correlated_ions_m_data <- downloadHandler(
       
     })
   })
+#' @title Download Negatively Correlated Metabolites Plot
 output$download_negatively_correlated_ions_m_plot <- downloadHandler(
   filename = function() {
     "negatively_correlated_metabolites_plot.png"
@@ -72,15 +85,16 @@ output$download_negatively_correlated_ions_m_plot <- downloadHandler(
     withProgress(message = 'Downloading file...', value = 0.7, {
       pp <- negatively_correlated_ions_m()[[1]]
       p<-gridExtra::grid.arrange(pp[[1]],pp[[2]],pp[[3]],pp[[4]],pp[[5]],pp[[6]],ncol=3)
-
+      
       ggsave(file, plot = p, device = "png", width = 10, height = 8,bg = "#FFFFFF", dpi = 300)
       
     })
   })
 
+#' @title Download Positively Correlated Genes Data
 output$download_positively_correlated_ions_t_data <- downloadHandler(
   filename = function() {
-
+    
     paste0("positively_correlated_genes_data.txt")
   },
   content = function(file) {
@@ -90,6 +104,7 @@ output$download_positively_correlated_ions_t_data <- downloadHandler(
       
     })
   })
+#' @title Download Positively Correlated Genes Plot
 output$download_positively_correlated_ions_t_plot <- downloadHandler(
   filename = function() {
     "positively_correlated_genes_plot.png"
@@ -98,15 +113,16 @@ output$download_positively_correlated_ions_t_plot <- downloadHandler(
     withProgress(message = 'Downloading file...', value = 0.7, {
       pp <- positively_correlated_ions_t()[[1]]
       p<-gridExtra::grid.arrange(pp[[1]],pp[[2]],pp[[3]],pp[[4]],pp[[5]],pp[[6]],ncol=3)
-
+      
       ggsave(file, plot = p, device = "png", width = 10, height = 8,bg = "#FFFFFF", dpi = 300)
       
     })
   })
 
+#' @title Download Negatively Correlated Genes Data
 output$download_negatively_correlated_ions_t_data <- downloadHandler(
   filename = function() {
-
+    
     paste0("negatively_correlated_genes_data.txt")
   },
   content = function(file) {
@@ -116,6 +132,7 @@ output$download_negatively_correlated_ions_t_data <- downloadHandler(
       
     })
   })
+#' @title Download Negatively Correlated Genes Plot
 output$download_negatively_correlated_ions_t_plot <- downloadHandler(
   filename = function() {
     "negatively_correlated_genes_plot.png"
@@ -124,13 +141,13 @@ output$download_negatively_correlated_ions_t_plot <- downloadHandler(
     withProgress(message = 'Downloading file...', value = 0.7, {
       pp <- negatively_correlated_ions_t()[[1]]
       p<-gridExtra::grid.arrange(pp[[1]],pp[[2]],pp[[3]],pp[[4]],pp[[5]],pp[[6]],ncol=3)
-
+      
       ggsave(file, plot = p, device = "png", width = 10, height = 8,bg = "#FFFFFF", dpi = 300)
       
     })
   })
-
-
+#' @title Prepare Spatial Coordinates
+#' @description Merges metabolomics and transcriptomics matrices for correlation analysis.
 spatial_coord<-eventReactive(c(input$start_visualisation_analysis), {
   req(data_rds())
   withProgress(message = "Processing data...",value=0.8,{
@@ -150,13 +167,14 @@ spatial_coord<-eventReactive(c(input$start_visualisation_analysis), {
   })
 })
 
-
+#' @title Update Feature Selection Input
+#' @description Updates the selectizeInput with available genes or metabolites based on user selection.
 observe({
   data_rds<-data_rds()
   req(data_rds)
   data_mrds<-data_rds[[1]]
   data_trds<-data_rds[[2]]
-
+  
   if(input$single_ions_type=="Gene"){
     g = unique(as.character(rownames(data_trds@assays$Spatial$counts)))
     g  <- sort(g)
@@ -164,29 +182,30 @@ observe({
     g = unique(as.character(rownames(data_mrds@assays$Spatial$counts)))
     g  <- sort(g)
   }
-    updateSelectizeInput(
-      session = getDefaultReactiveDomain(),
-      inputId = "select_single_ions",
-      choices = g,
-      server = TRUE,
-      selected = if (length(g) > 0) g[1] else NULL,
-      options = list(
-        maxOptions = 1000,          
-        searchConjunction = 'and',   
-        render = I("{                
+  updateSelectizeInput(
+    session = getDefaultReactiveDomain(),
+    inputId = "select_single_ions",
+    choices = g,
+    server = TRUE,
+    selected = if (length(g) > 0) g[1] else NULL,
+    options = list(
+      maxOptions = 1000,          
+      searchConjunction = 'and',   
+      render = I("{                
       option: function(item, escape) {
         return '<div>' + escape(item.label) + '</div>';
       }
     }"),
-        loadThrottle = 300,          
-        placeholder = "Search by feature name...",
-        closeAfterSelect = TRUE      
-      )
+      loadThrottle = 300,          
+      placeholder = "Search by feature name...",
+      closeAfterSelect = TRUE      
     )
-
+  )
+  
 })
 
-
+#' @title Prepare Single Feature Plot Data
+#' @description Extracts intensity data for the selected feature.
 single_ionsplotdata <-eventReactive(c(input$start_visualisation_analysis), {
   req(input$select_single_ions)
   withProgress(message = "Processing data...",value=0.8,{
@@ -197,7 +216,7 @@ single_ionsplotdata <-eventReactive(c(input$start_visualisation_analysis), {
         return(NULL)
       })
     req(ion, nzchar(ion)) 
-
+    
     spatial_coord<-spatial_coord()
     plotdata<-spatial_coord |>
       dplyr::select(x,y,any_of(ion))
@@ -207,13 +226,16 @@ single_ionsplotdata <-eventReactive(c(input$start_visualisation_analysis), {
     return(plotdata)
   })
 })
+#' @title Generate Single Ion/Gene Plot
+#' @description Creates a spatial heatmap for a single selected feature (ion or gene).
+#' Normalizes intensity values for visualization.
 single_ionsplot_save <- reactive({ 
   data <- single_ionsplotdata()
   req(input$select_single_ions)
   req(data)
-
+  
   title_text<-unlist(strsplit(as.character(input$select_single_ions), ";"))[1]
-
+  
   heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
   p <- ggplot(data, aes(x = x, y = y)) +
     geom_point(aes(color = norm_intensity), size = 1) +
@@ -234,12 +256,15 @@ single_ionsplot_save <- reactive({
   return(p)
   
 })
+#' @title Render Single Ion/Gene Plot
+#' @description Displays the single feature spatial plot in the UI.
 observeEvent(input$start_visualisation_analysis,{
-output$single_ion_visualizaiton <- renderPlot({
-  single_ionsplot_save()
+  output$single_ion_visualizaiton <- renderPlot({
+    single_ionsplot_save()
+  })
 })
-})
-
+#' @title Calculate Correlated Metabolites
+#' @description Computes Spearman correlation between the selected feature and all other metabolites.
 correlated_ions_m <- eventReactive(c(input$start_visualisation_analysis), {
   data_rds<-data_rds()
   spatial_coord <- spatial_coord()
@@ -249,7 +274,7 @@ correlated_ions_m <- eventReactive(c(input$start_visualisation_analysis), {
   withProgress(message = "Processing data...",value=0.8,{
     data_mrds<-data_rds[[1]]
     m = as.character(rownames(data_mrds@assays$Spatial$counts))
-
+    
     ion <- input$select_single_ions
     m <- subset(m, m !=ion)
     spatial_coord_m<-spatial_coord |>
@@ -257,7 +282,7 @@ correlated_ions_m <- eventReactive(c(input$start_visualisation_analysis), {
     
     w <- which(names(spatial_coord) == ion)
     ion_intensity <- spatial_coord[,w]
-
+    
     corr_datalist <- lapply(colnames(spatial_coord_m)[-c(1:2)], function(x) {
       test_result <- cor.test(spatial_coord_m[,x], ion_intensity, method = "spearman",exact = FALSE)
       c(feature=x,cor = test_result$estimate, p = test_result$p.value)
@@ -268,10 +293,12 @@ correlated_ions_m <- eventReactive(c(input$start_visualisation_analysis), {
       arrange(as.numeric(cor)) |>
       mutate(cor=round(as.numeric(cor),3),
              p=round(as.numeric(p),3))
-
+    
     return(correlated_ions_m)
   })
 })
+#' @title Calculate Correlated Genes
+#' @description Computes Spearman correlation between the selected feature and all other genes.
 correlated_ions_t <- eventReactive(c(input$start_visualisation_analysis), {
   data_rds<-data_rds()
   spatial_coord <- spatial_coord()
@@ -281,7 +308,7 @@ correlated_ions_t <- eventReactive(c(input$start_visualisation_analysis), {
   withProgress(message = "Processing data...",value=0.8,{
     data_trds<-data_rds[[2]]
     g = as.character(rownames(data_trds@assays$Spatial$counts))
-
+    
     ion <-input$select_single_ions
     g <- subset(g, g !=ion)
     spatial_coord_t<-spatial_coord |>
@@ -289,7 +316,7 @@ correlated_ions_t <- eventReactive(c(input$start_visualisation_analysis), {
     
     w <- which(names(spatial_coord) == ion)
     ion_intensity <- spatial_coord[,w]
-
+    
     corr_datalist <- lapply(colnames(spatial_coord_t)[-c(1:2)], function(x) {
       test_result <- cor.test(spatial_coord_t[,x], ion_intensity, method = "spearman",exact = FALSE)
       c(feature=x,cor = test_result$estimate, p = test_result$p.value)
@@ -300,10 +327,14 @@ correlated_ions_t <- eventReactive(c(input$start_visualisation_analysis), {
       arrange(as.numeric(cor)) |>
       mutate(cor=round(as.numeric(cor),3),
              p=round(as.numeric(p),3))
-
+    
     return(correlated_ions_t)
   })
 })
+
+#' @title Visualize Positively Correlated Metabolites
+#' @description Selects top positively correlated metabolites and generates spatial plots for them.
+#' Returns a list containing the list of ggplot objects and the raw data.
 positively_correlated_ions_m <- eventReactive(c(input$start_visualisation_analysis), {
   correlated_ions <- correlated_ions_m()
   spatial_coord <- spatial_coord()
@@ -324,7 +355,7 @@ positively_correlated_ions_m <- eventReactive(c(input$start_visualisation_analys
     
     names(data)[3] <- "intensity"
     data$norm_intensity <-100*(data$intensity)/max(data$intensity)
-
+    
     title_text<-unlist(strsplit(as.character(featurename), ";"))[1]
     if(k$p[i]<0.001){
       ptext="p<0.001"
@@ -333,7 +364,7 @@ positively_correlated_ions_m <- eventReactive(c(input$start_visualisation_analys
     }
     sub_title<-paste("Cor:",round(k$cor[i],2),"; ",ptext,sep = "")
     heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
-
+    
     plot_list[[i]] <- ggplot(data, aes(x = x, y = y)) +
       geom_point(aes(color = norm_intensity), size = 1) +
       scale_color_gradientn(colours = heatmap_Palette(100)) +
@@ -359,17 +390,21 @@ positively_correlated_ions_m <- eventReactive(c(input$start_visualisation_analys
   positively_correlated_ions_m<-list(plot_list,posdata)
   return(positively_correlated_ions_m)
 })
+#' @title Render Positive Metabolite Plots
+#' @description Displays the grid of spatial plots for top positively correlated metabolites.
 observeEvent(input$start_visualisation_analysis,{
-output$positively_correlated_ions_m_plot <- renderPlot({
-  req(positively_correlated_ions_m())
-  withProgress(message = "Plotting...", value = 0.8, {
-    p<-positively_correlated_ions_m()[[1]]
-    do.call(gridExtra::grid.arrange, c(p, ncol = 3))
-    #gridExtra::grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],ncol=3)
+  output$positively_correlated_ions_m_plot <- renderPlot({
+    req(positively_correlated_ions_m())
+    withProgress(message = "Plotting...", value = 0.8, {
+      p<-positively_correlated_ions_m()[[1]]
+      do.call(gridExtra::grid.arrange, c(p, ncol = 3))
+      #gridExtra::grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]],ncol=3)
+    })
   })
 })
-})
-
+#' @title Visualize Negatively Correlated Metabolites
+#' @description Selects top negatively correlated metabolites and generates spatial plots for them.
+#' Returns a list containing the list of ggplot objects and the raw data.
 negatively_correlated_ions_m <-eventReactive(c(input$start_visualisation_analysis), {
   correlated_ions <- correlated_ions_m()
   spatial_coord <- spatial_coord()
@@ -390,7 +425,7 @@ negatively_correlated_ions_m <-eventReactive(c(input$start_visualisation_analysi
     
     names(data)[3] <- "intensity"
     data$norm_intensity <-100*(data$intensity)/max(data$intensity)
-
+    
     title_text<-unlist(strsplit(as.character(featurename), ";"))[1]
     if(k$p[i]<0.001){
       ptext="p<0.001"
@@ -399,7 +434,7 @@ negatively_correlated_ions_m <-eventReactive(c(input$start_visualisation_analysi
     }
     sub_title<-paste("Cor:",round(k$cor[i],2),"; ",ptext,sep = "")
     heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
-
+    
     plot_list[[i]] <- ggplot(data, aes(x = x, y = y)) +
       geom_point(aes(color = norm_intensity), size = 1) +
       scale_color_gradientn(colours = heatmap_Palette(100)) +
@@ -417,7 +452,7 @@ negatively_correlated_ions_m <-eventReactive(c(input$start_visualisation_analysi
         plot.subtitle = element_text(hjust = 0.5,size = 10),
         panel.grid = element_blank()
       )
-
+    
   }
   negdata=spatial_coord %>%
     dplyr::select(x,y,all_of(k$feature))
@@ -425,15 +460,20 @@ negatively_correlated_ions_m <-eventReactive(c(input$start_visualisation_analysi
   return(negatively_correlated_ions_m)
   
 })
+#' @title Render Negative Metabolite Plots
+#' @description Displays the grid of spatial plots for top negatively correlated metabolites.
 observeEvent(input$start_visualisation_analysis,{
-output$negatively_correlated_ions_m_plot <- renderPlot({
-  req( negatively_correlated_ions_m())
-  withProgress(message = "Plotting...", value = 0.8, {
-    p<-negatively_correlated_ions_m()[[1]]
-    do.call(gridExtra::grid.arrange, c(p, ncol = 3))
+  output$negatively_correlated_ions_m_plot <- renderPlot({
+    req( negatively_correlated_ions_m())
+    withProgress(message = "Plotting...", value = 0.8, {
+      p<-negatively_correlated_ions_m()[[1]]
+      do.call(gridExtra::grid.arrange, c(p, ncol = 3))
+    })
   })
 })
-})
+#' @title Visualize Positively Correlated Genes
+#' @description Selects top positively correlated genes and generates spatial plots for them.
+#' Returns a list containing the list of ggplot objects and the raw data.
 positively_correlated_ions_t <-eventReactive(c(input$start_visualisation_analysis), {
   correlated_ions <- correlated_ions_t()
   spatial_coord <- spatial_coord()
@@ -454,7 +494,7 @@ positively_correlated_ions_t <-eventReactive(c(input$start_visualisation_analysi
     
     names(data)[3] <- "intensity"
     data$norm_intensity <-100*(data$intensity)/max(data$intensity)
-
+    
     title_text<-unlist(strsplit(as.character(featurename), ";"))[1]
     if(k$p[i]<0.001){
       ptext="p<0.001"
@@ -463,7 +503,7 @@ positively_correlated_ions_t <-eventReactive(c(input$start_visualisation_analysi
     }
     sub_title<-paste("Cor:",round(k$cor[i],2),"; ",ptext,sep = "")
     heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
-
+    
     plot_list[[i]] <- ggplot(data, aes(x = x, y = y)) +
       geom_point(aes(color = norm_intensity), size = 1) +
       scale_color_gradientn(colours = heatmap_Palette(100)) +
@@ -488,16 +528,21 @@ positively_correlated_ions_t <-eventReactive(c(input$start_visualisation_analysi
   positively_correlated_ions_t<-list(plot_list,posdata)
   return(positively_correlated_ions_t)
 })
+#' @title Render Positive Gene Plots
+#' @description Displays the grid of spatial plots for top positively correlated genes.
 observeEvent(input$start_visualisation_analysis,{
-output$positively_correlated_ions_t_plot <- renderPlot({
-  req( positively_correlated_ions_t())
-  withProgress(message = "Plotting...", value = 0.8, {
-    p<-positively_correlated_ions_t()[[1]]
-    do.call(gridExtra::grid.arrange, c(p, ncol = 3))
+  output$positively_correlated_ions_t_plot <- renderPlot({
+    req( positively_correlated_ions_t())
+    withProgress(message = "Plotting...", value = 0.8, {
+      p<-positively_correlated_ions_t()[[1]]
+      do.call(gridExtra::grid.arrange, c(p, ncol = 3))
+    })
   })
 })
-})
 
+#' @title Visualize Negatively Correlated Genes
+#' @description Selects top negatively correlated genes and generates spatial plots for them.
+#' Returns a list containing the list of ggplot objects and the raw data.
 negatively_correlated_ions_t <- eventReactive(c(input$start_visualisation_analysis), {
   correlated_ions <- correlated_ions_t()
   spatial_coord <- spatial_coord()
@@ -518,7 +563,7 @@ negatively_correlated_ions_t <- eventReactive(c(input$start_visualisation_analys
     
     names(data)[3] <- "intensity"
     data$norm_intensity <-100*(data$intensity)/max(data$intensity)
-
+    
     title_text<-unlist(strsplit(as.character(featurename), ";"))[1]
     if(k$p[i]<0.001){
       ptext="p<0.001"
@@ -527,8 +572,8 @@ negatively_correlated_ions_t <- eventReactive(c(input$start_visualisation_analys
     }
     sub_title<-paste("Cor:",round(k$cor[i],2),"; ",ptext,sep = "")
     heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
-
-
+    
+    
     plot_list[[i]]  <- ggplot(data, aes(x = x, y = y)) +
       geom_point(aes(color = norm_intensity), size = 1) +
       scale_color_gradientn(colours = heatmap_Palette(100)) +
@@ -546,7 +591,7 @@ negatively_correlated_ions_t <- eventReactive(c(input$start_visualisation_analys
         plot.subtitle = element_text(hjust = 0.5,size = 10),
         panel.grid = element_blank()
       )
-
+    
   }
   negdata=spatial_coord %>%
     dplyr::select(x,y,all_of(k$feature))
@@ -554,12 +599,15 @@ negatively_correlated_ions_t <- eventReactive(c(input$start_visualisation_analys
   return(negatively_correlated_ions_t)
 })
 
+#' @title Render Negative Gene Plots
+#' @description Displays the grid of spatial plots for top negatively correlated genes.
 observeEvent(input$start_visualisation_analysis,{
-output$negatively_correlated_ions_t_plot <-renderPlot({
-  req( negatively_correlated_ions_t())
-  withProgress(message = "Plotting...", value = 0.8, {
-    p<- negatively_correlated_ions_t()[[1]]
-    do.call(gridExtra::grid.arrange, c(p, ncol = 3))
+  output$negatively_correlated_ions_t_plot <-renderPlot({
+    req( negatively_correlated_ions_t())
+    withProgress(message = "Plotting...", value = 0.8, {
+      p<- negatively_correlated_ions_t()[[1]]
+      do.call(gridExtra::grid.arrange, c(p, ncol = 3))
+    })
   })
 })
-})
+

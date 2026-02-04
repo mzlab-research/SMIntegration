@@ -1,4 +1,14 @@
-##demo---
+# ==============================================================================
+# S9_pathway.R
+# Server logic for Step 5: Functional Association and Annotation
+# Handles pathway mapping, annotation statistics, and visualization (DotPlot, Venn).
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Download Handlers
+# ------------------------------------------------------------------------------
+
+#' @title Download Demo Transcriptomics Annotation
 output$download_Gene_pathway_annotation_demo <- downloadHandler(
   filename = function() {
     paste0("gene_identi_demo.txt")
@@ -11,6 +21,8 @@ output$download_Gene_pathway_annotation_demo <- downloadHandler(
     })
   }
 )
+
+#' @title Download Demo Metabolomics Annotation
 output$download_metab_pathway_annotation_demo <- downloadHandler(
   filename = function() {
     paste0("metabolite_identi_demo.txt")
@@ -19,26 +31,29 @@ output$download_metab_pathway_annotation_demo <- downloadHandler(
     withProgress(message = 'Downloading file...', value = 0.7, {
       DemoData=read_delim("./example_data/metab_identi.xls") |>
         dplyr::select(mz,metabolite,KEGG.ID)
+     # colnames(DemoData)[2]<-"Name"
       write_delim(DemoData,file, delim = '\t')
     })
   }
 )
 
-
+#' @title Download Full Annotation Results
+#' @description Exports the annotation count table (DotPlot data).
 output$download_annotation_data_all <- downloadHandler(
   filename = function() {
     paste0("annotation_data.txt")
   },
   content = function(file) {
     withProgress(message = 'Downloading file...', value = 0.7, {
-    DemoData=bubblediagram_data()[[2]]
+    DemoData=dotplot_data()[[2]]
     write.table(DemoData,file,row.names = F, quote = F, sep = '\t')
     })
   })
-#
+
+#' @title Download Pathway Image (KEGG Map)
 output$download_pathway_annotation_plot <- downloadHandler(
   filename = function() {
-    DemoData=bubblediagram_data()[[2]] %>%
+    DemoData=dotplot_data()[[2]] %>%
       dplyr::filter(Pathway==input$Pathway_select)
     paste0(DemoData$PathwayID, ".png")
   },
@@ -48,6 +63,9 @@ output$download_pathway_annotation_plot <- downloadHandler(
      file.copy(temp_pathwayannotation_file(), file, overwrite = TRUE)
   })
 })
+
+#' @title Download Pathway Node Data
+#' @description Exports features mapped to the selected pathway (Metab + Gene).
 output$download_pathway_annotation_data <- downloadHandler(
   filename = function() {
 
@@ -67,7 +85,10 @@ output$download_pathway_annotation_data <- downloadHandler(
     zip(file,fi)
     })
   })
-#
+
+
+
+#' @title Download Spatial Feature Plot (Metabolite)
 output$download_pathway_annotation_m_plot <- downloadHandler(
   filename = function() {
     "Metabolite_plot.png"
@@ -113,32 +134,34 @@ output$download_pathway_annotation_t_data <- downloadHandler(
     })
   })
 
-#
-output$download_bubblediagram_data <- downloadHandler(
+#' @title Download Annotation Dot Plot Data
+output$download_dotplot_data <- downloadHandler(
   filename = function() {
 
-    paste0("bubble_diagram_data.txt")
+    paste0("annotation_dotplot_data.txt")
   },
   content = function(file) {
     withProgress(message = 'Downloading file...', value = 0.7, {
-    DemoData=bubblediagram_data_save()
+    DemoData=dotplot_data_save()
     write.table(DemoData,file,row.names = F, quote = F, sep = '\t')
     })
   })
 
-output$download_bubblediagram_plot <- downloadHandler(
+#' @title Download Annotation Dot Plot Image
+output$download_dotplot <- downloadHandler(
   filename = function() {
-    "bubble_diagram.png"
+    "annotation_dotplot.png"
   },
   content = function(file) {
 
     withProgress(message = 'Downloading file...', value = 0.7, {
-    p <- bubblediagram_plot_save()
+    p <- dotplot_save()
 
     ggsave(file, plot = p, device = "png", width = 8, height = 6,bg = "#FFFFFF", dpi = 300)
   })
 })
-#
+
+#' @title Download Venn Plot
 output$download_venn_plot <- downloadHandler(
   filename = function() {
     "venn_plot.png"
@@ -153,6 +176,13 @@ output$download_venn_plot <- downloadHandler(
 
 
 
+# ------------------------------------------------------------------------------
+# ID Mapping and Database Setup
+# ------------------------------------------------------------------------------
+
+#' @title Metabolite Identification Mapping
+#' @description Maps input metabolite names or m/z values to KEGG IDs.
+#' Uses built-in database (level 3 identification) or user-uploaded annotation file.
 metabidenti<-eventReactive(c(input$start_annotation), {
   if(input$demo_select == "Use demo data"){
     metabidenti=read_delim("./example_data/metab_identi.xls")
@@ -174,6 +204,7 @@ metabidenti<-eventReactive(c(input$start_annotation), {
         if(input_type == "metab_name") {
           metabidenti <- run_metab_name_processing(sp,mode)
         }else{
+          # MS-based identification logic
           combine<-run_isotope(sp,mode)
           end_deal_data<-run_add(combine,mode)
           more_to_one_identi<-run_metab_identi(end_deal_data,mode)
@@ -189,7 +220,7 @@ metabidenti<-eventReactive(c(input$start_annotation), {
         return(metabidenti)
       })
     }else{
-      
+      # User uploaded annotation
       if(!is.null(input$metabannotationfile) && input$metabannotationfile$name != ""){
         metabidenti <- read_delim(input$metabannotationfile$datapath)
         if("KEGG ID" %in% colnames(metabidenti)){
@@ -207,6 +238,7 @@ metabidenti<-eventReactive(c(input$start_annotation), {
         metabidenti$metabolite<-as.character(metabidenti$metabolite)
         return(metabidenti)
       }else{
+        # Fallback to built-in logic if no file uploaded
         req(data_rds())
         withProgress(message = "Processing data...",value=0.8,{
           print("metabidenti start")
@@ -238,6 +270,9 @@ metabidenti<-eventReactive(c(input$start_annotation), {
   }
 })
 
+#' @title Transcript ID Mapping
+#' @description Maps gene symbols to Entrez IDs and then to KEGG KO IDs.
+#' Supports Human (hsa) and Mouse (mmu).
 transidenti<-eventReactive(c(input$start_annotation), {
   if(input$demo_select == "Use demo data"){
     transidenti=read_delim("./example_data/trans_identi.xls")
@@ -250,10 +285,12 @@ transidenti<-eventReactive(c(input$start_annotation), {
       data<-data_rds()[[2]]
       genename<-rownames(data@assays$Spatial$counts)
       speciesname=input$speciesname_select
+      
+      # Convert Symbol to Entrez ID
       if(speciesname=="mmu"){
-        id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Mm.eg.db)#SYMBOL  ENTREZID
+        id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Mm.eg.db)
       }else if(speciesname=="hsa"){
-        id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Hs.eg.db)#SYMBOL  ENTREZID    
+        id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Hs.eg.db)    
       }
       source("./source/OverallAnalysisFunction/Annotation/gene_identi.R")
       transidenti <-trans_identi_processing(id,speciesname)
@@ -262,7 +299,7 @@ transidenti<-eventReactive(c(input$start_annotation), {
       return(transidenti)
     })
   }else{
-    
+    # User uploaded annotation
     if(!is.null(input$transannotationfile) && input$transannotationfile$name != ""){
       transidenti <- read_delim(input$transannotationfile$datapath,delim = "\t")
       validate(
@@ -276,6 +313,7 @@ transidenti<-eventReactive(c(input$start_annotation), {
       transidenti$gene<-as.character(transidenti$gene)
       return(transidenti)
     }else{
+      # Fallback
       req(data_rds())
       withProgress(message = "Processing data...",value=0.8,{
         data<-data_rds()[[2]]
@@ -283,9 +321,9 @@ transidenti<-eventReactive(c(input$start_annotation), {
         speciesname=input$speciesname_select
 
         if(speciesname=="mmu"){
-          id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Mm.eg.db)#SYMBOL  ENTREZID
+          id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Mm.eg.db)
         }else if(speciesname=="hsa"){
-          id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Hs.eg.db)#SYMBOL  ENTREZID    
+          id <- bitr(genename,fromType="SYMBOL",toType="ENTREZID", OrgDb = org.Hs.eg.db)    
         }
         source("./source/OverallAnalysisFunction/Annotation/gene_identi.R")
         transidenti <-trans_identi_processing(id,speciesname)
@@ -298,16 +336,18 @@ transidenti<-eventReactive(c(input$start_annotation), {
   }
 })
 
-enrichmentdatabase<-eventReactive(c(input$start_annotation), {
+#' @title Initialize Annotation Database
+#' @description Loads KEGG pathway definitions for the selected species.
+annotation_database<-eventReactive(c(input$start_annotation), {
   species=input$speciesname_select
   print(species)
   req(species)
     withProgress(message = "Processing data...",value=0.8,{
-      source("./source/Pathway/enrich.R")
-      metabdatabse<-enrichdatabase(omics="metab",species=species)
-      transdatabse<-enrichdatabase(omics="trans",species=species)
-      enrichmentdatabase<-list(metabdatabse,transdatabse)
-      return(enrichmentdatabase)
+      source("./source/Pathway/annotation_stats.R")
+      metabdatabse<-annotationdatabase(omics="metab",species=species)
+      transdatabse<-annotationdatabase(omics="trans",species=species)
+      annotation_database<-list(metabdatabse,transdatabse)
+      return(annotation_database)
     })
 
   
@@ -326,6 +366,7 @@ metabannotationdata<-eventReactive(c(input$start_annotation), {
         diff_m<-diff_omics[[1]] %>%
           dplyr::filter(State!="Non-significant") %>%
           dplyr::select(metabolite,p_val_adj,`log2(Fold Change)`,State)
+
         #up down all
         if(!is.null(input$functional_diffdata) && input$functional_diffdata!=""){
         if(input$functional_diffdata=="Up-regulated features"){
@@ -345,11 +386,11 @@ metabannotationdata<-eventReactive(c(input$start_annotation), {
             need(nrow(diff_m)>0,"The number of differential metabolites was 0")
           )
         }}
+        if(nrow(diff_m) > 300){
+          diff_m %<>% arrange(p_val_adj)
+          diff_m <- diff_m[1:300,]
+        }
           diff_m$metabolite<-as.character(diff_m$metabolite)
-          if(nrow(diff_m) > 300){
-            diff_m %<>% arrange(p_val_adj)
-            diff_m <- diff_m[1:300,]
-          }
           mzid <-unique(diff_m$metabolite)
           data<-data.frame(metabolite=mzid) %>%
             left_join(metabidenti,by=c("metabolite"="metabolite"))
@@ -387,6 +428,12 @@ metabannotationdata<-eventReactive(c(input$start_annotation), {
 
 
 })
+#' @title Prepare Transcriptomics Annotation Data
+#' @description Prepares the gene list for pathway analysis based on user selection:
+#' 1. Differential features: Filters by Up/Down regulation and P-value (top 300).
+#' 2. Pattern-specific features: Uses genes identified in spatial pattern analysis.
+#' Maps genes to KEGG IDs using the loaded identifier mapping.
+#' @return A data frame containing genes, KEGG IDs, and statistical metrics.
 transannotationdata<-eventReactive(c(input$start_annotation), {
   
   if(!is.null(input$functional_data) && input$functional_data!=""){
@@ -399,10 +446,7 @@ transannotationdata<-eventReactive(c(input$start_annotation), {
         diff_t<-diff_omics[[2]] %>%
           dplyr::filter(State!="Non-significant") %>%
           dplyr::select(gene,p_val_adj,`log2(Fold Change)`,State)
-        if(nrow(diff_t) > 300){
-          diff_t %<>% arrange(p_val_adj)
-          diff_t <- diff_t[1:300,]
-        }
+        
         #up down all
         if(!is.null(input$functional_diffdata) && input$functional_diffdata!=""){
           if(input$functional_diffdata=="Up-regulated features"){
@@ -422,7 +466,10 @@ transannotationdata<-eventReactive(c(input$start_annotation), {
               need(nrow(diff_t)>0,"The number of differential genes was 0")
             )
           }}
-
+        if(nrow(diff_t) > 300){
+          diff_t %<>% arrange(p_val_adj)
+          diff_t <- diff_t[1:300,]
+        }
         genename=as.character(unique(diff_t$gene))
         data<-data.frame(gene=genename) %>%
           left_join(transidenti,by=c("gene"="gene"))
@@ -439,7 +486,7 @@ transannotationdata<-eventReactive(c(input$start_annotation), {
         print("transannotationdata start")
         transidenti<-transidenti()
         spatial_pattern_ionlist<-spatial_pattern_ionlist()
-
+        
         gene<-spatial_pattern_ionlist[[2]] 
         validate(
           need(length(gene)>0,"The number of pattern-specific genes was 0")
@@ -448,9 +495,9 @@ transannotationdata<-eventReactive(c(input$start_annotation), {
         data<-data.frame(gene=genename) %>%
           left_join(transidenti,by=c("gene"="gene"))
         transannotationdata <- data[!is.na(data$KEGG.ID), ]
-
+        
         print("transannotationdata done")
-
+        
         return(transannotationdata)
         
       })
@@ -459,172 +506,197 @@ transannotationdata<-eventReactive(c(input$start_annotation), {
   
 })
 
-enrichmentdata<-eventReactive(c(input$start_annotation), {
-  req(transannotationdata(),metabannotationdata(),enrichmentdatabase())
+#' @title Run Pathway annotation Analysis
+#' @description Performs KEGG pathway annotation analysis for both Metabolomics and Transcriptomics.
+#' Uses the `run_annotation_count` function (likely hypergeometric test or count-based) against the loaded species database.
+#' @return A list containing annotation results for Metabolomics (1) and Transcriptomics (2).
+annotation_results<-eventReactive(c(input$start_annotation), {
+  req(transannotationdata(),metabannotationdata(),annotation_database())
   if(nrow(transannotationdata())>0 && nrow(metabannotationdata())>0){
     withProgress(message = "Processing data...",value=0.8,{
-      print("enrichmentdata start")
-      source("./source/Pathway/enrich.R")
+      print("annotation_results start")
+      source("./source/Pathway/annotation_stats.R")
       metabannotationdata<-metabannotationdata()
       transannotationdata<-transannotationdata()
-      enrichmentdatabase<-enrichmentdatabase()
+      annotation_database<-annotation_database()
       KEGG.ID_m<-data.frame(node=metabannotationdata$KEGG.ID,KEGG.ID=metabannotationdata$KEGG.ID)
       KEGG.ID_t<-data.frame(node=transannotationdata$KEGG.ID,KEGG.ID=transannotationdata$KEGG.ID)
-      metabdatabse<-enrichmentdatabase[[1]]
-      transdatabse<-enrichmentdatabase[[2]]
-      result_m<-run_enrich(selectCid_data=KEGG.ID_m, database=metabdatabse,omics_type="metab")
-      result_t<-run_enrich(selectCid_data=KEGG.ID_t, database=transdatabse,omics_type="trans")
-      enrichmentdata<-list(result_m,result_t)
-      print("enrichmentdata done")
-      return(enrichmentdata)
+      metabdatabse<-annotation_database[[1]]
+      transdatabse<-annotation_database[[2]]
+      result_m<-run_annotation_count(selectCid_data=KEGG.ID_m, database=metabdatabse,omics_type="metab")
+      result_t<-run_annotation_count(selectCid_data=KEGG.ID_t, database=transdatabse,omics_type="trans")
+      annotation_results<-list(result_m,result_t)
+      print("annotation_results done")
+      return(annotation_results)
     })
   }
 })
 
 
-bubblediagram_data<-eventReactive(c(input$start_annotation), {
-  req(enrichmentdata())
+#' @title Prepare Dot Plot Data
+#' @description Processes annotation results for visualization.
+#' Categorizes pathways into:
+#' 1. Shared (Gene-Metabolite co-annotated).
+#' 2. Metabolite-only.
+#' 3. Gene-only.
+#' Selects top 20 pathways for each category.
+#' @return A list containing processed plot data, combined annotation table, and pathway category lists.
+dotplot_data<-eventReactive(c(input$start_annotation), {
+  req(annotation_results())
   withProgress(message = "Processing data...",value=0.8,{
-    print("bubblediagram_data start")
-    enrichmentdata<-enrichmentdata()
-    enrichmentdata_m<-enrichmentdata[[1]]
-    enrichmentdata_t<-enrichmentdata[[2]]
-    if(nrow(enrichmentdata_m) > 0 & nrow(enrichmentdata_t) > 0){
-      enrich_metab<-enrichmentdata_m %>%
-        arrange(Pvalue)
-      enrich_ko<-enrichmentdata_t %>%
-        arrange(Pvalue)
-      enrich_ko$Types<- "Gene"
-      enrich_metab$Types<- "Metabolite"
-      allenrich<- rbind(enrich_metab,enrich_ko)
-
-      same_path<- intersect(enrich_metab$Pathway,enrich_ko$Pathway)
-      unique_metab <- setdiff(enrich_metab$Pathway, enrich_ko$Pathway)
-      unique_ko <- setdiff(enrich_ko$Pathway, enrich_metab$Pathway)
+    print("dotplot_data start")
+    annotation_results<-annotation_results()
+    annotation_m<-annotation_results[[1]]
+    annotation_t<-annotation_results[[2]]
+    if(nrow(annotation_m) > 0 & nrow(annotation_t) > 0){
+      annot_metab<-annotation_m %>%
+        arrange(desc(Count))
+      annot_ko<-annotation_t %>%
+        arrange(desc(Count))
+      annot_ko$Types<- "Gene"
+      annot_metab$Types<- "Metabolite"
+      all_annot<- rbind(annot_metab,annot_ko)
+      
+      same_path<- intersect(annot_metab$Pathway,annot_ko$Pathway)
+      unique_metab <- setdiff(annot_metab$Pathway, annot_ko$Pathway)
+      unique_ko <- setdiff(annot_ko$Pathway, annot_metab$Pathway)
       maplist<-list(same_path=same_path,unique_metab=unique_metab,unique_ko=unique_ko)
-     enrichprocess<-function(pathtype){
+      process_annot<-function(pathtype){
         topnumber=20
-        enrich_metab<- enrich_metab[which(enrich_metab$Pathway %in% pathtype),]
-
-        if(nrow(enrich_metab) > topnumber){
-          enrich_metab <- enrich_metab[1:topnumber,]
+        annot_metab<- annot_metab[which(annot_metab$Pathway %in% pathtype),]
+        if(nrow(annot_metab) > topnumber){
+          annot_metab <- annot_metab[1:topnumber,]
         }else{
-          enrich_metab <- enrich_metab
+          annot_metab <- annot_metab
         }
-        enrich_ko<- enrich_ko[which(enrich_ko$PathwayID %in% enrich_metab$PathwayID),]
-        plotdata<- rbind(enrich_metab,enrich_ko) 
+        annot_ko<- annot_ko[which(annot_ko$PathwayID %in% annot_metab$PathwayID),]
+        plotdata<- rbind(annot_metab,annot_ko) 
         plotdata <- plotdata[complete.cases(plotdata), ]
         return(plotdata)
       }
-     plotdata<- list(enrichprocess(same_path),enrichprocess(unique_metab),enrichprocess(unique_ko))
-     bubblediagram_data<-list(plotdata,allenrich,maplist)
+      plotdata<- list(process_annot(same_path),process_annot(unique_metab),process_annot(unique_ko))
+      dotplot_data<-list(plotdata,all_annot,maplist)
       
-        return(bubblediagram_data)
-        print("bubblediagram_data done")
-
+      return(dotplot_data)
+      print("dotplot_data done")
+      
       
     }else{
-      showNotification("The enrichment table is empty.")
+      showNotification("The annotation table is empty.")
     }
   })
-  })
+})
 
 #table--------------------------------
 
-  output$annotation_info <- renderTable({
-    bubblediagram_data<-bubblediagram_data()
-    data <- bubblediagram_data[[2]]
-    if(nrow(data)>0){
-      data.frame(number_of_annotated_pathways=length(unique(data$Pathway)),
-                 RichFactor_max=max(data$RichFactor),
-                 RichFactor_min=min(data$RichFactor))
-    }
-
-
-    
-  })
+#' @title Display Annotation Statistics
+#' @description Renders a summary table showing the number of annotated pathways and the range of feature counts.
+output$annotation_info <- renderTable({
+  dotplot_data<-dotplot_data()
+  data <- dotplot_data[[2]]
+  if(nrow(data)>0){
+    data.frame(number_of_annotated_pathways=length(unique(data$Pathway)),
+               Count_max=max(data$Count),
+               Count_min=min(data$Count))
+  }
+  
+  
+  
+})
 
 ##annotation plot
+#' @title Prepare Pathway Map Data
+#' @description Prepares data for coloring the KEGG pathway map nodes.
+#' Identifies which metabolites and genes from the dataset are present in the selected pathway.
+#' extracting their Fold Change values (if differential) or presence status (if pattern-based).
+#' @return A list containing mapping vectors (ID -> Value) and details of mapped features.
 annotation_plotdata<-eventReactive(c(input$start_annotation,input$Pathway_select), {
-  req(bubblediagram_data())
+  req(dotplot_data())
   req(input$Pathway_select)
   withProgress(message = "Processing data...",value=0.8,{
     print("annotation_plotdata start")
-  Pathwaydata<-bubblediagram_data()[[2]]
-  metabannotationdata<-metabannotationdata()
-  transannotationdata<-transannotationdata()
-  if (!is.null(input$Pathway_select) && input$Pathway_select!="") {
-  Pathwayselect<-input$Pathway_select
-  }else{
-    Pathwayselect<-sort(Pathwaydata$Pathway)[1]
-  }
-  Pathwaydata_m<-Pathwaydata %>%
-    filter(Pathway %in% Pathwayselect)  %>%
-    filter(Types=="Metabolite")
-  Pathwaydata_t<-Pathwaydata %>%
-    filter(Pathway %in% Pathwayselect)  %>%
-    filter(Types=="Gene")
 
-  if(nrow(Pathwaydata_t)>0){
-    pathway_id<-Pathwaydata_t$PathwayID
-
-    keggt<-strsplit(Pathwaydata_t$KEGG.IDs, "\\+")[[1]]
-    t_f<-transannotationdata %>%
-      filter(KEGG.ID %in% keggt)
-    t_gene<-t_f$gene
-  }else{
-    t_f<-NA
-    t_gene<-NA
-  }
- 
-  if(nrow(Pathwaydata_m)>0){
-    pathway_id<-Pathwaydata_m$PathwayID
-
-    keggm<-strsplit(Pathwaydata_m$KEGG.IDs, "\\+")[[1]]
-    m_f<-metabannotationdata %>%
-      filter(KEGG.ID %in% keggm)
-    m_mz<-m_f$metabolite
-  }else{
-    m_f<-NA
-    m_mz<-NA
-  }
-
-  if(input$functional_data=="Differential features"){
-    if(nrow(Pathwaydata_m)>0){
-    m_fplot<- setNames(m_f$`log2(Fold Change)`, m_f$KEGG.ID)
+    Pathwaydata<-dotplot_data()[[2]]
+    metabannotationdata<-metabannotationdata()
+    transannotationdata<-transannotationdata()
+    if (!is.null(input$Pathway_select) && input$Pathway_select!="") {
+      Pathwayselect<-input$Pathway_select
     }else{
-    m_fplot<-NA
+      Pathwayselect<-sort(Pathwaydata$Pathway)[1]
     }
+    Pathwaydata_m<-Pathwaydata %>%
+      filter(Pathway %in% Pathwayselect)  %>%
+      filter(Types=="Metabolite")
+    Pathwaydata_t<-Pathwaydata %>%
+      filter(Pathway %in% Pathwayselect)  %>%
+      filter(Types=="Gene")
+    
     if(nrow(Pathwaydata_t)>0){
-    t_fplot<- setNames(t_f$`log2(Fold Change)`, t_f$KEGG.ID) 
+      pathway_id<-Pathwaydata_t$PathwayID
+      
+      keggt<-strsplit(as.character(Pathwaydata_t$`KEGG IDs`), "\\+")[[1]]
+      t_f<-transannotationdata %>%
+        filter(KEGG.ID %in% keggt)
+      t_gene<-t_f$gene
     }else{
-      t_fplot<-NA
+      t_f<-NA
+      t_gene<-NA
     }
-  }else{
+    
     if(nrow(Pathwaydata_m)>0){
-
-    m_fplot<- setNames(rep(1,length(m_f$KEGG.ID)), m_f$KEGG.ID)
+      pathway_id<-Pathwaydata_m$PathwayID
+      
+      keggm<-strsplit(as.character(Pathwaydata_m$`KEGG IDs`), "\\+")[[1]]
+      m_f<-metabannotationdata %>%
+        filter(KEGG.ID %in% keggm)
+      m_mz<-m_f$metabolite
     }else{
-      m_fplot<-NA
+      m_f<-NA
+      m_mz<-NA
     }
-    if(nrow(Pathwaydata_t)>0){
-
-    t_fplot<- setNames(rep(1,length(t_f$KEGG.ID)), t_f$KEGG.ID) 
+    
+    if(input$functional_data=="Differential features"){
+      if(nrow(Pathwaydata_m)>0){
+        m_fplot<- setNames(m_f$`log2(Fold Change)`, m_f$KEGG.ID)
+      }else{
+        m_fplot<-NA
+      }
+      if(nrow(Pathwaydata_t)>0){
+        t_fplot<- setNames(t_f$`log2(Fold Change)`, t_f$KEGG.ID) 
+      }else{
+        t_fplot<-NA
+      }
     }else{
-      t_fplot<-NA
+      if(nrow(Pathwaydata_m)>0){
+        
+        m_fplot<- setNames(rep(1,length(m_f$KEGG.ID)), m_f$KEGG.ID)
+      }else{
+        m_fplot<-NA
+      }
+      if(nrow(Pathwaydata_t)>0){
+        
+        t_fplot<- setNames(rep(1,length(t_f$KEGG.ID)), t_f$KEGG.ID) 
+      }else{
+        t_fplot<-NA
+      }
     }
-  }
-
-
-  annotation_plotdata<-list(m_fplot,t_fplot,m_f,t_f,pathway_id,m_mz,t_gene)
-  print("annotation_plotdata done")
-  return(annotation_plotdata)
+    
+    
+    annotation_plotdata<-list(m_fplot,t_fplot,m_f,t_f,pathway_id,m_mz,t_gene)
+    print("annotation_plotdata done")
+    return(annotation_plotdata)
   })
-
+  
 })
 
 temp_pathwayannotation_file <- reactiveVal(NULL)
 
+#' @title Generate KEGG Pathway Map
+#' @description Draws the KEGG pathway map with colored nodes.
+#' 1. Loads the base pathway image and coordinate configuration (.conf).
+#' 2. Draws circles for Metabolites (colored by FC: Orange=Up, Blue=Down).
+#' 3. Draws rectangles for Genes (colored by FC: Red=Up, Green=Down).
+#' @return The composite image object (magick image).
 annotation_plotsave <- eventReactive(c(input$start_annotation, input$Pathway_select), {
   req(annotation_plotdata())
   req(input$Pathway_select)
@@ -632,7 +704,7 @@ annotation_plotsave <- eventReactive(c(input$start_annotation, input$Pathway_sel
   
   withProgress(message = "Processing data...", value = 0.8, {
     annotation_plotdata <- annotation_plotdata()
-
+    
     m_fplot <- annotation_plotdata[[1]]
     t_fplot <- annotation_plotdata[[2]]
     pathway_id <- annotation_plotdata[[5]]
@@ -656,10 +728,9 @@ annotation_plotsave <- eventReactive(c(input$start_annotation, input$Pathway_sel
       dim <- image_info(img)
       width <- dim$width
       height <- dim$height
-      
-      # 创建单个画布用于所有绘图
+
       canvas <- image_blank(width, height, "none")
-      # 打开绘图设备并确保最后关闭
+
       img_draw <- image_draw(canvas)
       on.exit(dev.off(), add = TRUE)
       
@@ -669,8 +740,7 @@ annotation_plotsave <- eventReactive(c(input$start_annotation, input$Pathway_sel
         y_circle <- y + r * sin(angle)
         lines(x_circle, y_circle, col = border, lty = lty, lwd = lwd)
       }
-      
-      # 在同一个设备上绘制所有图形
+
       for (line in lines) {
         line <- trimws(line)
         
@@ -713,8 +783,7 @@ annotation_plotsave <- eventReactive(c(input$start_annotation, input$Pathway_sel
           }
         }
       }
-      
-      # 将绘制好的画布与原始图像合成
+
       img <- image_composite(img, img_draw, offset = "+0+0")
       
       temp_dir <- tempdir()
@@ -728,6 +797,8 @@ annotation_plotsave <- eventReactive(c(input$start_annotation, input$Pathway_sel
   })
 })
 
+#' @title Render KEGG Pathway Map
+#' @description Displays the generated KEGG pathway image in the UI.
 observeEvent(c(input$start_annotation, input$Pathway_select), {
   output$pathway_annotation_plot <- renderImage({
     req(annotation_plotsave())
@@ -738,6 +809,9 @@ observeEvent(c(input$start_annotation, input$Pathway_select), {
 
 
 
+#' @title Display Mapped Metabolites Table
+#' @description Shows a table of metabolites mapped to the currently selected pathway,
+#' including their statistics (P-value, FC) if available.
 output$annotation_namemap_info_m <- renderTable({
   annotation_plotdata<-annotation_plotdata()
   req(annotation_plotdata)
@@ -767,6 +841,8 @@ output$annotation_namemap_info_m <- renderTable({
   }
   
 })
+#' @title Display Mapped Genes Table
+#' @description Shows a table of genes mapped to the currently selected pathway.
 output$annotation_namemap_info_t <- renderTable({
   annotation_plotdata<-annotation_plotdata()
   req(annotation_plotdata)
@@ -791,50 +867,55 @@ output$annotation_namemap_info_t <- renderTable({
   }
 })
 
+#' @title Prepare Feature Spatial Data
+#' @description Extracts spatial intensity data for a specific metabolite or gene selected from the pathway map.
+#' Used to verify the spatial distribution of interesting features found in the pathway.
 pathway_annotation_ion_data<- eventReactive(c(input$start_annotation,input$Pathway_select,input$Pathway_m_select,input$Pathway_t_select), {#
   req(data_rds())
   req(annotation_plotdata())
   withProgress(message = "Processing data...",value=0.8,{
-  data_rds <- data_rds()
-  #m
-  data_m=data_rds[[1]]
-  plotdata_m <- data_m@meta.data
-  if(!is.null(input$Pathway_m_select) && input$Pathway_m_select!=""){
-    ion <- as.character(input$Pathway_m_select)
-  }else{
-    ion <- NA
-  }
-  if(!is.na(ion)){
-    plotdata_m$intensity<- data_m@assays$Spatial$counts[ion,]
-    plotdata_m$norm_intensity <-100*(plotdata_m$intensity)/max(plotdata_m$intensity)
+    data_rds <- data_rds()
+    #m
+    data_m=data_rds[[1]]
+    plotdata_m <- data_m@meta.data
+    if(!is.null(input$Pathway_m_select) && input$Pathway_m_select!=""){
+      ion <- as.character(input$Pathway_m_select)
+    }else{
+      ion <- NA
+    }
+    if(!is.na(ion)){
+      plotdata_m$intensity<- data_m@assays$Spatial$counts[ion,]
+      plotdata_m$norm_intensity <-100*(plotdata_m$intensity)/max(plotdata_m$intensity)
     }else{
       plotdata_m<-NA
     }
-  
-  ####
-  data_t=data_rds[[2]]
-  plotdata_t <- data_t@meta.data
-  if(!is.null(input$Pathway_t_select) && input$Pathway_t_select!=""){
-    ion_t <- as.character(input$Pathway_t_select)
-  }else{
-    ion_t <-NA 
-  }
-
-  if(!is.na(ion_t)){
-    plotdata_t$intensity<- data_t@assays$Spatial$counts[ion_t,]
-    plotdata_t$norm_intensity <-100*(plotdata_t$intensity)/max(plotdata_t$intensity)
-  }else{
-    plotdata_t<-NA
-  }
-  
-  if (exists("plotdata_t") && exists("plotdata_m")) {
-    pathway_annotation_ion_data<-list(plotdata_m,plotdata_t)
-    return(pathway_annotation_ion_data)
-  }else{
-    return(NULL)
-  }
+    
+    ####
+    data_t=data_rds[[2]]
+    plotdata_t <- data_t@meta.data
+    if(!is.null(input$Pathway_t_select) && input$Pathway_t_select!=""){
+      ion_t <- as.character(input$Pathway_t_select)
+    }else{
+      ion_t <-NA 
+    }
+    
+    if(!is.na(ion_t)){
+      plotdata_t$intensity<- data_t@assays$Spatial$counts[ion_t,]
+      plotdata_t$norm_intensity <-100*(plotdata_t$intensity)/max(plotdata_t$intensity)
+    }else{
+      plotdata_t<-NA
+    }
+    
+    if (exists("plotdata_t") && exists("plotdata_m")) {
+      pathway_annotation_ion_data<-list(plotdata_m,plotdata_t)
+      return(pathway_annotation_ion_data)
+    }else{
+      return(NULL)
+    }
   })
 })
+#' @title Generate Metabolite Spatial Plot (Pathway)
+#' @description Creates a spatial heatmap for the selected pathway metabolite.
 pathway_annotation_m_plot_save <- eventReactive(c(input$start_annotation,input$Pathway_select,input$Pathway_m_select), {#
   req(pathway_annotation_ion_data()[[1]])
   
@@ -842,7 +923,7 @@ pathway_annotation_m_plot_save <- eventReactive(c(input$start_annotation,input$P
   data<-plotdatalist[[1]]
   if(any(!is.na(data))){
     heatmap_Palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')))
-
+    
     p <- ggplot(data, aes(x = x, y = y)) +
       geom_point(aes(color = norm_intensity), size = 1) +
       scale_color_gradientn(colours = heatmap_Palette(100)) +
@@ -867,6 +948,8 @@ pathway_annotation_m_plot_save <- eventReactive(c(input$start_annotation,input$P
   return(p)
   
 })
+#' @title Generate Gene Spatial Plot (Pathway)
+#' @description Creates a spatial heatmap for the selected pathway gene.
 pathway_annotation_t_plot_save <- eventReactive(c(input$start_annotation,input$Pathway_select,input$Pathway_t_select), {#
   req(pathway_annotation_ion_data()[[2]])
   
@@ -897,59 +980,72 @@ pathway_annotation_t_plot_save <- eventReactive(c(input$start_annotation,input$P
   return(p)
 })
 
-  output$pathway_annotation_m_plot <- renderPlot({
-    if(any(!is.null(pathway_annotation_m_plot_save()))){
+#' @title Render Metabolite Spatial Plot (Pathway)
+#' @description Displays the spatial plot for the selected metabolite.
+output$pathway_annotation_m_plot <- renderPlot({
+  if(any(!is.null(pathway_annotation_m_plot_save()))){
     withProgress(message = "Plotting...",value=0.8,{
       pathway_annotation_m_plot_save()
     })
-    }else{
-      NULL
-    }
-  })
+  }else{
+    NULL
+  }
+})
 
-  output$pathway_annotation_t_plot <- renderPlot({
-    if(any(!is.null(pathway_annotation_t_plot_save()))){
+#' @title Render Gene Spatial Plot (Pathway)
+#' @description Displays the spatial plot for the selected gene.
+output$pathway_annotation_t_plot <- renderPlot({
+  if(any(!is.null(pathway_annotation_t_plot_save()))){
     withProgress(message = "Plotting...",value=0.8,{
       pathway_annotation_t_plot_save()
     })
-    }else{
-      NULL
-    }
-  })
+  }else{
+    NULL
+  }
+})
 
 
-##bubblediagram
-  bubblediagram_data_save<-eventReactive(c(input$start_annotation,input$bubble_pathway_types), {
-    req(input$bubble_pathway_types)
-    req(bubblediagram_data()[[1]])
-    
-    if(input$bubble_pathway_types=="Gene-metabolite co-enriched pathways"){
-      df<-bubblediagram_data()[[1]][[1]]
-    }else if(input$bubble_pathway_types=="Metabolite-enriched pathways"){
-      df<-bubblediagram_data()[[1]][[2]]
-    }else if(input$bubble_pathway_types=="Gene-enriched pathways"){
-      df<-bubblediagram_data()[[1]][[3]]
-    }else{
-      df<-NULL
-      message("No enrichment results!")
-    }
-    return(df)
-  })
-bubblediagram_plot_save<-eventReactive(c(input$start_annotation,input$bubble_pathway_types), {
-  req(bubblediagram_data_save())
-  df<-bubblediagram_data_save()
-  source("./source/Pathway/BubbleDiagram.R")
+##dotplot
+#' @title Filter Dot Plot Data
+#' @description Selects the subset of pathway results (Co-annotated, Metab-only, or Gene-only)
+#' to be displayed in the dot plot based on user choice.
+dotplot_data_save<-eventReactive(c(input$start_annotation,input$bubble_pathway_types), {
+  req(input$bubble_pathway_types)
+  req(dotplot_data()[[1]])
+  
+  if(input$bubble_pathway_types=="Gene-metabolite co-annotated pathways"){
+    df<-dotplot_data()[[1]][[1]]
+  }else if(input$bubble_pathway_types=="Metabolite-annotated pathways"){
+    df<-dotplot_data()[[1]][[2]]
+  }else if(input$bubble_pathway_types=="Gene-annotated pathways"){
+    df<-dotplot_data()[[1]][[3]]
+  }else{
+    df<-NULL
+    message("No annotation results!")
+  }
+  return(df)
+})
+#' @title Generate Dot Plot
+#' @description Creates the pathway annotation dot plot (bubble chart) using `AnnotationDotPlot`.
+#' Visualizes Pathway Name vs Rich Factor/Count, sized by Count, colored by P-value.
+dotplot_save<-eventReactive(c(input$start_annotation,input$bubble_pathway_types), {
+  req(dotplot_data_save())
+  df<-dotplot_data_save()
+  
+  source("./source/Pathway/AnnotationDotPlot.R")
   if(any(!is.na(df))){
-
-    plot<-BubbleDiagram(df)
+    
+    plot<-AnnotationDotPlot(df)
   }else{
     plot<-NULL
   }
   return(plot)
 })
+#' @title Render Dot Plot
+#' @description Displays the annotation dot plot in the UI.
 observeEvent(c(input$start_annotation,input$bubble_pathway_types),{
-  req(bubblediagram_plot_save())
-  output$bubblediagram_run <- renderPlot({
+  req(dotplot_save())
+  output$dotplot_run <- renderPlot({
     withProgress(message = "Plotting...",value=0.8,{
       devs <- dev.list()
       current_dev <- dev.cur()
@@ -960,67 +1056,75 @@ observeEvent(c(input$start_annotation,input$bubble_pathway_types),{
           }, error = function(e) {})
         }
       }
-      plot_obj<- bubblediagram_plot_save()
-
+      plot_obj<- dotplot_save()
+      
       grid::grid.newpage()
       grid::grid.draw(plot_obj)
-
+      
     })
   })
 })
 
 #overlap
 
+#' @title Prepare Venn Diagram Data
+#' @description Extracts pathway lists from Metabolomics and Transcriptomics results
+#' to visualize the overlap of annotated pathways.
 vennplot_data<-eventReactive(c(input$start_annotation), {
-  req(enrichmentdata())
-  enrichmentdata<-enrichmentdata()
-  enrichmentdata_m<-enrichmentdata[[1]]
-  enrichmentdata_t<-enrichmentdata[[2]]
-  venn_list <- list(Metabolite = enrichmentdata_m$Pathway, Gene = enrichmentdata_t$Pathway)
+  req(annotation_results())
+  annotation_results<-annotation_results()
+  annotation_m<-annotation_results[[1]]
+  annotation_t<-annotation_results[[2]]
+  venn_list <- list(Metabolite = annotation_m$Pathway, Gene = annotation_t$Pathway)
   vennplot_data<-venn_list
   return(vennplot_data)
-  })
+})
 temp_venn_plot_file <- reactiveVal(NULL)
-  output$venn_plot <- renderPlot({
-    req(vennplot_data())
-    vennplot_data<-vennplot_data()
-
-    withProgress(message = "Plotting...",value=0.8,{
-      temp_file <- tempfile(fileext = ".png")
- 
-     devs <- dev.list()
-     current_dev <- dev.cur()
-     if (!is.null(devs) && length(devs) > 1) {
-       for (d in names(devs)[names(devs) != names(current_dev)]) {
-         tryCatch({
-           dev.off(dev.list()[[d]])
-         }, error = function(e) {})
-       }
-     }
-
-      p<- venn.diagram(vennplot_data, filename = temp_file,
-                                height = 600, width = 600,
-                                resolution =300,
-                                imagetype="png",
-                                col = "transparent",
-                                fill = c('yellow', 'skyblue'),
-                                alpha = 0.5, cex = 0.5,
-                                fontfamily = "serif",
-                                fontface = "bold",
-                                cat.cex = 0.5,cat.pos = 0,
-                                cat.fontfamily = "serif",
-                                rotation.degree = 0)
-
-      print("venn done")
-       temp_venn_plot_file(temp_file)
-       grid::grid.raster(png::readPNG(temp_file))
-
-    })
-  })
+#' @title Render Venn Diagram
+#' @description Displays the Venn diagram showing shared and unique pathways between omics.
+output$venn_plot <- renderPlot({
+  req(vennplot_data())
+  vennplot_data<-vennplot_data()
   
+  withProgress(message = "Plotting...",value=0.8,{
+    temp_file <- tempfile(fileext = ".png")
+    
+    devs <- dev.list()
+    current_dev <- dev.cur()
+    if (!is.null(devs) && length(devs) > 1) {
+      for (d in names(devs)[names(devs) != names(current_dev)]) {
+        tryCatch({
+          dev.off(dev.list()[[d]])
+        }, error = function(e) {})
+      }
+    }
+    
+    p<- venn.diagram(vennplot_data, filename = temp_file,
+                     height = 600, width = 600,
+                     resolution =300,
+                     imagetype="png",
+                     col = "transparent",
+                     fill = c('yellow', 'skyblue'),
+                     alpha = 0.5, cex = 0.5,
+                     fontfamily = "serif",
+                     fontface = "bold",
+                     cat.cex = 0.5,cat.pos = 0,
+                     cat.fontfamily = "serif",
+                     rotation.degree = 0)
+    
+    print("venn done")
+    temp_venn_plot_file(temp_file)
+    grid::grid.raster(png::readPNG(temp_file))
+    
+  })
+})
 
 
 
+
+#' @title Dynamic File Upload UI
+#' @description Renders file input buttons for custom annotation tables (Metabolomics/Transcriptomics)
+#' and download buttons for demo data.
 output$annotationfile_button_container <- renderUI({
   if (input$annotation_select=="upload your annotation data") {
     tagList(
@@ -1032,13 +1136,15 @@ output$annotationfile_button_container <- renderUI({
       fileInput("transannotationfile", "Upload the spatial transcriptomics annotation file",
                 accept = ".txt")
     )
-
+    
   }else {
     NULL
   }
   
 })
 
+#' @title Update Gene Selector
+#' @description Populates the gene selection dropdown with genes present in the currently displayed pathway.
 observeEvent(annotation_plotdata(), {
   annotation_plotdata<-annotation_plotdata()
   t_gene<-as.character(annotation_plotdata[[7]])
@@ -1061,10 +1167,12 @@ observeEvent(annotation_plotdata(), {
       closeAfterSelect = TRUE      
     )
   )
-
+  
 })
+#' @title Update Metabolite Selector
+#' @description Populates the metabolite selection dropdown with metabolites present in the currently displayed pathway.
 observeEvent(annotation_plotdata(), {
-
+  
   annotation_plotdata<-annotation_plotdata()
   m_mz<-as.character(annotation_plotdata[[6]])
   updateSelectizeInput(
@@ -1086,78 +1194,86 @@ observeEvent(annotation_plotdata(), {
       closeAfterSelect = TRUE      
     )
   )
-
+  
 })
 
 
+#' @title Dynamic Analysis Type UI
+#' @description Allows user to choose between "Differential features" and "Pattern-specific features"
+#' based on which upstream analyses have been completed.
 output$functional_data_button_container <- renderUI({
   if(!is.null(diff_omics()) && !is.null(spatial_pattern_ionlist())){
-   selectizeInput("functional_data", "Select data for functional association analysis:", choices = c("Differential features","Pattern-specific features"), selected = "Differential features")
-}else if(!is.null(diff_omics()) && is.null(spatial_pattern_ionlist())){
-  selectizeInput("functional_data", "Select data for functional association analysis:", choices = c("Differential features"), selected = "Differential features")
-  
-}else if(is.null(diff_omics()) && !is.null(spatial_pattern_ionlist())){
-  selectizeInput("functional_data", "Select data for functional association analysis:", choices = c("Pattern-specific features"), selected = "Pattern-specific features")
-  
-}else{
-  p("Note: Please complete differential analysis or spatial pattern analysis first.")
-}
+    selectizeInput("functional_data", "Select data for functional association analysis:", choices = c("Differential features","Pattern-specific features"), selected = "Differential features")
+  }else if(!is.null(diff_omics()) && is.null(spatial_pattern_ionlist())){
+    selectizeInput("functional_data", "Select data for functional association analysis:", choices = c("Differential features"), selected = "Differential features")
+    
+  }else if(is.null(diff_omics()) && !is.null(spatial_pattern_ionlist())){
+    selectizeInput("functional_data", "Select data for functional association analysis:", choices = c("Pattern-specific features"), selected = "Pattern-specific features")
+    
+  }else{
+    p("Note: Please complete differential analysis or spatial pattern analysis first.")
+  }
 })
 ####pathway type
+#' @title Update Pathway Selector
+#' @description Updates the list of available pathways for the map view based on the selected category (Shared, Metab-only, Gene-only).
 observeEvent(c(input$start_annotation,input$Pathway_types), {
-  bubblediagram_data<-bubblediagram_data()
-  maplist<-bubblediagram_data[[3]]
+  dotplot_data<-dotplot_data()
+  maplist<-dotplot_data[[3]]
   req(maplist)
   str(maplist)
-    if(input$Pathway_types=="gm"){
-      Pathway<-maplist$same_path
-    }else if(input$Pathway_types=="onlym"){
-      Pathway<-maplist$unique_metab
-    }else{
-      Pathway<-maplist$unique_ko
-    }
+  if(input$Pathway_types=="gm"){
+    Pathway<-maplist$same_path
+  }else if(input$Pathway_types=="onlym"){
+    Pathway<-maplist$unique_metab
+  }else{
+    Pathway<-maplist$unique_ko
+  }
   Pathway<-sort(Pathway)
   updateSelectInput(session = getDefaultReactiveDomain(), "Pathway_select", choices = Pathway, 
-                      selected = if (length(Pathway) > 0) Pathway[1] else NULL)
-
+                    selected = if (length(Pathway) > 0) Pathway[1] else NULL)
+  
   
 })
 
 
+#' @title Update Bubble Plot Type
+#' @description Updates the available bubble plot categories based on the results (e.g., if only metabolites annotated, only show that option).
 observeEvent(c(input$start_annotation), {
-  bubblediagram_data<-bubblediagram_data()
-  datasets<-bubblediagram_data[[1]]
-  namec=c("Gene-metabolite co-enriched pathways","Metabolite-enriched pathways","Gene-enriched pathways")
+  dotplot_data<-dotplot_data()
+  datasets<-dotplot_data[[1]]
+  namec=c("Gene-metabolite co-annotated pathways","Metabolite-annotated pathways","Gene-annotated pathways")
   x <- character(0)
   for (i in 1:3) {
     dataset <- datasets[[i]]
     name<-namec[i]
-
+    
     if (!is.null(dataset) && 
         any(!is.na(dataset))) {
-
-            if (nrow(dataset) > 0 && ncol(dataset) > 0) {
-              x <- c(x, namec[i])
-            }
-        }
+      
+      if (nrow(dataset) > 0 && ncol(dataset) > 0) {
+        x <- c(x, namec[i])
+      }
+    }
   }
   updateSelectInput(session = getDefaultReactiveDomain(), "bubble_pathway_types", choices = x, 
                     selected = if (length(x) > 0) x[1] else NULL)
-
+  
 })
 
+#' @title Dynamic Direction Filter UI
+#' @description Renders options to filter differential features by direction (Up/Down/Both).
 output$functional_diffdata_button_container <- renderUI({
   if(!is.null(input$functional_data)){
     if(input$functional_data=="Differential features"){
       selectizeInput("functional_diffdata", "Select up/down-regulated differential features for analysis",
                      choices = c("Up-regulated features","Down-regulated features","up-regulated and down-regulated features"), selected = "up-regulated and down-regulated features")
-
+      
     }else{
-NULL
+      NULL
     }
   }
-
+  
 })
-
 
 

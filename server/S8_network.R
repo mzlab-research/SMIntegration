@@ -1,14 +1,23 @@
-########download
+# ==============================================================================
+# S8_network.R
+# Server logic for Step 5: Network Analysis
+# Builds correlation networks between DEGs and DAMs for treatment vs control groups.
+# ==============================================================================
 
+# ------------------------------------------------------------------------------
+# Download Handlers
+# ------------------------------------------------------------------------------
+
+#' @title Download Treatment Group Network Data
 output$download_cornetwork_data1 <- downloadHandler(
   filename = function() {
-
     paste0("treatment_cornetwork_data.zip")
   },
   content = function(file) {
     withProgress(message = 'Downloading files...', value = 0.7, {
       top_corrResultfilter=top_corrResultfilter()
       omics_corrResult<-omics_corrResult1()
+      # Export correlation results, nodes, and edges
       cornetwork_data<-list(omics_corrResult[[1]],top_corrResultfilter[[3]],top_corrResultfilter[[1]])
       tempdir <- setwd(tempdir())
       on.exit(setwd(tempdir))
@@ -20,6 +29,8 @@ output$download_cornetwork_data1 <- downloadHandler(
       zip(file,fi)
     })
   })
+
+#' @title Download Treatment Group Network Plot
 output$download_cornetwork_plot1 <- downloadHandler(
   filename = function() {
     "treatment_cornetwork_plot.png"
@@ -31,10 +42,9 @@ output$download_cornetwork_plot1 <- downloadHandler(
     })
   })
 
-
+#' @title Download Control Group Network Data
 output$download_cornetwork_data2 <- downloadHandler(
   filename = function() {
-
     paste0("control_cornetwork_data.zip")
   },
   content = function(file) {
@@ -52,6 +62,8 @@ output$download_cornetwork_data2 <- downloadHandler(
       zip(file,fi)
     })
   })
+
+#' @title Download Control Group Network Plot
 output$download_cornetwork_plot2 <- downloadHandler(
   filename = function() {
     "control_cornetwork_plot.png"
@@ -63,6 +75,13 @@ output$download_cornetwork_plot2 <- downloadHandler(
     })
   })
 
+# ------------------------------------------------------------------------------
+# Data Preparation for Network Analysis
+# ------------------------------------------------------------------------------
+
+#' @title Prepare Omics Count Data
+#' @description Merges Metabolomics and Transcriptomics count matrices based on spatial coordinates (x_y).
+#' Used as the basis for correlation analysis.
 omics_count<- eventReactive(c(input$start_diff_analysis), {
   req(data_rds_group())
   withProgress(message = "Processing data...",value=0.8,{
@@ -70,14 +89,18 @@ omics_count<- eventReactive(c(input$start_diff_analysis), {
     data_mrds_group<-data_rds_group[[1]]
     data_trds_group<-data_rds_group[[2]]
     source("./source/main_program/runcount.R")
+    
+    # Extract counts for each modality
     omics_count_m<-runcount(data_mrds_group,"sample")
     omics_count_t<-runcount(data_trds_group,"sample")
+    
+    # Merge by coordinate
     count<-omics_count_m %>% 
       left_join(omics_count_t[, setdiff(colnames(omics_count_t), c("x", "y"))],by=c("x_y"="x_y"))
+    
     countt<-count %>%
       dplyr::select(-x,-y)
     rownames(countt)<-countt$x_y
-    #
     countt<-countt %>%
       dplyr::select(-x_y)
     
@@ -88,6 +111,9 @@ omics_count<- eventReactive(c(input$start_diff_analysis), {
   })
 })
 
+#' @title Prepare Correlation Input Data
+#' @description Filters data to keep only significant differential features (DEGs/DAMs).
+#' Prepares separate matrices for Treatment and Control groups.
 omics_corr_data1<-  reactive({
   req(diff_omics(), omics_count())
   withProgress(message = "Processing data...",value=0.8,{
@@ -95,18 +121,21 @@ omics_corr_data1<-  reactive({
     omics_count<-omics_count()
     samplelist<-samplelist()
     combine_count<-omics_count[[1]]
+    
+    # Filter for significant features
     diff_m<-diff_omics[[1]]
     diff_t<-diff_omics[[2]]
-    t_diff<- diff_t %>%
-      filter(State!="Non-significant")
+    t_diff<- diff_t %>% filter(State!="Non-significant")
     req(nrow(t_diff) > 0)  
-    m_diff<-diff_m %>%
-      filter(State!="Non-significant")
+    m_diff<-diff_m %>% filter(State!="Non-significant")
     req(nrow(m_diff) > 0)  
+    
+    # Clean up metabolites if needed
     if(length(grep("Level",names(m_diff)))>0){
       m_diff<-subset(m_diff,m_diff$Level!="level5")
     }
     req(nrow(m_diff) > 0)  
+    
     groupname<-c("treatment","control")
     source("./source/main_program/runcount.R")
     omics_corr_data<-omics_corr_processing1(m_diff,t_diff,combine_count,samplelist,groupname)
@@ -114,6 +143,8 @@ omics_corr_data1<-  reactive({
   })
 })
 
+#' @title Format Data for Correlation
+#' @description Internal step to structure data for correlation function.
 omics_corr_data_save1<-  reactive({
   req(omics_corr_data1())
   withProgress(message = "Processing data...",value=0.8,{
@@ -130,7 +161,13 @@ omics_corr_data_save1<-  reactive({
   })
 })
 
+# ------------------------------------------------------------------------------
+# Network Analysis Logic
+# ------------------------------------------------------------------------------
 
+#' @title Run Correlation Analysis
+#' @description Computes pairwise correlations (e.g., Spearman) between differential genes and metabolites
+#' separately for Treatment and Control groups.
 omics_corrResult1<- reactive({
   req(omics_corr_data_save1())
   withProgress(message = "Processing data...",value=0.8,{
@@ -151,7 +188,9 @@ omics_corrResult1<- reactive({
   })
 })
 
-
+#' @title Filter Network Edges
+#' @description Filters correlation results based on P-value and Correlation Coefficient thresholds.
+#' Selects top N features to keep the network visualization manageable.
 top_corrResultfilter<- reactive({
   omics_corrResult<-omics_corrResult1()
   req(omics_corrResult)
@@ -165,29 +204,28 @@ top_corrResultfilter<- reactive({
     t_mean=omics_corr_data[[6]]
     t_mean$Class="gene"
     c_mean=rbind(m_mean,t_mean)
+    
+    # Filter Top N features based on significance (p_val_adj)
     topnum=input$topdiffnum
     diff_omics<-diff_omics()
+    diff_m<-diff_omics[[1]] %>% filter(State!="Non-significant") %>% arrange(`p_val_adj`)
+    diff_t<-diff_omics[[2]] %>% filter(State!="Non-significant") %>% arrange(`p_val_adj`)
     
-    diff_m<-diff_omics[[1]] %>%
-      filter(State!="Non-significant") %>%
-      arrange(`p_val_adj`)
-
-    diff_t<-diff_omics[[2]]  %>%
-      filter(State!="Non-significant") %>%
-      arrange(`p_val_adj`)
     if(length(diff_m$metabolite)<topnum || length(diff_t$gene)<topnum){
       topnum=min(c(length(diff_m$metabolite),length(diff_t$gene)))
     }
     topm=as.character(diff_m$metabolite[1:topnum])
     topt=as.character(diff_t$gene[1:topnum])
+    
+    # Filter Edges by Thresholds (R and P)
     Rthreshold<-as.numeric(input$cor_Coefficient1)
     Pthreshold<-as.numeric(input$cor_p_value1)
+    
     caseedge<-caseedge |>
       dplyr::filter(from %in% c(topm,topt)) |>
       dplyr::filter(to %in% c(topm,topt)) |>
       dplyr::filter(abs(cor) > Rthreshold & padj < Pthreshold) |>
       dplyr::arrange(abs(cor),padj)
-    
     
     controledge<-controledge |>
       dplyr::filter(from %in% c(topm,topt)) |>
@@ -195,7 +233,7 @@ top_corrResultfilter<- reactive({
       dplyr::filter(abs(cor) > Rthreshold & padj < Pthreshold) |>
       dplyr::arrange(abs(cor),padj)
     
-
+    # Prepare edge lists for visualization
     source("./source/CorrelationAnalysisFunction/Correlation/net_show.R")
     if(any(!is.na(caseedge))){
       caseedge <-run_compare_edge(caseedge)
@@ -210,6 +248,7 @@ top_corrResultfilter<- reactive({
       showNotification("After filtering, no significant correlations were found in the control group.")
     }
 
+    # Standardize nodes across networks for comparison
     if(any(!is.na(caseedge)) | any(!is.na(controledge))){
       edgeboth<-data.frame(from_to=union(controledge$from_to,caseedge$from_to)) 
       if(any(!is.na(caseedge))){
@@ -242,6 +281,12 @@ top_corrResultfilter<- reactive({
     }
   })
 })
+#' @title Generate Differential Network Plots
+#' @description Creates network visualizations for both the Case (Treatment) and Control groups
+#' based on the filtered correlation results.
+#' Uses 'igraph' to build the networks and a custom `net_show` function for rendering.
+#' Nodes are colored by their normalized mean expression.
+#' @return A list containing two ggplot/igraph plots: one for Case and one for Control.
 diffnet_plotsave <- reactive({
   req(top_corrResultfilter())
   withProgress(message = "Processing data...",value=0.8,{
@@ -249,7 +294,7 @@ diffnet_plotsave <- reactive({
     case_edges <- top_corrResultfilter[[1]]
     control_edges <- top_corrResultfilter[[2]]
     nodes <- top_corrResultfilter[[3]]
-
+    
     source("./source/CorrelationAnalysisFunction/Correlation/net_show.R")
     layout_type<-input$layout_type
     color_type<-"Normalized mean"
@@ -278,16 +323,20 @@ diffnet_plotsave <- reactive({
     }else{
       con_p<-NULL
     }
-
+    
     return(list(case_p,con_p))
   })
 })
+#' @title Render Case Network Plot
+#' @description Displays the correlation network for the Case/Treatment group.
 output$cornetwork_plot1 <- renderPlot({
   req( diffnet_plotsave()[[1]])
   withProgress(message = "Plotting...",value=0.8,{
     diffnet_plotsave()[[1]]
   })
 })
+#' @title Render Control Network Plot
+#' @description Displays the correlation network for the Control group.
 output$cornetwork_plot2 <- renderPlot({
   req( diffnet_plotsave()[[2]])
   withProgress(message = "Plotting...",value=0.8,{
