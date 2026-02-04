@@ -273,7 +273,7 @@ tabItem(tabName = "Tutorial",
             tags$li(strong("Email:"), tags$a(href = "mailto:denghaoke@genomics.cn", "denghaoke@genomics.cn"))
           ),
           hr(),
-          p(em("Current Version: 1.0.0 | Last Updated: 2025-07-12"), style = "text-align: center;")
+          p(em("Current Version: 1.0 | Last Updated: 2026-02-04"), style = "text-align: center;")
         )
 )
 
