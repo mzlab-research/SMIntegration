@@ -1,3 +1,28 @@
+# ==============================================================================
+# U3_spatial_pattern.R
+# UI definition for the "Spatial Pattern Analysis" tab.
+#
+# Purpose:
+#   Provides the interface for identifying and analyzing spatially variable molecular modules using SpaGene.
+#
+# Key Features:
+#   - Execution control: Start button to trigger the multi-step SpaGene algorithm.
+#   - Module Visualization:
+#     - Spatial Pattern Modules: Plots showing identified patterns for Metabolites and Genes.
+#     - Cross-Omics Correlation: Heatmap of Moran's I correlation between metabolite and gene modules.
+#   - Feature Assignment: Bar plots showing the distribution of features across identified modules.
+#   - Detail View: Interactive tools to visualize the spatial distribution of specific features within modules.
+#
+# Structure:
+#   - Step-by-step description of the algorithm.
+#   - Action button to initiate analysis.
+#   - Multiple output boxes for plots (modules, heatmap, feature counts) and their download buttons.
+#   - Interactive selectors for exploring individual features.
+# ==============================================================================
+
+#' @title Spatial Pattern Analysis UI
+#' @description Defines the layout for the SpaGene-based analysis module.
+#' Includes controls for analysis execution and visualization of spatial modules and correlations.
 tabItem(tabName = "Spatial_Pattern",
         fluidRow(
           h2("Step2: Spatial Pattern Analysis"),

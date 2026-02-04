@@ -1,3 +1,25 @@
+# ==============================================================================
+# U11_co_visualization.R
+# UI definition for the "Multi-Molecule Spatial Co-visualization" tab (Step 6 Part 2).
+#
+# Purpose:
+#   Provides the interface for visualizing the spatial overlap of up to 3 features using RGB mapping.
+#
+# Key Features:
+#   - Feature Selection: Three dropdowns for mapping features to Red, Green, and Blue channels.
+#   - Visualization:
+#     - RGB Spatial Overlay: Composite image showing co-localization.
+#     - Co-expression Pattern Analysis: Quantitative breakdown of combinatorial states (High/Med/Low).
+#
+# Structure:
+#   - Control box for feature selection.
+#   - Output box for the RGB plot.
+#   - Output box for the combinatorial pattern analysis plot.
+# ==============================================================================
+
+#' @title Co-Visualization UI
+#' @description Defines the layout for multi-channel spatial imaging.
+#' Allows users to select 3 features to map to RGB channels for co-localization analysis.
 tabItem(tabName = "co_visual",
         fluidRow(
           h2("Multi-Molecule Spatial Co-visualization")

@@ -1,13 +1,41 @@
+# ==============================================================================
+# U9_pathway.R
+# UI definition for the "Functional Association Analysis" tab (Step 5).
+#
+# Purpose:
+#   Provides the interface for interpreting biological mechanisms via KEGG pathway analysis.
+#   Integrates features from either Differential Analysis or Spatial Pattern Analysis.
+#
+# Key Features:
+#   - Input Selection: Choose source features (Differential vs Pattern) and direction (Up/Down).
+#   - Annotation Source: Use built-in KEGG database or upload custom annotation files.
+#   - Pathway Overlap Analysis: Venn diagram showing pathways annotated by Genes vs Metabolites.
+#   - Pathway Annotation Analysis: Dot plot ranking pathways by feature count.
+#   - Pathway-Centric Integration:
+#     - Detailed KEGG map visualization with nodes colored by feature status.
+#     - Feature tables listing mapped genes/metabolites.
+#     - Spatial distribution plots for specific pathway features.
+#
+# Structure:
+#   - Parameter control box (Input type, Annotation source).
+#   - Summary box.
+#   - Row for Venn and Dot plots.
+#   - Detailed pathway exploration section (Map image, Tables, Spatial plots).
+# ==============================================================================
+
+#' @title Functional Analysis UI
+#' @description Defines the layout for pathway annotation analysis.
+#' Includes controls for feature selection, annotation source, and multiple visualization levels (Global Overlap -> Ranked List -> Detailed Map -> Spatial Features).
 tabItem(tabName = "Pathway_analysis",
         fluidRow(
           h2("Step5: Functional Association Analysis"),
           p("This module integrates differential or pattern-specific features to elucidate biological mechanisms through three complementary approaches:"),
           tags$ol(
             tags$li(strong("Pathway Overlap Analysis:"), "Count the number of pathways co-annotated by differentially expressed genes/metabolites or pattern-specific genes/metabolites, and those annotated solely by either genes or metabolites."),
-            tags$li(strong("Pathway Enrichment Analysis:"), "Fisher's exact test for statistically significant pathway enrichment"),
+            tags$li(strong("Pathway Annotation Analysis:"), "Visualize pathways with the highest number of annotated differential/pattern-specific features."),
             tags$li(strong("Pathway-Centric Feature Integration:"), "Integrate pathway topology with spatial distributions of key molecules")
           ),
-          p("By analyzing pathways co-enriched by spatially significant features, we uncover critical biological mechanisms underlying tissue phenotypes. The platform supports two feature input types:"),
+          p("By analyzing pathways co-annotated by spatially significant features, we uncover critical biological mechanisms underlying tissue phenotypes. The platform supports two feature input types:"),
           tags$ul(
             tags$li(strong("Differential features:"), "Top 300 DEGs/DAMs (by adjusted p-value) from differential analysis"),
             tags$li(strong("Pattern-specific features:"), "Top 300 features per spatial module (by correlation score)")
@@ -39,8 +67,8 @@ tabItem(tabName = "Pathway_analysis",
                  p("Venn diagram showing shared and modality-specific KEGG pathway annotations.")
           ),
           column(6,
-                 h3("Pathway Enrichment Analysis"),
-                 p("Bubble plot visualizing significantly enriched pathways (Fisher's exact test with FDR correction).")
+                 h3("Pathway Annotation Analysis"),
+                 p("Dot plot visualizing pathways with the most mapped features (Top 20 by Count).")
           )
         ),
         fluidRow(
@@ -57,12 +85,12 @@ tabItem(tabName = "Pathway_analysis",
             column(3,downloadButton("download_venn_plot", "Download image"))
           ),
           box(
-            title = "Enrichment Bubble Plot",width = 6,
+            title = "Pathway Annotation Count",width = 6,
             style = "height: 580px; overflow-y: auto;",
             selectInput("bubble_pathway_types", "Filter by pathway type:", choices = NULL,selected = NULL),
-            plotOutput("bubblediagram_run", width = "600px", height = "400px"),
-            column(3,downloadButton("download_bubblediagram_plot", "Download image")),
-            column(3,downloadButton("download_bubblediagram_data", "Export data"))
+            plotOutput("dotplot_run", width = "600px", height = "400px"),
+            column(3,downloadButton("download_dotplot", "Download image")),
+            column(3,downloadButton("download_dotplot_data", "Export data"))
           )
         ),
         column(12, br()),

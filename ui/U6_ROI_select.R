@@ -1,7 +1,35 @@
+# ==============================================================================
+# U6_ROI_select.R
+# UI definition for the "Differential Analysis - ROI Selection" tab (Step 4 Part 1).
+#
+# Purpose:
+#   Provides the interface for defining Treatment and Control groups for differential analysis.
+#
+# Key Features:
+#   - ROI Definition Methods:
+#     - Cluster-based: Select whole clusters from the clustering step.
+#     - Cell type-based: Select specific cell types from the annotation step.
+#     - Interactive: Manual Lasso/Box selection on a spatial plot.
+#   - Visualization:
+#     - Interactive Plotly scatter plot for manual selection.
+#     - Static ggplot for cluster/cell-type visualization.
+#     - Group Assignment Plot showing the final Treatment vs Control selections.
+#   - Group Management: Buttons to add selected regions/clusters to Treatment or Control groups.
+#
+# Structure:
+#   - Parameter definition box (Method selection).
+#   - Summary table box showing current selections.
+#   - Large plot boxes for the selection interface and final group map.
+# ==============================================================================
+
+#' @title ROI Selection UI
+#' @description Defines the layout for defining Regions of Interest (ROIs).
+#' Includes controls for selecting regions based on clusters, cell types, or manual interaction.
 tabItem(tabName = "diff_select",
         fluidRow(
           h2("Step4: Differential Analysis"),
           h3("Region of Interest (ROI) Definition"),
+          uiOutput("roi_prerequisite_warning"),
           p("Define spatial regions for comparative analysis using three flexible approaches:"),
           tags$ol(
             tags$li(strong("Cluster-based:"), "Select domains from spatial clustering results"),

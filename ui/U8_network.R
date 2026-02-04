@@ -1,3 +1,30 @@
+# ==============================================================================
+# U8_network.R
+# UI definition for the "Differential Analysis - Group-Specific Network" tab (Step 4 Part 3).
+#
+# Purpose:
+#   Provides the interface for constructing and visualizing correlation networks 
+#   specifically for the Treatment and Control groups.
+#
+# Key Features:
+#   - Network Construction Parameters:
+#     - Correlation coefficient threshold (|r|).
+#     - Adjusted p-value threshold.
+#     - Number of top differential features to include.
+#   - Visualization Parameters: Layout type (fr, kk, nicely), Label display, Node size/font.
+#   - Visualization:
+#     - Side-by-side network plots for Treatment and Control groups.
+#     - Visual cues: Edge color (pos/neg correlation), Node shape (metabolite/gene), Node color (abundance).
+#
+# Structure:
+#   - Description header.
+#   - Parameter control boxes (Calculation & Visualization).
+#   - Output boxes for the two network plots.
+# ==============================================================================
+
+#' @title Network Analysis UI
+#' @description Defines the layout for group-specific correlation network analysis.
+#' Includes controls for network thresholding and layout customization, followed by side-by-side network plots.
 tabItem(tabName = "con_net",
         fluidRow(
           h2("Step4: Differential Analysis"),

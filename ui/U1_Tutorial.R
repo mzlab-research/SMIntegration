@@ -1,3 +1,24 @@
+# ==============================================================================
+# U1_Tutorial.R
+# UI definition for the "Tutorial" tab.
+# 
+# Purpose:
+#   Displays the landing page of the application, including:
+#   - Overview of the SMIntegration platform features.
+#   - Detailed descriptions of core analytical modules.
+#   - Visual diagrams of analysis workflows.
+#   - Information on demo datasets and input file specifications.
+#   - Download buttons for demo data and registration tutorials.
+#
+# Structure:
+#   - Uses 'tabItem' with 'fluidRow' and 'box' layouts to organize content.
+#   - Embeds images (workflow.png, etc.) from the /www directory.
+#   - Contains 'downloadButton' elements corresponding to handlers in S1_Tutorial.R.
+# ==============================================================================
+
+#' @title Tutorial UI
+#' @description Defines the layout for the landing/tutorial page.
+#' Contains feature overviews, workflow diagrams, and data format specifications.
 tabItem(tabName = "Tutorial",
         fluidRow(
 
@@ -120,11 +141,17 @@ tabItem(tabName = "Tutorial",
             class = "alert alert-warning",
             h4("Critical Preprocessing Steps:"),
             tags$ul( 
-              tags$li(strong("Spatial Registration:"), "Please align coordinates using ", 
-                      tags$a(href = "https://github.com/mzlab-research/SMIntegration/blob/main/SpatialData.md", "SpatialData", target = "_blank"),
-                      " (scripts provided on GitHub)"),
               tags$li(strong("Resolution Harmonization:"), "Aggregate higher-resolution data (e.g., bin100 for 500nm→50μm conversion)"),
-              tags$li(strong("Coordinate System:"), "Identical coordinate units and origin point for both modalities"),
+              tags$li(strong("Spatial Registration:"), "Two options available:",
+                      tags$ul(
+                        tags$li("Option A (Built-in Tool): Check 'Perform Registration' in the Upload tab. Supports manual orientation adjustment (Rotate/Flip) followed by automatic alignment, powered by RNiftyReg.",
+                                downloadButton("download_registration_tutorial", "Download Registration Tutorial PDF", class = "btn-xs btn-info", style = "margin-left: 5px; margin-top: -2px;")
+                        ),
+                        tags$li("Option B (External Tools): Align coordinates using ", 
+                                tags$a(href = "https://github.com/mzlab-research/SMIntegration/blob/main/SpatialData.md", "SpatialData", target = "_blank"),
+                                " (scripts provided on GitHub).")
+                      )
+              ),
               tags$li(strong("Metabolite Identification:"), "Requires annotated metabolite names (not m/z values)")
             )
           )),

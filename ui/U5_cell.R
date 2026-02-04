@@ -1,5 +1,27 @@
 
 
+# ==============================================================================
+# U5_cell.R
+# UI definition for the "Cell Annotation" sub-tab (Step 3.3).
+#
+# Purpose:
+#   Provides the interface for assigning cell types to spatial spots/cells.
+#
+# Key Features:
+#   - Annotation Methods:
+#     - SingleR: Automated annotation using reference databases (Mouse/Human).
+#     - Manual Upload: Users can upload a custom annotation table.
+#   - Visualization: Spatial plot showing the distribution of annotated cell types.
+#   - Data Propagation: Notes that annotations are transferred to metabolomics data.
+#
+# Structure:
+#   - Parameter selection box (Method, File Upload).
+#   - Visualization box for the spatial cell type map.
+# ==============================================================================
+
+#' @title Cell Annotation UI
+#' @description Defines the layout for cell type annotation.
+#' Includes controls for selecting the annotation method (SingleR/Upload) and visualizing the results.
 tabItem(tabName = "cell_anno",
         fluidRow(
           h2("Step3: Clustering Analysis and Cell Annotation")
@@ -17,9 +39,12 @@ tabItem(tabName = "cell_anno",
           box(
             width = 6,
             style = "height: 520px; overflow-y: auto;",
-            title = "Annotation Parameters",
+            title = "Step 3.3: Annotation Parameters",
+            status = "primary",
+            solidHeader = TRUE,
             selectizeInput("cell_annotation_select", "Select annotation method", choices = c("SingleR","Upload_annotation_table"), selected = "Upload_annotation_table"),
             uiOutput("cell_annotation_button_container"),
+            p("Note: If you are using the demo data, you can proceed directly by clicking 'Annotate Cell Types' without uploading a file."),
             p("Note: Computational time varies with data size. Please avoid duplicate submissions."),
             actionButton("start_cell_annotation", "Annotate Cell Types"),
           ),

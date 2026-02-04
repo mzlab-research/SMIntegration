@@ -1,3 +1,30 @@
+# ==============================================================================
+# U7_differential_analysis.R
+# UI definition for the "Differential Analysis - Screening" tab (Step 4 Part 2).
+#
+# Purpose:
+#   Provides the interface for identifying Differentially Expressed Genes (DEGs) and 
+#   Differentially Abundant Metabolites (DAMs) between the defined Treatment and Control groups.
+#
+# Key Features:
+#   - Threshold Configuration: Inputs for Log2FC and FDR thresholds (separate for Metabolomics/Transcriptomics).
+#   - Execution: Start button to run the Wilcoxon rank-sum test.
+#   - Visualization:
+#     - Summary Bar Plot: Counts of Up/Down regulated features.
+#     - UMAP Plots: Visualizing sample separation based on differential features.
+#     - Volcano Plots: Visualizing significance vs. effect size.
+#     - Spatial Distribution: Interactive plots to see where specific differential features are located.
+#
+# Structure:
+#   - Parameter control box.
+#   - Summary plot box.
+#   - Rows for UMAP and Volcano plots.
+#   - Row for spatial feature visualization with selectors.
+# ==============================================================================
+
+#' @title Differential Screening UI
+#' @description Defines the layout for differential feature identification.
+#' Includes threshold inputs, summary statistics, and multiple visualization types (Volcano, UMAP, Spatial).
 tabItem(tabName = "diff_analysis",
         fluidRow(
           h2("Step4: Differential Analysis"),

@@ -1,3 +1,29 @@
+# ==============================================================================
+# U10_visualization.R
+# UI definition for the "Single Molecule Spatial Imaging" tab (Step 6 Part 1).
+#
+# Purpose:
+#   Provides the interface for exploring the spatial distribution of individual molecules (Genes or Metabolites).
+#   Automatically identifies and visualizes top correlated features (co-localization).
+#
+# Key Features:
+#   - Feature Selection: Choose modality (Gene/Metabolite) and specific feature name.
+#   - Primary Visualization: Spatial heatmap of the selected feature.
+#   - Correlation Analysis:
+#     - Displays top 6 positively/negatively correlated Metabolites.
+#     - Displays top 6 positively/negatively correlated Genes.
+#   - Export: Download buttons for all plots and underlying data.
+#
+# Structure:
+#   - Control box for feature selection.
+#   - Output box for the main spatial plot.
+#   - Grid of 4 boxes showing correlated features (Pos/Neg for Metabolites/Genes).
+# ==============================================================================
+
+#' @title Single Feature Visualization UI
+#' @description Defines the layout for single-molecule spatial analysis.
+#' Includes a selector for the target feature and panels displaying its distribution 
+#' along with the most correlated neighbors (spatial co-expression/co-abundance).
 tabItem(tabName = "visual_sin",
         fluidRow(
           h2("Single Molecule Spatial Imaging")
