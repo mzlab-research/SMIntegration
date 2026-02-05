@@ -58,7 +58,7 @@ SMIntegration requires two **feature matrices** in TXT or RDS format:
 **RDS Format (Seurat object)**:
   - Spatial location information stored in meta.data (x, y)
   - Feature matrix stored in data@assays$Spatial (Format: Features as rows, spatial pixels as columns, values represent feature abundance)
-> 📖 Detailed formatting guide available in-app (Tutorial Panel → Data Preparation)
+> 📖 Detailed formatting guide available in-app (Tutorial Panel → Data Preparation Requirements)
 
 ## Usage Workflow
 
@@ -83,7 +83,7 @@ Test dataset: **Mouse brain coronal adjacent sections**
  - Content: 14,530 pixels × 500 metabolites
 
 Access:
-Built-in dataset in SMIntegration (Tutorial Panel → Example Data)
+Built-in dataset in SMIntegration (Tutorial Panel → Demo Datasets)
 
 Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
 
