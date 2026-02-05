@@ -19,7 +19,7 @@
   - Group-specific gene-metabolite correlation networks
 ### 🧬 **Functional Analysis**
   - KEGG pathway co-annotation analysis
-  - Fisher's exact test for DEG-DAM pathway associations
+  - KEGG pathway overlap analysis
 ### 📊 **Interactive Visualization**
   - Gene-metabolite co-localization analysis
   - RGB overlay imaging for multi-feature visualization
