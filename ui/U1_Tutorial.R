@@ -54,7 +54,7 @@ tabItem(tabName = "Tutorial",
             ),
             tags$div(
               h4(icon("sitemap"), " Functional Association Analysis"),
-              p("Pathway enrichment and cross-omics functional integration")
+              p("Pathway annotation and cross-omics functional integration")
             ),
             tags$div(
               h4(icon("image"), " Data Visualization"),
