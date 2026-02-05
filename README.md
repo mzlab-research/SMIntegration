@@ -17,8 +17,8 @@
     - Cell annotation mapping
   - Differentially expressed genes (DEGs) and metabolites (DAMs) detection
   - Group-specific gene-metabolite correlation networks
-### 🧬 **Functional Enrichment**
-  - KEGG pathway co-enrichment analysis
+### 🧬 **Functional Analysis**
+  - KEGG pathway co-annotation analysis
   - Fisher's exact test for DEG-DAM pathway associations
 ### 📊 **Interactive Visualization**
   - Gene-metabolite co-localization analysis
@@ -70,7 +70,7 @@ SMIntegration requires two **feature matrices** in TXT or RDS format:
  - Cell Annotation: Automated (SingleR) or manual mapping
  - Differential Analysis: Compare regions (manual/automatic ROI selection)
  - Network Construction: Build condition-specific gene-metabolite networks
- - Functional Enrichment: Pathway mapping and co-enrichment analysis
+ - Functional Analysis: Pathway mapping and co-annotation analysis
  - Visualization：Dynamic exploration of spatial distributions and co-localization patterns
 
 ## Example Data
