@@ -31,8 +31,8 @@ tabItem(tabName = "overall_cluster",
           tags$ol(
             tags$li(strong("Preprocessing:"), 
                     tags$ul(
-                      tags$li("Metabolomics: (1) Optional TIC or RMS normalization to correct pixel-wise intensity; (2) Log-transformation to stabilize variance; and (3) Scaling with variable feature selection."),
-                      tags$li("Transcriptomics: Standard LogNormalize, top 2000 HVG selection, and Scaling.")
+                      tags$li("Metabolomics: Modular workflow allowing (1) Explicit Normalization (TIC/RMS/None) to correct pixel-wise intensity; (2) Transformation (LogNormalize/None) to stabilize variance; and (3) Scaling and top 2000 Highly Variable Metabolite (HVM) selection."),
+                      tags$li("Transcriptomics: Standard Seurat processing (Depth Normalization + LogNormalize), top 2000 Highly Variable Gene (HVG) selection, and Scaling.")
                     )
             ),
             tags$li(strong("Data Integration:"), "Integration of transcriptomic/metabolomic matrices"),
@@ -61,6 +61,7 @@ tabItem(tabName = "overall_cluster",
                                     "None" = "None"),
                         selected = "LogNormalize"),
             helpText("These settings will be applied before clustering."),
+            helpText("Note: Selecting 'None' for Normalization with 'LogNormalize' Transformation will perform a pure log-transformation on raw counts without depth correction."),
             hr(),
             p("Run this first to determine optimal parameters:"),
             tags$ul(
