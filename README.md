@@ -46,7 +46,8 @@ SMIntegration requires two **feature matrices** as input files:
 
 **Key Requirements**:
 
-1、Pre-aligned datasets: Spatial metabolomics and transcriptomics must share matched spatial resolution and identical pixel coordinates (e.g., ST data binned to SM resolution). If registration is needed, you may use either the built-in alignment tool in the Upload tab or pre-align with [SpatialData](SpatialData.md).
+1、Pre-aligned datasets: Spatial metabolomics and transcriptomics must share matched spatial resolution and identical pixel coordinates. Registration can be performed using either the built-in alignment tool in the Upload tab or externally with [SpatialData](SpatialData.md).
+
 2、Supported Formats:
 SMIntegration requires two **feature matrices** in TXT or RDS format:
 
