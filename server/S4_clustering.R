@@ -95,8 +95,10 @@ rds_norm<- reactive({
     # Process Metabolomics with custom options
     data_mrds <- RUNSCT(data_rds[[1]], norm_method = norm_method, transform_method = trans_method, scale_data = do_scale)
     
-    # Process Transcriptomics with standard LogNormalize
-    data_trds <- RUNSCT(data_rds[[2]], norm_method = "None", transform_method = "LogNormalize", scale_data = TRUE)
+    # Process Transcriptomics with standard LogNormalize (TIC/Depth Normalization + Log)
+    # We explicitly use "TIC" here to ensure library size normalization is applied,
+    # consistent with standard Seurat workflow for transcriptomics.
+    data_trds <- RUNSCT(data_rds[[2]], norm_method = "TIC", transform_method = "LogNormalize", scale_data = TRUE)
 
     # Perform Data Integration (Merge)
     decon_mtrx = data_mrds@assays$Spatial$counts
@@ -107,7 +109,7 @@ rds_norm<- reactive({
     # Process Combined Object
 
     data_crds<-run_prerds(data=data_crds)
-    data_crds=RUNSCT(data_crds, norm_method = "None", transform_method = "LogNormalize", scale_data = TRUE)
+    data_crds=RUNSCT(data_crds, norm_method = "TIC", transform_method = "LogNormalize", scale_data = TRUE)
     
     # Combine normalized data and scale data slots for integrated analysis
     data_crds@assays$SCT$data=rbind(
