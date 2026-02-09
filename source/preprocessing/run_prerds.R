@@ -114,16 +114,14 @@ RUNSCT<- function(obj, norm_method="TIC", transform_method="LogNormalize", scale
 
   # 2. Transformation (Variance stabilization)
   if(transform_method == "LogNormalize") {
-      # If normalization was performed (TIC/RMS), just log transform the normalized values
-      if(norm_method %in% c("TIC", "RMS")) {
-          curr_data <- GetAssayData(obj, slot = "data", assay = "SCT")
-          log_data <- log1p(curr_data)
-          obj <- SetAssayData(obj, slot = "data", new.data = log_data, assay = "SCT")
-      } else {
-          # If No Normalization selected, use standard Seurat LogNormalize
-          # This implicitly performs library size normalization followed by log transformation
-          obj <- NormalizeData(obj, normalization.method = "LogNormalize", scale.factor = 1e4)
-      }
+      # Always perform manual log transformation on the current data slot
+      # This ensures that:
+      # 1. If TIC/RMS was chosen, we log-transform the normalized values.
+      # 2. If 'None' was chosen, we log-transform the raw counts directly (pure log transformation),
+      #    avoiding Seurat::NormalizeData which would strictly enforce TIC (depth normalization).
+      curr_data <- GetAssayData(obj, slot = "data", assay = "SCT")
+      log_data <- log1p(curr_data)
+      obj <- SetAssayData(obj, slot = "data", new.data = log_data, assay = "SCT")
   }
 
   # 3. Feature Selection (Top variable features)
