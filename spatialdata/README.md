@@ -15,7 +15,7 @@ All processed and renamed data files for easy identification are located in the 
 | **Figure 1b** | Spatial Patterns & Correlation Heatmap | `fig1_spatial_patterns.rds`, `fig1_pattern_heatmap.rds` |
 | **Figure 1c** | PCA & Sankey Clustering Correspondence | `fig1_pca_variance.rds`, `fig1_clustering_data.rds` |
 | **Figure 1d** | Cell Type Annotation | `fig1_cell_type_table.rds`, `fig1_cell_type_singler.rds` |
-| **Figure 1e** | Differential Analysis Summary (NA vs MO) | `fig3a_group_assignment.rds`, `fig3bc_umap_data.rds`, `fig1e_volcano.rds` (see `NA-vs-MO/volcano_data.rds`), `fig3ef_correlation_networks.rds` |
+| **Figure 1e** | Differential Analysis Summary (NA vs MO) | `fig3a_group_assignment.rds`, `fig3bc_umap_data.rds`, `fig1e_volcano.rds`, `fig3ef_correlation_networks.rds` |
 | **Figure 1f** | Functional Analysis (CA vs PAG) | `fig4c_pathway_venn.rds`, `fig4d_pathway_dotplot.rds`, `fig4ef_kegg_map_data.rds` |
 | **Figure 1g** | Multi-Modal Visualization | `fig1g_single_ion.rds`, `fig1g_correlated_ions.rds`, `fig4ef_kegg_map_data.rds` |
 | **Figure 2b-d** | Spatial Clustering (Metab/Trans/Merge) | `fig2_clustering_all_modes.rds` |
