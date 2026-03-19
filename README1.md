@@ -41,12 +41,13 @@ docker run -d -p 8787:3838  mzlabresearch/smintegration:v-1.0
 ```
 Please use a web browser to access: http://localhost:8787
 
-### 🛠️ Native R Execution & Dependencies
-If running locally via R, ensure the following environment is set up:
+### 🛠️ Availability of Source Code and Requirements
+For users who wish to run SMIntegration locally via R:
 - **Operating System**: Linux (Ubuntu 20.04+ recommended), Windows, or macOS.
-- **R version**: >= 4.4.2
-- **System Dependencies**: C++ compiler (for "RNiftyReg" and `Rcpp` compilation), `libxml2`, `openssl`, `libcurl`, `magick`.
-- **Core R Packages**: `shiny`, `shinydashboard`, `Seurat` (v5.0.1+), `RNiftyReg`, `SpaGene`, `SingleR`, `clusterProfiler`, `igraph`, `ggraph`. (Full list available in `app.R`).
+- **Programming Language**: R (v4.4.2+)
+- **Other Requirements**: 
+  - **System Libraries**: C++ compiler (for "RNiftyReg" and "Rcpp" compilation), "libxml2", "openssl", "libcurl", "magick".
+  - **Core R Packages**: "shiny", "shinydashboard", "Seurat" (v5.0.1+), "RNiftyReg", "SpaGene", "SingleR", "clusterProfiler", "igraph", "ggraph", "networkD3". (Full dependency list is available in "app.R").
 
 ### 📥 Input Data Format
 SMIntegration requires two **feature matrices** as input files:
@@ -94,20 +95,9 @@ Built-in dataset in SMIntegration (Tutorial Panel → Demo Datasets)
 
 Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
 
-## Data Availability & Figure Mapping
-Processed data for reproducing the figures in the SMIntegration manuscript is provided in this repository. 
-- **Data Directory**: [`spatialdata/`](spatialdata/README.md)
-- **Mapping Table**: See the [Data Mapping README](spatialdata/README.md) for a detailed correspondence between Figure 1-4 and the provided RDS data files.
-- **License**: All processed data is provided under the **CC0 license**.
-
-## Project Metadata
-- **Project Name**: SMIntegration
-- **Project Homepage**: https://github.com/mzlab-research/SMIntegration
-- **Operating System**: Platform-independent (Web-based); Linux/Windows/macOS (via Docker/R).
-- **Programming Language**: R (v4.4.2+)
-- **License**: MIT license
-- **RRID**: [SCR_027925](https://scicrunch.org/resolver/RRID:SCR_027925)
-- **biotoolsID**: [smintegration](https://bio.tools/smintegration)
+## Data Availability
+Processed data for reproducing the figures in the SMIntegration manuscript is available in this repository: 
+- **Data & Mapping**: [`spatialdata/`](spatialdata/README.md) contains a detailed mapping table between Figures 1-4 and the corresponding processed RDS data files (available under the **CC0 license**).
 
 ## Community & Support
 
