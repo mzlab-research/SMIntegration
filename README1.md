@@ -45,7 +45,7 @@ Please use a web browser to access: http://localhost:8787
 If running locally via R, ensure the following environment is set up:
 - **Operating System**: Linux (Ubuntu 20.04+ recommended), Windows, or macOS.
 - **R version**: >= 4.4.2
-- **System Dependencies**: C++ compiler (for `RNiftyReg` and `Rcpp` compilation), `libxml2`, `openssl`, `libcurl`, `magick`.
+- **System Dependencies**: C++ compiler (for "RNiftyReg" and `Rcpp` compilation), `libxml2`, `openssl`, `libcurl`, `magick`.
 - **Core R Packages**: `shiny`, `shinydashboard`, `Seurat` (v5.0.1+), `RNiftyReg`, `SpaGene`, `SingleR`, `clusterProfiler`, `igraph`, `ggraph`. (Full list available in `app.R`).
 
 ### 📥 Input Data Format
