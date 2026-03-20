@@ -97,7 +97,7 @@ Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/re
 
 ## Data Availability
 Processed data for reproducing the figures in the SMIntegration manuscript is available in this repository: 
-- **Data & Mapping**: [`spatialdata/`](spatialdata/README.md) contains a detailed mapping table between Figures 1-4 and the corresponding processed RDS data files (available under the **CC0 license**).
+- **Data & Mapping**: [`spatialdata/`](spatialdata/README.md) contains a detailed mapping table between Figures 3-4 and the corresponding processed RDS data files (available under the **CC0 license**).
 
 ## Community & Support
 
