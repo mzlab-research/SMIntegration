@@ -46,8 +46,8 @@ For users who wish to run SMIntegration locally via R:
 - **Operating System**: Linux (CentOS 7+, Ubuntu 18.04+, or other modern distributions recommended), Windows, or macOS.
 - **Programming Language**: R (v4.4.2+)
 - **Other Requirements**: 
-  - **System Libraries**: C++ compiler (for "RNiftyReg" and "Rcpp" compilation), "libxml2", "openssl", "libcurl", "magick".
-  - **Core R Packages**: "shiny", "shinydashboard", "Seurat" (v5.0.1+), "RNiftyReg", "SpaGene", "SingleR", "clusterProfiler", "igraph", "ggraph", "networkD3". (Full dependency list is available in "app.R").
+  - **System Libraries**: C++ compiler (for `RNiftyReg` and `Rcpp` compilation), `libxml2`, `openssl`, `libcurl`, `magick`.
+  - **Core R Packages**: `shiny`, `Seurat`(Full dependency list is available in `app.R`).
 
 ### 📥 Input Data Format
 SMIntegration requires two **feature matrices** as input files:
