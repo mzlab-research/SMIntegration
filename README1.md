@@ -43,7 +43,7 @@ Please use a web browser to access: http://localhost:8787
 
 ### 🛠️ Availability of Source Code and Requirements
 For users who wish to run SMIntegration locally via R:
-- **Operating System**: Linux (Ubuntu 20.04+ recommended), Windows, or macOS.
+- **Operating System**: Linux (CentOS 7+, Ubuntu 18.04+, or other modern distributions recommended), Windows, or macOS.
 - **Programming Language**: R (v4.4.2+)
 - **Other Requirements**: 
   - **System Libraries**: C++ compiler (for "RNiftyReg" and "Rcpp" compilation), "libxml2", "openssl", "libcurl", "magick".
