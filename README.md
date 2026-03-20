@@ -87,6 +87,11 @@ Built-in dataset in SMIntegration (Tutorial Panel → Demo Datasets)
 
 Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
 
+
+## Data Availability
+Processed data for reproducing the figures in the SMIntegration manuscript is available in this repository: 
+- **Data & Mapping**: [`spatialdata/`](spatialdata/README.md) contains a detailed mapping table between Figures 3-4 and the corresponding processed RDS data files (available under the **CC0 license**).
+
 ### 🛠️ Availability of Source Code and Requirements
 
 - **Project name**: SMIntegration
@@ -97,11 +102,7 @@ Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/re
 - **License**: MIT license
 - **RRID**: SCR_027925
 - **biotoolsID**: smintegration
-
-## Data Availability
-Processed data for reproducing the figures in the SMIntegration manuscript is available in this repository: 
-- **Data & Mapping**: [`spatialdata/`](spatialdata/README.md) contains a detailed mapping table between Figures 3-4 and the corresponding processed RDS data files (available under the **CC0 license**).
-
+- 
 ## Community & Support
 
 Developed by Haoke Deng (denghaoke@genomics.cn)  
