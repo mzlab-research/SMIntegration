@@ -3,7 +3,7 @@
 This directory provides a mapping between the processed RDS data files used for benchmarking and the figures presented in the SMIntegration manuscript.
 
 ## Data Directory
-All processed and renamed data files for easy identification are located in the `spatialdata/data/` directory.
+All processed and renamed data files for easy identification are located in the `data/` directory.
 
 ## Figure to Data Mapping
 
