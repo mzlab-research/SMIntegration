@@ -85,9 +85,6 @@ Test dataset: **Mouse brain coronal adjacent sections**
 Access:
 Built-in dataset in SMIntegration (Tutorial Panel → Demo Datasets)
 
-Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
-
-
 ## 🛠️ Availability of Source Code and Requirements
 
 - **Project name**: SMIntegration
@@ -104,6 +101,18 @@ Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/re
 Data Address: https://github.com/mzlab-research/SMIntegration/tree/main/spatialdata, CC0 license  
 
 All processed RDS files used for Figures 3–4 and Supplementary Figures 1–10 have been uploaded to the `spatialdata/data/` directory. A dedicated [`README.md`](spatialdata/README.md) file has been added to the `spatialdata/` directory, containing a detailed mapping table that accurately describes the correspondence between each figure panel and its respective processed data file. All processed data are provided under the **CC0 license**.
+
+## General Repositories
+
+- **Web Server**: https://metax.genomics.cn/app/SMIntegration
+
+- **Docker Image**: https://hub.docker.com/r/mzlabresearch/smintegration
+
+## Original Data Availability
+
+Original Data Repository: OMIX011674
+
+Access Address: https://ngdc.cncb.ac.cn/omix/release/OMIX011674
 
 ## Community & Support
 
