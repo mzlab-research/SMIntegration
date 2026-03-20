@@ -46,10 +46,8 @@ SMIntegration is cross-platform. It is accessible via a web browser and also sup
 - **Project name**: SMIntegration
 - **Project homepage**: https://github.com/mzlab-research/SMIntegration
 - **Operating System**: Platform independent (MacOS, Linux, Windows)
-- **Programming Language**: R (≥ 4.4.2)
-- **Other Requirements**: 
-  - **System Libraries**: C++ compiler (for `RNiftyReg` and `Rcpp` compilation), `libxml2`, `openssl`, `libcurl`, `magick`.
-  - **Core R Packages**: `shiny`, `Seurat`(Full dependency list is available in `app.R`).
+- **Programming Language**: R
+- **Other Requirements**: None
 - **License**: MIT license
 - **RRID**: SCR_027925
 - **biotoolsID**: smintegration
