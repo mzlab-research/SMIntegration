@@ -19,7 +19,7 @@ All processed and renamed data files for easy identification are located in the 
 | **Figure 4b** | Differential Feature Counts | `fig4b_feature_counts.rds` |
 | **Figure 4c** | Pathway Overlap Venn Diagram | `fig4c_pathway_venn.rds` |
 | **Figure 4d** | Pathway Annotation Dot Plot | `fig4d_pathway_dotplot.rds` |
-| **Figure 4e-f** | Pathway Map & Feature Distribution | `fig4ef_kegg_map_data.rds` |
+| **Figure 4e-f** | Pathway Map & Feature Distribution | `fig4ef_kegg_map_data.rds`,`fig4f_data_rds.rds` |
 | **Figure 4g** | Multi-Modal Co-Visualization | `fig4g_co_visualization.rds` |
 
 ### Supplementary Figures
