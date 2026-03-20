@@ -43,7 +43,8 @@ Please use a web browser to access: http://localhost:8787
 
 ### 🛠️ Availability of Source Code and Requirements
 SMIntegration is cross-platform. It is accessible via a web browser and also supports local deployment through either Docker or a native R environment. For users who wish to run SMIntegration locally via R:
-
+- **Project name**: SMIntegration
+- **Project homepage**: https://github.com/mzlab-research/SMIntegration
 - **Operating System**: Linux (CentOS 7+, Ubuntu 18.04+, or other modern distributions recommended), Windows, or macOS.
 - **Programming Language**: R (≥ 4.4.2)
 - **Other Requirements**: 
