@@ -41,17 +41,6 @@ docker run -d -p 8787:3838  mzlabresearch/smintegration:v-1.0
 ```
 Please use a web browser to access: http://localhost:8787
 
-### 🛠️ Availability of Source Code and Requirements
-SMIntegration is cross-platform. It is accessible via a web browser and also supports local deployment through either Docker or a native R environment. For users who wish to run SMIntegration locally via R:
-- **Project name**: SMIntegration
-- **Project homepage**: https://github.com/mzlab-research/SMIntegration
-- **Operating System**: Platform independent (MacOS, Linux, Windows)
-- **Programming Language**: R
-- **Other Requirements**: None
-- **License**: MIT license
-- **RRID**: SCR_027925
-- **biotoolsID**: smintegration
-
 ### 📥 Input Data Format
 SMIntegration requires two **feature matrices** as input files:
 
@@ -97,6 +86,17 @@ Access:
 Built-in dataset in SMIntegration (Tutorial Panel → Demo Datasets)
 
 Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
+
+### 🛠️ Availability of Source Code and Requirements
+
+- **Project name**: SMIntegration
+- **Project homepage**: https://github.com/mzlab-research/SMIntegration
+- **Operating System**: Platform independent (MacOS, Linux, Windows)
+- **Programming Language**: R
+- **Other Requirements**: None
+- **License**: MIT license
+- **RRID**: SCR_027925
+- **biotoolsID**: smintegration
 
 ## Data Availability
 Processed data for reproducing the figures in the SMIntegration manuscript is available in this repository: 
