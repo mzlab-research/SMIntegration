@@ -41,6 +41,14 @@ docker run -d -p 8787:3838  mzlabresearch/smintegration:v-1.0
 ```
 Please use a web browser to access: http://localhost:8787
 
+### 🛠️ Availability of Source Code and Requirements
+For users who wish to run SMIntegration locally via R:
+- **Operating System**: Linux (CentOS 7+, Ubuntu 18.04+, or other modern distributions recommended), Windows, or macOS.
+- **Programming Language**: R (v4.4.2+)
+- **Other Requirements**: 
+  - **System Libraries**: C++ compiler (for "RNiftyReg" and "Rcpp" compilation), "libxml2", "openssl", "libcurl", "magick".
+  - **Core R Packages**: "shiny", "shinydashboard", "Seurat" (v5.0.1+), "RNiftyReg", "SpaGene", "SingleR", "clusterProfiler", "igraph", "ggraph", "networkD3". (Full dependency list is available in "app.R").
+
 ### 📥 Input Data Format
 SMIntegration requires two **feature matrices** as input files:
 
@@ -87,8 +95,11 @@ Built-in dataset in SMIntegration (Tutorial Panel → Demo Datasets)
 
 Raw data: NGDC OMIX Repository ID: [OMIX011674](https://ngdc.cncb.ac.cn/omix/release/OMIX011674)
 
-    
+## Data Availability
+Processed data for reproducing the figures in the SMIntegration manuscript is available in this repository: 
+- **Data & Mapping**: [`spatialdata/`](spatialdata/README.md) contains a detailed mapping table between Figures 3-4 and the corresponding processed RDS data files (available under the **CC0 license**).
+
 ## Community & Support
 
-Developed by Haoke Deng (denghaoke\@genomics.cn)\
-Last update: 2026-02-09
+Developed by Haoke Deng (denghaoke@genomics.cn)  
+Last update: 2026-03-19
