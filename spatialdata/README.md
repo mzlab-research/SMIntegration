@@ -3,7 +3,7 @@
 This directory provides a mapping between the processed RDS data files used for benchmarking and the figures presented in the SMIntegration manuscript.
 
 ## Data Directory
-All processed and renamed data files for easy identification are located in the `data/` directory.
+All processed and renamed data files for easy identification are located in the `spatialdata/data/` directory.
 
 ## Figure to Data Mapping
 
@@ -11,16 +11,6 @@ All processed and renamed data files for easy identification are located in the 
 
 | Figure | Description | Renamed Data File (in `spatialdata/data/`) |
 | :--- | :--- | :--- |
-| **Figure 1a** | Total Counts & RGB Overlay | `fig1_clustering_data.rds`, `fig1_rgb_overlay.rds` |
-| **Figure 1b** | Spatial Patterns & Correlation Heatmap | `fig1_spatial_patterns.rds`, `fig1_pattern_heatmap.rds` |
-| **Figure 1c** | PCA & Sankey Clustering Correspondence | `fig1_pca_variance.rds`, `fig1_clustering_data.rds` |
-| **Figure 1d** | Cell Type Annotation | `fig1_cell_type_table.rds`, `fig1_cell_type_singler.rds` |
-| **Figure 1e** | Differential Analysis Summary (NA vs MO) | `fig3a_group_assignment.rds`, `fig3bc_umap_data.rds`, `fig1e_volcano.rds`, `fig3ef_correlation_networks.rds` |
-| **Figure 1f** | Functional Analysis (CA vs PAG) | `fig4c_pathway_venn.rds`, `fig4d_pathway_dotplot.rds`, `fig4ef_kegg_map_data.rds` |
-| **Figure 1g** | Multi-Modal Visualization | `fig1g_single_ion.rds`, `fig1g_correlated_ions.rds`, `fig4ef_kegg_map_data.rds` |
-| **Figure 2b-d** | Spatial Clustering (Metab/Trans/Merge) | `fig2_clustering_all_modes.rds` |
-| **Figure 2e-f** | Spatial Expression Patterns (SpaGene) | `fig2_spagene_patterns.rds` |
-| **Figure 2g** | Pattern Correlation Heatmap | `fig2_correlation_heatmap.rds` |
 | **Figure 3a** | Spatial Group Assignment (NA vs MO) | `fig3a_group_assignment.rds` |
 | **Figure 3b-c** | UMAP Visualization (Metab & Trans) | `fig3bc_umap_data.rds` |
 | **Figure 3d** | Differential Feature Counts | `fig3d_feature_counts.rds` |
