@@ -102,7 +102,7 @@ Processed data for reproducing the figures in the SMIntegration manuscript is av
 - **License**: MIT license
 - **RRID**: SCR_027925
 - **biotoolsID**: smintegration
-- 
+  
 ## Community & Support
 
 Developed by Haoke Deng (denghaoke@genomics.cn)  
