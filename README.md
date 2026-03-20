@@ -45,11 +45,14 @@ Please use a web browser to access: http://localhost:8787
 SMIntegration is cross-platform. It is accessible via a web browser and also supports local deployment through either Docker or a native R environment. For users who wish to run SMIntegration locally via R:
 - **Project name**: SMIntegration
 - **Project homepage**: https://github.com/mzlab-research/SMIntegration
-- **Operating System**: Linux (CentOS 7+, Ubuntu 18.04+, or other modern distributions recommended), Windows, or macOS.
+- **Operating System**: Platform independent (MacOS, Linux, Windows)
 - **Programming Language**: R (≥ 4.4.2)
 - **Other Requirements**: 
   - **System Libraries**: C++ compiler (for `RNiftyReg` and `Rcpp` compilation), `libxml2`, `openssl`, `libcurl`, `magick`.
   - **Core R Packages**: `shiny`, `Seurat`(Full dependency list is available in `app.R`).
+- **License**: MIT license
+- **RRID**: SCR_027925
+- **biotoolsID**: smintegration
 
 ### 📥 Input Data Format
 SMIntegration requires two **feature matrices** as input files:
