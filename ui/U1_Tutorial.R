@@ -176,6 +176,7 @@ tabItem(tabName = "Tutorial",
                       tags$tr(tags$td("Meta Data"), tags$td("Spatial coordinates"), tags$td("x, y in meta.data")),
                       tags$tr(tags$td("Active Assay"), tags$td("Must be named 'Spatial'"), tags$td("active.assay")),
                       tags$tr(tags$td("Matrix colnames"), tags$td("Must use '_' to separate x and y (e.g., sample:10_20)"), tags$td("colnames(Spatial$counts) & colnames(Spatial$data)"))
+                      
                     )
                   )
                 ),
@@ -192,6 +193,7 @@ tabItem(tabName = "Tutorial",
                       tags$tr(tags$td("Meta Data"), tags$td("Spatial coordinates"), tags$td("x, y in meta.data")),
                       tags$tr(tags$td("Active Assay"), tags$td("Must be named 'Spatial'"), tags$td("active.assay")),
                       tags$tr(tags$td("Matrix colnames"), tags$td("Must use '_' to separate x and y (e.g., sample:10_20)"), tags$td("colnames(Spatial$counts) & colnames(Spatial$data)"))
+                      
                     )
                   )
                 ),
@@ -275,7 +277,7 @@ tabItem(tabName = "Tutorial",
               style = "margin-top: 10px;",
               tags$div(
                 style = "display: flex; align-items: flex-start; gap: 12px;",
-    
+                
                 icon("quote-left", class = "fa-2x", style = "color: #6c757d; margin-top: 4px;"),
                 tags$div(
                   style = "flex: 1;",
@@ -285,7 +287,7 @@ tabItem(tabName = "Tutorial",
                     tags$strong("SMIntegration: A Web Tool for Comprehensive Spatial Metabolomics and Transcriptomics Integrated Analysis and Visualization."),
                     " GigaScience, 2026; giag033."
                   ),
-
+                  
                   tags$div(
                     style = "margin-top: 5px;",
                     tags$span(icon("doi"), style = "margin-right: 5px;"),
@@ -307,7 +309,7 @@ tabItem(tabName = "Tutorial",
             tags$li(strong("Email:"), tags$a(href = "mailto:denghaoke@genomics.cn", "denghaoke@genomics.cn"))
           ),
           hr(),
-          p(em("Current Version: 1.0 | Last Updated: 2026-02-04"), style = "text-align: center;")
+          p(em("Current Version: 1.1 | Last Updated: 2026-04-16"), style = "text-align: center;")
         )
 )
 
