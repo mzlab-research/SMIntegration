@@ -57,15 +57,28 @@ transdata<-eventReactive(c(input$Submit), {
   }else if(input$demo_select == "Upload rds data"){
     if(!is.null(input$transfile) && input$transfile$name != ""){
       data <- readRDS(input$transfile$datapath)
+      has_counts <- !is.null(data@assays$Spatial$counts)
+      has_data <- !is.null(data@assays$Spatial$data)
       shiny::validate(
-        shiny::need( data@active.assay =="Spatial" && "Spatial" %in% names(data@assays), 
-              "Active assay must be named 'Spatial'!"),
+        need(data@active.assay == "Spatial" && "Spatial" %in% names(data@assays),
+             "Active assay must be named 'Spatial'!"),
+        need(c("x", "y") %in% colnames(data@meta.data),
+             "The meta.data of Seurat object must contain two columns named 'x' and 'y'."),
+        need(is.numeric(data@meta.data$x), "x column must be numeric"),
+        need(is.numeric(data@meta.data$y), "y column must be numeric"),
         
-        shiny::need( c("x","y") %in% colnames(data@meta.data),
-              "The meta.data of Seurat object must contain two columns named 'x' and 'y'."),
-        
-        shiny::need(is.numeric(data@meta.data$x), "x column must be numeric"),
-        shiny::need(is.numeric(data@meta.data$y), "y column must be numeric")
+        need("Spatial" %in% names(data@assays), 
+             "Spatial assay not found in the Seurat object."),
+        need(!is.null(data@assays$Spatial$counts), 
+             "Counts matrix in Spatial assay is NULL."),
+        need(is.matrix(data@assays$Spatial$counts) || inherits(data@assays$Spatial$counts, "dgCMatrix"),
+             "Counts must be a dense matrix or a dgCMatrix (sparse)."),
+        need(ncol(data@assays$Spatial$counts) > 0, 
+             "Counts matrix has no columns (no spots)."),
+        need(
+          (has_counts && all(grepl("_", colnames(data@assays$Spatial$counts)))) ||
+            (has_data && all(grepl("_", colnames(data@assays$Spatial$data)))),
+             "Column names of the counts matrix must contain '_' to separate x and y coordinates (e.g., sample:10_20).")
       )
     }
   }
@@ -108,15 +121,28 @@ metabdata<-eventReactive(c(input$Submit), {
     }else if(input$demo_select == "Upload rds data"){
       if(!is.null(input$metabfile) && input$metabfile$name != ""){
         data <- readRDS(input$metabfile$datapath)
+        has_counts <- !is.null(data@assays$Spatial$counts)
+        has_data <- !is.null(data@assays$Spatial$data)
         shiny::validate(
-        need( data@active.assay =="Spatial" && "Spatial" %in% names(data@assays),
-             "Active assay must be named 'Spatial'!"),
-
-        need( c("x","y") %in% colnames(data@meta.data),
-             "The meta.data of Seurat object must contain two columns named 'x' and 'y'."),
-
+          need(data@active.assay == "Spatial" && "Spatial" %in% names(data@assays),
+               "Active assay must be named 'Spatial'!"),
+          need(c("x", "y") %in% colnames(data@meta.data),
+               "The meta.data of Seurat object must contain two columns named 'x' and 'y'."),
           need(is.numeric(data@meta.data$x), "x column must be numeric"),
-          need(is.numeric(data@meta.data$y), "y column must be numeric")
+          need(is.numeric(data@meta.data$y), "y column must be numeric"),
+          
+          need("Spatial" %in% names(data@assays), 
+               "Spatial assay not found in the Seurat object."),
+          need(!is.null(data@assays$Spatial$counts), 
+               "Counts matrix in Spatial assay is NULL."),
+          need(is.matrix(data@assays$Spatial$counts) || inherits(data@assays$Spatial$counts, "dgCMatrix"),
+               "Counts must be a dense matrix or a dgCMatrix (sparse)."),
+          need(ncol(data@assays$Spatial$counts) > 0, 
+               "Counts matrix has no columns (no spots)."),
+          need(
+            (has_counts && all(grepl("_", colnames(data@assays$Spatial$counts)))) ||
+              (has_data && all(grepl("_", colnames(data@assays$Spatial$data)))),
+               "Column names of the counts matrix must contain '_' to separate x and y coordinates (e.g., sample:10_20).")
         )
       }
   }
