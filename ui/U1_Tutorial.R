@@ -161,7 +161,7 @@ tabItem(tabName = "Tutorial",
           h3("Option 1: Seurat Object Format (Recommended)"),
           p("You need to upload two separate Seurat objects (.rds files):"),
           box(width = 8,
-              style = "height: 320px; overflow-y: auto;",
+              style = "height: 380px; overflow-y: auto;",
 
                 tags$div(
                   class = "col-md-6",
@@ -174,7 +174,9 @@ tabItem(tabName = "Tutorial",
                     tags$tbody(
                       tags$tr(tags$td("Assay"), tags$td("Metabolite intensity matrix"), tags$td("Spatial")),
                       tags$tr(tags$td("Meta Data"), tags$td("Spatial coordinates"), tags$td("x, y in meta.data")),
-                      tags$tr(tags$td("Active Assay"), tags$td("Must be named 'Spatial'"), tags$td("active.assay"))
+                      tags$tr(tags$td("Active Assay"), tags$td("Must be named 'Spatial'"), tags$td("active.assay")),
+                      tags$tr(tags$td("Matrix colnames"), tags$td("Must use '_' to separate x and y (e.g., sample:10_20)"), tags$td("colnames(Spatial$counts) & colnames(Spatial$data)"))
+                      
                     )
                   )
                 ),
@@ -189,7 +191,9 @@ tabItem(tabName = "Tutorial",
                     tags$tbody(
                       tags$tr(tags$td("Assay"), tags$td("Gene expression matrix"), tags$td("Spatial")),
                       tags$tr(tags$td("Meta Data"), tags$td("Spatial coordinates"), tags$td("x, y in meta.data")),
-                      tags$tr(tags$td("Active Assay"), tags$td("Must be named 'Spatial'"), tags$td("active.assay"))
+                      tags$tr(tags$td("Active Assay"), tags$td("Must be named 'Spatial'"), tags$td("active.assay")),
+                      tags$tr(tags$td("Matrix colnames"), tags$td("Must use '_' to separate x and y (e.g., sample:10_20)"), tags$td("colnames(Spatial$counts) & colnames(Spatial$data)"))
+                      
                     )
                   )
                 ),
@@ -198,7 +202,7 @@ tabItem(tabName = "Tutorial",
           ),
             box(
               width = 4,
-              style = "height: 320px; overflow-y: auto;",
+              style = "height: 380px; overflow-y: auto;",
               tags$img(src = "feature_matrix_rds.png", width = "100%", style = "max-width: 400px;"),
 
             )
@@ -266,6 +270,38 @@ tabItem(tabName = "Tutorial",
                 class = "list-group-item", target = "_blank",
                 icon("github"), " Source Code & Local Installation Guide")
             ),
+            h2("Citation"),
+            p("If you use SMIntegration in your research, please cite the following paper:"),
+            tags$div(
+              class = "well",  
+              style = "margin-top: 10px;",
+              tags$div(
+                style = "display: flex; align-items: flex-start; gap: 12px;",
+                
+                icon("quote-left", class = "fa-2x", style = "color: #6c757d; margin-top: 4px;"),
+                tags$div(
+                  style = "flex: 1;",
+                  tags$p(
+                    style = "margin-bottom: 8px; line-height: 1.4;",
+                    "Haoke Deng, Xiaolian Ning, Xun Lin, Liang Zong, Shanqiao Zheng, Yun Zhao, Jing Wang, Lingyun Chen, Jin Zi, Zhanlong Mei. ",
+                    tags$strong("SMIntegration: A Web Tool for Comprehensive Spatial Metabolomics and Transcriptomics Integrated Analysis and Visualization."),
+                    " GigaScience, 2026; giag033."
+                  ),
+                  
+                  tags$div(
+                    style = "margin-top: 5px;",
+                    tags$span(icon("doi"), style = "margin-right: 5px;"),
+                    tags$a(
+                      href = "https://doi.org/10.1093/gigascience/giag033",
+                      target = "_blank",
+                      class = "btn btn-default btn-xs",  
+                      style = "text-decoration: none;",
+                      "https://doi.org/10.1093/gigascience/giag033"
+                    )
+                  )
+                )
+              )
+            ),
           h2("Technical Support"),
           p("For immediate assistance:"),
           tags$ul(
@@ -273,7 +309,7 @@ tabItem(tabName = "Tutorial",
             tags$li(strong("Email:"), tags$a(href = "mailto:denghaoke@genomics.cn", "denghaoke@genomics.cn"))
           ),
           hr(),
-          p(em("Current Version: 1.0 | Last Updated: 2026-02-04"), style = "text-align: center;")
+          p(em("Current Version: 1.1 | Last Updated: 2026-04-16"), style = "text-align: center;")
         )
 )
 
