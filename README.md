@@ -92,7 +92,7 @@ If you use **SMIntegration** in your research, please cite the following paper:
 > Haoke Deng, Xiaolian Ning, Xun Lin, Liang Zong, Shanqiao Zheng, Yun Zhao, Jing Wang, Lingyun Chen, Jin Zi, Zhanlong Mei.  
 > **SMIntegration: A Web Tool for Comprehensive Spatial Metabolomics and Transcriptomics Integrated Analysis and Visualization.**  
 > *GigaScience*, 2026; giag033.  
-> DOI: [10.1093/gigascience/giag033IF: 3.9 Q1 ](https://doi.org/10.1093/gigascience/giag033IF: 3.9 Q1 )
+> DOI: [10.1093/gigascience/giag033IF: 3.9 Q1 ](https://doi.org/10.1093/gigascience/giag033 )
 
 ---
 ## 🛠️ Availability of Source Code and Requirements
